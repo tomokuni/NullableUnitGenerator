@@ -1,0 +1,33 @@
+
+■Nullableの演算
+null許容値型(Nullable<T> 型)
+  https://ufcpp.net/study/csharp/sp2_nullable.html
+
+C#の値型でもnullを扱えるようにするNullable
+  https://araramistudio.jimdo.com/2019/05/16/c-の値型でもnullを扱えるようにするnullable/
+
+
+■Source Generator
+2022年のC# (Incremental) Source Generator開発手法
+  https://neue.cc/2022/12/16_IncrementalSourceGenerator.html
+
+
+■T4
+tangible T4 Editor
+  https://t4-editor.tangible-engineering.com/T4-Editor-Visual-T4-Editing.html
+
+
+■OpenAPI / Swagger
+Custom Data Types in ASP.NET Core Web APIs
+  https://blog.magnusmontin.net/2020/04/03/custom-data-types-in-asp-net-core-web-apis/
+
+Enriched Web API Documentation using Swagger/OpenAPI in ASP.NET Core
+  https://www.dotnetnakama.com/blog/enriched-web-api-documentation-using-swagger-openapi-in-asp-dotnet-core/
+
+DateOnly in Swagger and API Controllers
+  https://blog.bitscry.com/2022/08/24/dateonly-in-swagger-and-api-controllers/
+
+Qowaiv
+  https://github.com/Qowaiv/Qowaiv
+
+

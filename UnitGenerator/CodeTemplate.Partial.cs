@@ -1,23 +1,23 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
-namespace UnitGenerator
+namespace NullableUnitGenerator
 {
     public partial class CodeTemplate
     {
         internal string? Namespace { get; set; }
         internal string? Type { get; set; }
         internal string? Name { get; set; }
+        internal Type? SystemType { get => GetSystemType(); }
+        internal string? TypeNullable { get => $"{Type}{(IsValueType() ? "?" : "")}"; }
         internal UnitGenerateOptions Options { get; set; }
         public string? ToStringFormat { get; set; }
 
         internal bool HasFlag(UnitGenerateOptions options)
-        {
-            return Options.HasFlag(options);
-        }
+            => Options.HasFlag(options);
 
         internal DbType GetDbType()
-        {
-            return Type switch
+            => Type switch
             {
                 "short" => DbType.Int16,
                 "int" => DbType.Int32,
@@ -39,11 +39,9 @@ namespace UnitGenerator
                 "decimal" => DbType.Currency,
                 _ => DbType.Object
             };
-        }
 
         internal bool IsSupportUtf8Formatter()
-        {
-            return Type switch
+            => Type switch
             {
                 "short" => true,
                 "int" => true,
@@ -62,11 +60,56 @@ namespace UnitGenerator
                 "System.Guid" => true,
                 _ => false
             };
-        }
+
+        internal bool IsIntegralNumericType()
+            => Type switch
+            {
+                "short" => true,
+                "int" => true,
+                "long" => true,
+                "ushort" => true,
+                "uint" => true,
+                "ulong" => true,
+                "bool" => true,
+                "byte" => true,
+                "sbyte" => true,
+                _ => false
+            };
+
+        internal Type? GetSystemType()
+            => Type switch
+            {
+                "short" => typeof(short),
+                "int" => typeof(int),
+                "long" => typeof(long),
+                "ushort" => typeof(ushort),
+                "uint" => typeof(uint),
+                "ulong" => typeof(ulong),
+                "bool" => typeof(bool),
+                "byte" => typeof(byte),
+                "sbyte" => typeof(sbyte),
+                "float" => typeof(float),
+                "double" => typeof(double),
+                "decimal" => typeof(decimal),
+                "System.DateTime" => typeof(DateTime),
+                "System.DateTimeOffset" => typeof(DateTimeOffset),
+                "System.TimeSpan" => typeof(TimeSpan),
+                "System.Guid" => typeof(Guid),
+                "string" => typeof(string),
+                "byte[]" => typeof(byte[]),
+                _ => null
+            };
 
         internal bool IsUlid()
-        {
-            return Type == "Ulid" || Type == "System.Ulid";
-        }
+            => Type == "Ulid" || Type == "System.Ulid";
+
+        internal bool IsValueType()
+            => (SystemType != null && SystemType.IsValueType) || IsUlid();
+
+        internal bool IsNullable()
+            => SystemType == null ||
+               !SystemType.IsValueType ||
+               Nullable.GetUnderlyingType(SystemType) != null;
     }
 }
+

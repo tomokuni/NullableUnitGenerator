@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MessagePack;
+using Xunit;
+using NullableUnitGenerator;
+
+namespace UnitGenerator.Tests;
+
+public class VoIntTest
+{
+    [Fact]
+    public void Equal()
+    {
+        VoInt a = default;
+        VoInt b = new(null);
+        VoInt c = new(default(int));
+        VoInt d = new(0);
+        VoInt e = new(1);
+
+        //
+        // Undefined, Null, Default
+        //
+        Assert.Equal(a, VoInt.UndefinedValue);
+        Assert.Equal(b, VoInt.NullValue);
+        Assert.Equal(c, VoInt.DefaultValue);
+
+        //
+        // Equals, ==, !=
+        //
+        var valsVoInt = new VoInt[] { a, b, c, d, e };
+        foreach (var (v1, i1) in valsVoInt.Select((value, index) => (value, index)))
+        {
+            foreach (var (v2, i2) in valsVoInt.Select((value, index) => (value, index)))
+            {
+                if (v1.IsDefined == v2.IsDefined && v1.HasValue == v2.HasValue && v1.GetValueOrDefault() == v2.GetValueOrDefault())
+                {
+                    Assert.True(v1.Equals(v2));
+                    Assert.True(v1.Equals((object)v2));
+                    Assert.True(v1 == v2);
+                    Assert.False(v1 != v2);
+                    if (v1.HasValue)
+                    {
+                        Assert.True(v1.Equals(v2.Value));
+                        Assert.True(v1 == v2.Value);
+                        Assert.False(v1 != v2.Value);
+                    }
+                    else
+                    {
+                        Assert.False(v1.Equals(v2.Value));
+                        Assert.False(v1 == v2.Value);
+                        Assert.False(v1 != v2.Value);
+                    }
+                }
+                else
+                {
+                    Assert.False(v1.Equals(v2));
+                    Assert.False(v1.Equals((object)v2));
+                    Assert.False(v1 == v2);
+                    Assert.True(v1 != v2);
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public void Compare()
+    {
+        VoInt a = default;
+        VoInt b = new(null);
+        VoInt c = new(default(int));
+        VoInt d = new(0);
+        VoInt e = new(1);
+
+        //
+        // Compare, >, <, >=, <=
+        //
+        var valsVoInt = new VoInt[] { a, b, c, d, e };
+        foreach (var (v1, i1) in valsVoInt.Select((value, index) => (value, index)))
+        {
+            foreach (var (v2, i2) in valsVoInt.Select((value, index) => (value, index)))
+            {
+                if (v1.IsDefined == v2.IsDefined && v1.HasValue == v2.HasValue && v1.GetValueOrDefault() == v2.GetValueOrDefault())
+                {
+                    if (v1.HasValue)
+                    {
+                        Assert.True(v1 >= v2);
+                        Assert.True(v1 >= v2.Value);
+                        Assert.True(v1 <= v2);
+                        Assert.True(v1 <= v2.Value);
+                        if (v1.Value > v2.Value)
+                        {
+                            Assert.True(v1 > v2);
+                            Assert.True(v1 > v2.Value);
+                            Assert.False(v1 < v2);
+                            Assert.False(v1 < v2.Value);
+                        }
+                        if (v1.Value < v2.Value)
+                        {
+                            Assert.True(v1 > v2);
+                            Assert.True(v1 > v2.Value);
+                            Assert.False(v1 > v2);
+                            Assert.False(v1 > v2.Value);
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    Assert.False(v1 >= v2);
+                    Assert.False(v1 <= v2);
+                    Assert.False(v1 > v2);
+                    Assert.False(v1 < v2);
+                }
+            }
+        }
+
+    }
+}
+
+
+[UnitOf(typeof(int), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+public readonly partial struct VoInt
+{
+    private partial void Validate()
+    {
+        _ = AsPrimitive();
+    }
+}

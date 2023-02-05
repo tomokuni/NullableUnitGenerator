@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnitGenerator
+namespace NullableUnitGenerator
 {
     // same as Generated Options(check UnitOfAttributeTemplate.tt).
     [Flags]
@@ -19,6 +19,7 @@ namespace UnitGenerator
         DapperTypeHandler = 512,
         EntityFrameworkValueConverter = 1024,
         WithoutComparisonOperator = 2048,
-        JsonConverterDictionaryKeySupport = 4096
+        JsonConverterDictionaryKeySupport = 4096,
+        StandardPrimitive = ParseMethod | MinMaxMethod | ArithmeticOperator | ValueArithmeticOperator | Comparable,
     }
 }

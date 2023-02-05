@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using UnitGenerator;
+using NullableUnitGenerator;
 
 //var a = UnitGenerateOptions.JsonConverterDictionaryKeySupport;
 
@@ -69,7 +69,7 @@ namespace Sample
         // impl here.
         private partial void Validate()
         {
-            if (value > 9999) throw new Exception("Invalid value range: " + value);
+            if (m_value > 9999) throw new Exception("Invalid value range: " + m_value);
         }
     }
 

@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
-namespace UnitGenerator.Tests
+namespace NullableUnitGenerator.Tests
 {
     // https://gist.github.com/chsienki/2955ed9336d7eb22bcb246840bfeb05c
 
@@ -40,5 +40,9 @@ namespace UnitGenerator.Tests
             CreateDriver(compilation, generators).RunGeneratorsAndUpdateCompilation(compilation, out var updatedCompilation, out diagnostics);
             return updatedCompilation;
         }
+
+
+
+
     }
 }
