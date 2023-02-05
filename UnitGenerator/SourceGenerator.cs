@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UnitGenerator
+namespace NullableUnitGenerator
 {
     [Generator]
     public class SourceGenerator : ISourceGenerator
@@ -123,7 +123,7 @@ namespace UnitGenerator
             {
                 if (syntaxNode is StructDeclarationSyntax s && s.AttributeLists.Count > 0)
                 {
-                    var attr = s.AttributeLists.SelectMany(x => x.Attributes).FirstOrDefault(x => x.Name.ToString() is "UnitOf" or "UnitOfAttribute" or "UnitGenerator.UnitOf" or "UnitGenerator.UnitOfAttribute");
+                    var attr = s.AttributeLists.SelectMany(x => x.Attributes).FirstOrDefault(x => x.Name.ToString() is "UnitOf" or "UnitOfAttribute" or "NullableUnitGenerator.UnitOf" or "NullableUnitGenerator.UnitOfAttribute");
                     if (attr != null)
                     {
                         Targets.Add((s, attr));

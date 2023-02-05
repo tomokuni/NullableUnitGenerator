@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace UnitGenerator
+namespace NullableUnitGenerator
 {
     public partial class CodeTemplate
     {

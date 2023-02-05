@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "UnitGenerator": {
+    "NullableUnitGenerator": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\..\\sandbox\\ConsoleApp\\ConsoleApp.csproj"
     }

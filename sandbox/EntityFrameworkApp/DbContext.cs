@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UnitGenerator;
+using NullableUnitGenerator;
 
 namespace EntityFrameworkApp;
 

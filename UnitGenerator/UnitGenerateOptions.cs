@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnitGenerator
+namespace NullableUnitGenerator
 {
     // same as Generated Options(check UnitOfAttributeTemplate.tt).
     [Flags]
