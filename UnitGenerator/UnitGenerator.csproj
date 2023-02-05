@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
+        <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
         <IsRoslynComponent>true</IsRoslynComponent>
@@ -10,24 +10,30 @@
         <!-- does not need runtime self -->
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-		<IncludeSymbols>false</IncludeSymbols>
-		<DevelopmentDependency>true</DevelopmentDependency>
+        <IncludeSymbols>false</IncludeSymbols>
+        <DevelopmentDependency>true</DevelopmentDependency>
+
+        <VersionPrefix>0.3.0</VersionPrefix>
+        <VersionSuffix>preview-20230205</VersionSuffix>
 
         <!-- NuGet -->
-        <PackageId>UnitGenerator</PackageId>
-        <Description>C# Source Generator to create value-object, inspired by units of measure.</Description>
+        <PackageId>NullableUnitGenerator</PackageId>
+        <Description>C# Source Generator to create nullable value-object. Forked from UnitGenerator.</Description>
 
         <PackageVersion>$(Version)</PackageVersion>
-        <Company>Cysharp</Company>
-        <Authors>Cysharp</Authors>
-        <Copyright>© Cysharp, Inc.</Copyright>
-        <PackageTags>sourcegenerator;valueobject</PackageTags>
-        <PackageProjectUrl>https://github.com/Cysharp/UnitGenerator</PackageProjectUrl>
+        <Company>Estable</Company>
+        <Authors>SEKIYA.T</Authors>
+        <Copyright>© Estable Ltd.</Copyright>
+        <PackageTags>sourcegenerator;valueobject;nullable</PackageTags>
+        <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
         <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
+        <Title>NullableUnitGenerator</Title>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackAsTool>False</PackAsTool>
     </PropertyGroup>
 
     <ItemGroup>
@@ -63,10 +69,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>UnitOfAttributeTemplate.tt</DependentUpon>
         </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
 
 </Project>
