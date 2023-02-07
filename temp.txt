@@ -1,0 +1,27 @@
+static class Extensions
+{
+    internal static SwaggerGenOptions MapTypeOpenApiDataTypes(this SwaggerGenOptions options)
+    {
+        var ta = UnitGeneratorHelper.GetTypeAndAttributes<UnitOfOpenApiDataTypeAttribute>();
+        foreach (var (type, attr) in ta)
+        {
+            IOpenApiAny exampleAny = attr.Example switch
+            {
+                null => new OpenApiNull(),
+                int integer => new OpenApiInteger(integer),
+                double floating => new OpenApiDouble(floating),
+                var e => new OpenApiString(e.ToString()),
+            };
+
+            options.MapType(type, () => new OpenApiSchema
+            {
+                Type = attr.Type,
+                Format = attr.Format,
+                Example = exampleAny,
+                Pattern = attr.Pattern,
+                Nullable = attr.Nullable,
+            });
+        }
+        return options;
+    }
+}

@@ -6,12 +6,12 @@ namespace NullableUnitGenerator
     public partial class CodeTemplate
     {
         internal string? Namespace { get; set; }
-        internal string? Type { get; set; }
         internal string? Name { get; set; }
-        internal Type? SystemType { get => GetSystemType(); }
-        internal string? TypeNullable { get => $"{Type}{(IsValueType() ? "?" : "")}"; }
+        internal string? Type { get; set; }
+        internal bool IsValueType { get; set; }
+        internal string? TypeNullable { get => $"{Type}{(IsValueType ? "?" : "")}"; }
         internal UnitGenerateOptions Options { get; set; }
-        public string? ToStringFormat { get; set; }
+        internal string? ToStringFormat { get; set; }
 
         internal bool HasFlag(UnitGenerateOptions options)
             => Options.HasFlag(options);
@@ -76,40 +76,8 @@ namespace NullableUnitGenerator
                 _ => false
             };
 
-        internal Type? GetSystemType()
-            => Type switch
-            {
-                "short" => typeof(short),
-                "int" => typeof(int),
-                "long" => typeof(long),
-                "ushort" => typeof(ushort),
-                "uint" => typeof(uint),
-                "ulong" => typeof(ulong),
-                "bool" => typeof(bool),
-                "byte" => typeof(byte),
-                "sbyte" => typeof(sbyte),
-                "float" => typeof(float),
-                "double" => typeof(double),
-                "decimal" => typeof(decimal),
-                "System.DateTime" => typeof(DateTime),
-                "System.DateTimeOffset" => typeof(DateTimeOffset),
-                "System.TimeSpan" => typeof(TimeSpan),
-                "System.Guid" => typeof(Guid),
-                "string" => typeof(string),
-                "byte[]" => typeof(byte[]),
-                _ => null
-            };
-
         internal bool IsUlid()
             => Type == "Ulid" || Type == "System.Ulid";
-
-        internal bool IsValueType()
-            => (SystemType != null && SystemType.IsValueType) || IsUlid();
-
-        internal bool IsNullable()
-            => SystemType == null ||
-               !SystemType.IsValueType ||
-               Nullable.GetUnderlyingType(SystemType) != null;
     }
 }
 

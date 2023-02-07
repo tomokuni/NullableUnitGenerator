@@ -1,135 +1,103 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
+﻿#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
+#pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
+using NullableUnitGenerator.Helper;
 
-namespace NullableUnitGenerator
+namespace NullableUnitGenerator;
+
+
+[Generator(LanguageNames.CSharp)]
+public sealed class SourceGenerator : IIncrementalGenerator
 {
-    [Generator]
-    public class SourceGenerator : ISourceGenerator
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        public void Initialize(GeneratorInitializationContext context)
-        {
-            context.RegisterForPostInitialization(x => SetDefaultAttribute(x));
-            context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-        }
+        context.RegisterPostInitializationOutput(callback: GenerateInitialCode);
 
-        public void Execute(GeneratorExecutionContext context)
-        {
-            try
-            {
-                var receiver = context.SyntaxReceiver as SyntaxReceiver;
-                if (receiver == null) return;
-
-                var list = new List<(StructDeclarationSyntax, UnitOfAttributeProperty)>();
-                foreach (var (type, attr) in receiver.Targets)
-                {
-                    if (attr.ArgumentList is null) continue;
-
-                    var model = context.Compilation.GetSemanticModel(type.SyntaxTree);
-
-                    // retrieve attribute parameter
-                    var prop = new UnitOfAttributeProperty();
-
-                    if (attr.ArgumentList is null) goto ADD;
-                    for (int i = 0; i < attr.ArgumentList.Arguments.Count; i++)
-                    {
-                        var arg = attr.ArgumentList.Arguments[i];
-                        var expr = arg.Expression;
-
-                        if (i == 0) // Type type
-                        {
-                            if (expr is TypeOfExpressionSyntax typeOfExpr)
-                            {
-                                var typeSymbol = model.GetSymbolInfo(typeOfExpr.Type).Symbol as ITypeSymbol;
-                                if (typeSymbol == null) throw new Exception("require type-symbol.");
-                                prop.Type = typeSymbol;
-                            }
-                            else
-                            {
-                                throw new Exception("require UnitOf attribute and ctor.");
-                            }
-                        }
-                        else if (i == 1) // UnitGenerateOptions options
-                        {
-                            // e.g. UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod => ImplicitOperatior, ParseMethod
-                            var parsed = Enum.ToObject(typeof(UnitGenerateOptions), model.GetConstantValue(expr).Value);
-                            prop.Options = (UnitGenerateOptions)parsed;
-                        }
-                        else if (i == 2) // string toStringFormat
-                        {
-                            var format = model.GetConstantValue(expr).Value?.ToString();
-                            prop.ToStringFormat = format;
-                        }
-                    }
-
-                ADD:
-                    list.Add((type, prop));
-                }
-
-                foreach (var (type, prop) in list)
-                {
-                    var typeSymbol = context.Compilation.GetSemanticModel(type.SyntaxTree).GetDeclaredSymbol(type);
-                    if (typeSymbol == null) throw new Exception("can not get typeSymbol.");
-
-                    var template = new CodeTemplate()
-                    {
-                        Name = typeSymbol.Name,
-                        Namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace ? null : typeSymbol.ContainingNamespace.ToDisplayString(),
-                        Type = prop.Type.ToString(),
-                        Options = prop.Options,
-                        ToStringFormat = prop.ToStringFormat
-                    };
-
-                    var text = template.TransformText();
-                    if (template.Namespace == null)
-                    {
-                        context.AddSource($"{template.Name}.Generated.cs", text);
-                    }
-                    else
-                    {
-                        context.AddSource($"{template.Namespace}.{template.Name}.Generated.cs", text);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Trace.WriteLine(ex.ToString());
-            }
-        }
-
-        private void SetDefaultAttribute(GeneratorPostInitializationContext context)
-        {
-            var attrCode = new UnitOfAttributeTemplate().TransformText();
-            context.AddSource("UnitOfAttribute.cs", attrCode);
-        }
-
-        struct UnitOfAttributeProperty
-        {
-            public ITypeSymbol Type { get; set; }
-            public UnitGenerateOptions Options { get; set; }
-            public string? ToStringFormat { get; set; }
-        }
-
-        class SyntaxReceiver : ISyntaxReceiver
-        {
-            public List<(StructDeclarationSyntax type, AttributeSyntax attr)> Targets { get; } = new();
-
-            public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-            {
-                if (syntaxNode is StructDeclarationSyntax s && s.AttributeLists.Count > 0)
-                {
-                    var attr = s.AttributeLists.SelectMany(x => x.Attributes).FirstOrDefault(x => x.Name.ToString() is "UnitOf" or "UnitOfAttribute" or "NullableUnitGenerator.UnitOf" or "NullableUnitGenerator.UnitOfAttribute");
-                    if (attr != null)
-                    {
-                        Targets.Add((s, attr));
-                    }
-                }
-            }
-        }
+        var source = context.SyntaxProvider.ForAttributeWithMetadataName(
+            "NullableUnitGenerator.UnitOfAttribute",    // 引っ掛ける属性のフルネーム
+            static (node, token) => true,               // predicate, 属性で既に絞れてるので特別何かやりたいことがなければ基本true
+            static (context, token) => context);        // GeneratorAttributeSyntaxContextにはNode, SemanticModel(Compilation), Symbolが入ってて便利
+        context.RegisterSourceOutput(source, Emit);
     }
+
+    void Emit(SourceProductionContext context, GeneratorAttributeSyntaxContext source)
+    {
+        CancellationToken token = context.CancellationToken;
+        token.ThrowIfCancellationRequested();
+
+        // classで引っ掛けてるのでTypeSymbol/Syntaxとして使えるように。
+        // SemaintiModelが欲しい場合は source.SemanticModel
+        // Compilationが欲しい場合は source.SemanticModel.Compilation から
+        var typeSymbol = (INamedTypeSymbol)source.TargetSymbol;
+        var typeNode = (TypeDeclarationSyntax)source.TargetNode;
+        var attrCtorArgs = source.Attributes.Single().ConstructorArguments;
+        var a = new UnitOfAttribute(typeof(int));
+
+        var ns = typeSymbol.ContainingNamespace;
+        if (attrCtorArgs[0].Value is not ITypeSymbol type)
+            throw new Exception("require UnitOf attribute parameter [Type]");
+        var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), attrCtorArgs[1].Value ?? UnitGenerateOptions.None);
+
+
+        var template = new CodeTemplate()
+        {
+            Name = typeSymbol.Name,
+            Namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace ? null : typeSymbol.ContainingNamespace.ToDisplayString(),
+            Type = type.ToDisplayString(),
+            IsValueType = type.IsValueType,
+            Options = (UnitGenerateOptions)parsedOptions,
+            ToStringFormat = attrCtorArgs[2].Value as string
+        };
+
+        var text = template.TransformText();
+
+        string fullType;
+        if (template.Namespace == "")
+            fullType = $"{template.Name}.Generated.cs";
+        else
+            fullType = $"{template.Namespace}.{template.Name}.Generated.cs";
+
+        context.AddSource($"{fullType}.Generated.cs", text);
+    }
+
+    private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
+    {
+        CancellationToken token = context.CancellationToken;
+        token.ThrowIfCancellationRequested();
+
+        AddCsSource("UnitOfAttribute.cs");
+        AddCsSource("UnitGenerateOptions.cs");
+        AddCsSource("UnitOfOpenApiDataTypeAttribute.cs");
+
+        void AddCsSource(string resourceName)
+            => context.AddSource(hintName: resourceName, source: StringResourceRead(resourceName));
+    }
+
+    public static string StringResourceRead(string resourceName)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        //var type = typeof(SourceGenerator);
+        //var assembly = type.Assembly;
+
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        if (stream == null)
+            return "";
+
+        using var sr = new StreamReader(stream);
+        return sr.ReadToEnd();
+    }
+
 }
