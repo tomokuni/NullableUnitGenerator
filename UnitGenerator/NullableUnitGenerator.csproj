@@ -5,8 +5,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
-        <Deterministic>true</Deterministic>
         <IsRoslynComponent>true</IsRoslynComponent>
+        <Deterministic>true</Deterministic>
+        <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
 
         <!-- does not need runtime self -->
@@ -15,12 +16,13 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.2</VersionPrefix>
-        <VersionSuffix>beta-20230207</VersionSuffix>
+        <VersionPrefix>0.0.1.3</VersionPrefix>
+        <VersionSuffix>beta-20230208</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
         <Description>C# Source Generator to create nullable value-object. Forked from UnitGenerator.</Description>
+        <PackageReleaseNotes>beta</PackageReleaseNotes>
 
         <PackageVersion>$(Version)</PackageVersion>
         <Company>Estable</Company>
@@ -31,18 +33,21 @@
         <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>Resource/Icon.png</PackageIcon>
+        <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <PackAsTool>False</PackAsTool>
-        <PackageReleaseNotes></PackageReleaseNotes>
+        <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
         <!-- Create nuget package as analyzer -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Resources\Icon.png" Pack="true" PackagePath="/" />
     </ItemGroup>
 
     <ItemGroup>
@@ -54,24 +59,29 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
-        <EmbeddedResource Include="UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
-        <EmbeddedResource Include="UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
+        <EmbeddedResource Include="Template\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
+        <EmbeddedResource Include="Template\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
+        <EmbeddedResource Include="Template\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="Resource\Icon.png" Pack="true" PackagePath="/" />
-        <None Update="CodeTemplate.tt">
+        <None Update="Template\CodeTemplate.tt">
             <Generator>TextTemplatingFilePreprocessor</Generator>
             <LastGenOutput>CodeTemplate.cs</LastGenOutput>
         </None>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="CodeTemplate.cs">
+        <None Update="Template\IOptionalTemplate.tt">
+          <Generator>TextTemplatingFilePreprocessor</Generator>
+          <LastGenOutput>IOptionalTemplate.cs</LastGenOutput>
+        </None>
+        <Compile Update="Template\CodeTemplate.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>CodeTemplate.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Template\IOptionalTemplate.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>IOptionalTemplate.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 

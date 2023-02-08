@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using NullableUnitGenerator.Template;
 using NullableUnitGenerator.Helper;
 
 namespace NullableUnitGenerator;
@@ -44,33 +45,31 @@ public sealed class SourceGenerator : IIncrementalGenerator
         var typeSymbol = (INamedTypeSymbol)source.TargetSymbol;
         var typeNode = (TypeDeclarationSyntax)source.TargetNode;
         var attrCtorArgs = source.Attributes.Single().ConstructorArguments;
-        var a = new UnitOfAttribute(typeof(int));
 
         var ns = typeSymbol.ContainingNamespace;
         if (attrCtorArgs[0].Value is not ITypeSymbol type)
             throw new Exception("require UnitOf attribute parameter [Type]");
-        var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), attrCtorArgs[1].Value ?? UnitGenerateOptions.None);
-
+        var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
 
         var template = new CodeTemplate()
         {
             Name = typeSymbol.Name,
-            Namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace ? null : typeSymbol.ContainingNamespace.ToDisplayString(),
+            Namespace = ns.IsGlobalNamespace ? null : ns.ToDisplayString(),
             Type = type.ToDisplayString(),
             IsValueType = type.IsValueType,
             Options = (UnitGenerateOptions)parsedOptions,
             ToStringFormat = attrCtorArgs[2].Value as string
         };
-
         var text = template.TransformText();
 
-        string fullType;
-        if (template.Namespace == "")
-            fullType = $"{template.Name}.Generated.cs";
-        else
-            fullType = $"{template.Namespace}.{template.Name}.Generated.cs";
+        token.ThrowIfCancellationRequested();
 
+        string fullType = template.Namespace is null 
+            ? $"{template.Name}" 
+            : $"{template.Namespace}.{template.Name}";
         context.AddSource($"{fullType}.Generated.cs", text);
+
+        token.ThrowIfCancellationRequested();
     }
 
     private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
@@ -78,11 +77,21 @@ public sealed class SourceGenerator : IIncrementalGenerator
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
 
-        AddCsSource("UnitOfAttribute.cs");
-        AddCsSource("UnitGenerateOptions.cs");
-        AddCsSource("UnitOfOpenApiDataTypeAttribute.cs");
+        var template = new IOptionalTemplate();
+        var text = template.TransformText();
+        context.AddSource($"IOptional.Generated.cs", text);
+        token.ThrowIfCancellationRequested();
 
-        void AddCsSource(string resourceName)
+        AddCsResource("UnitOfAttribute.cs");
+        token.ThrowIfCancellationRequested();
+
+        AddCsResource("UnitGenerateOptions.cs");
+        token.ThrowIfCancellationRequested();
+
+        AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
+        token.ThrowIfCancellationRequested();
+
+        void AddCsResource(string resourceName)
             => context.AddSource(hintName: resourceName, source: StringResourceRead(resourceName));
     }
 

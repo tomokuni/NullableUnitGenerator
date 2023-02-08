@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
-namespace NullableUnitGenerator.Tests
+namespace UnitGenerator.Tests
 {
     // https://gist.github.com/chsienki/2955ed9336d7eb22bcb246840bfeb05c
 

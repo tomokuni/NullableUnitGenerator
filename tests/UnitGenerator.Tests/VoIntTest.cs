@@ -7,7 +7,7 @@ using MessagePack;
 using Xunit;
 using NullableUnitGenerator;
 
-namespace UnitGenerator.Tests;
+namespace NullableUnitGenerator.Tests;
 
 public class VoIntTest
 {
@@ -35,13 +35,15 @@ public class VoIntTest
         {
             foreach (var (v2, i2) in valsVoInt.Select((value, index) => (value, index)))
             {
-                if (v1.IsDefined == v2.IsDefined && v1.HasValue == v2.HasValue && v1.GetValueOrDefault() == v2.GetValueOrDefault())
+                if (v1.HasValue 
+                    && v2.HasValue
+                    && v1.Value.Equals(v2.Value))
                 {
                     Assert.True(v1.Equals(v2));
                     Assert.True(v1.Equals((object)v2));
                     Assert.True(v1 == v2);
                     Assert.False(v1 != v2);
-                    if (v1.HasValue)
+                    if (v2.HasValue)
                     {
                         Assert.True(v1.Equals(v2.Value));
                         Assert.True(v1 == v2.Value);
@@ -56,10 +58,27 @@ public class VoIntTest
                 }
                 else
                 {
-                    Assert.False(v1.Equals(v2));
-                    Assert.False(v1.Equals((object)v2));
-                    Assert.False(v1 == v2);
-                    Assert.True(v1 != v2);
+                    if (v1.IsUndefined.Equals(v2.IsUndefined) && v1.IsUndefined)
+                    {
+                        Assert.True(v1.Equals(v2));
+                        Assert.True(v1.Equals((object)v2));
+                        Assert.True(v1 == v2);
+                        Assert.False(v1 != v2);
+                    }
+                    else if (v1.IsNull.Equals(v2.IsNull) && v1.IsNull)
+                    {
+                        Assert.True(v1.Equals(v2));
+                        Assert.True(v1.Equals((object)v2));
+                        Assert.True(v1 == v2);
+                        Assert.False(v1 != v2);
+                    }
+                    else
+                    {
+                        Assert.False(v1.Equals(v2));
+                        Assert.False(v1.Equals((object)v2));
+                        Assert.False(v1 == v2);
+                        Assert.True(v1 != v2);
+                    }
                 }
             }
         }
@@ -82,40 +101,55 @@ public class VoIntTest
         {
             foreach (var (v2, i2) in valsVoInt.Select((value, index) => (value, index)))
             {
-                if (v1.IsDefined == v2.IsDefined && v1.HasValue == v2.HasValue && v1.GetValueOrDefault() == v2.GetValueOrDefault())
+                if (v1.HasValue
+                    && v2.HasValue)
                 {
-                    if (v1.HasValue)
+                    if (v1.Value == v2.Value)
                     {
                         Assert.True(v1 >= v2);
                         Assert.True(v1 >= v2.Value);
                         Assert.True(v1 <= v2);
                         Assert.True(v1 <= v2.Value);
-                        if (v1.Value > v2.Value)
-                        {
-                            Assert.True(v1 > v2);
-                            Assert.True(v1 > v2.Value);
-                            Assert.False(v1 < v2);
-                            Assert.False(v1 < v2.Value);
-                        }
-                        if (v1.Value < v2.Value)
-                        {
-                            Assert.True(v1 > v2);
-                            Assert.True(v1 > v2.Value);
-                            Assert.False(v1 > v2);
-                            Assert.False(v1 > v2.Value);
-                        }
                     }
-                    else
+                    if (v1.Value > v2.Value)
                     {
-
+                        Assert.True(v1 > v2);
+                        Assert.True(v1 >= v2);
+                        Assert.True(v1 > v2.Value);
+                        Assert.True(v1 >= v2.Value);
+                        Assert.False(v1 < v2);
+                        Assert.False(v1 <= v2);
+                        Assert.False(v1 < v2.Value);
+                        Assert.False(v1 <= v2.Value);
+                    }
+                    if (v1.Value >= v2.Value)
+                    {
+                        Assert.True(v1 >= v2);
+                        Assert.True(v1 >= v2.Value);
+                    }
+                    if (v1.Value < v2.Value)
+                    {
+                        Assert.True(v1 < v2);
+                        Assert.True(v1 <= v2);
+                        Assert.True(v1 < v2.Value);
+                        Assert.True(v1 <= v2.Value);
+                        Assert.False(v1 > v2);
+                        Assert.False(v1 >= v2);
+                        Assert.False(v1 > v2.Value);
+                        Assert.False(v1 >= v2.Value);
+                    }
+                    if (v1.Value <= v2.Value)
+                    {
+                        Assert.True(v1 <= v2);
+                        Assert.True(v1 <= v2.Value);
                     }
                 }
                 else
                 {
-                    Assert.False(v1 >= v2);
-                    Assert.False(v1 <= v2);
                     Assert.False(v1 > v2);
+                    Assert.False(v1 >= v2);
                     Assert.False(v1 < v2);
+                    Assert.False(v1 <= v2);
                 }
             }
         }
@@ -129,6 +163,6 @@ public readonly partial struct VoInt
 {
     private partial void Validate()
     {
-        _ = AsPrimitive();
+        _ = HasValue;
     }
 }

@@ -7,10 +7,12 @@ C#の値型でもnullを扱えるようにするNullable
   https://araramistudio.jimdo.com/2019/05/16/c-の値型でもnullを扱えるようにするnullable/
 
 
-■Source Generator
+■(Incremental) Source Generator
 2022年のC# (Incremental) Source Generator開発手法
   https://neue.cc/2022/12/16_IncrementalSourceGenerator.html
 
+.NET 6からのC# Incremental Source Generatorの開発入門
+  https://zenn.dev/pcysl5edgo/articles/6d9be0dd99c008#source-generatorの失敗
 
 ■T4
 tangible T4 Editor

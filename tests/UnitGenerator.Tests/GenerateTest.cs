@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace NullableUnitGenerator.Tests
+namespace UnitGenerator.Tests
 {
     public class GenerateTest
     {

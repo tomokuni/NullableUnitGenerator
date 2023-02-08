@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using WebApi.Model.Base;
 
-namespace WebApi.Model;
+namespace WebApiApp.Models;
 
 
 public record WeatherForecast

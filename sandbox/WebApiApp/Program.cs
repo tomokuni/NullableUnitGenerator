@@ -3,9 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.Model.Base;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace WebApi;
+namespace WebApiApp;
 
 public class Program
 {
@@ -23,10 +22,10 @@ public class Program
         {
             c.SwaggerDoc("v3", new OpenApiInfo { Title = "API", Version = "v3" });
             c.MapType<VoInt>(() => new OpenApiSchema { Type = "integer", Format = "int32", Nullable = true });
-            //c.MapType<VoDouble>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
-            //c.MapType<VoDecimal>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
-            //c.MapType<VoDatetime>(() => new OpenApiSchema { Type = "string", Format = "date", Nullable = true });
-            //c.MapType<VoString>(() => new OpenApiSchema { Type = "string", Format = "string", Nullable = true });
+            c.MapType<VoDouble>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
+            c.MapType<VoDecimal>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
+            c.MapType<VoDatetime>(() => new OpenApiSchema { Type = "string", Format = "date", Nullable = true });
+            c.MapType<VoString>(() => new OpenApiSchema { Type = "string", Format = "string", Nullable = true });
         });
 
         var app = builder.Build();
@@ -41,6 +40,8 @@ public class Program
                 config.SwaggerEndpoint("/swagger/v3/swagger.json", "API v3");
             });
         }
+
+        app.UseHttpsRedirection();
 
         app.UseAuthorization();
 

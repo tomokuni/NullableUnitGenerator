@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApi.Model;
+using WebApiApp.Models;
 
 namespace WebApi.Controllers;
 [ApiController]
@@ -22,15 +22,15 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    [HttpPost(Name = "GetWeatherForecast")]
+    public IEnumerable<WeatherForecast> Get(WeatherForecast wf)
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             VoInt = new(index),
             VoDatetime = new (DateTime.Now.AddDays(index)),
             VoDouble = new (Random.Shared.Next(-20, 55)),
-            VoDecimal = new(Random.Shared.Next(-20, 55)),
+            //VoDecimal = new(Random.Shared.Next(-20, 55)),
             VoString = new (Summaries[Random.Shared.Next(Summaries.Length)])
         })
         .ToArray();

@@ -7,11 +7,11 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using NullableUnitGenerator;
-
+using UOOpt = NullableUnitGenerator.UnitGenerateOptions;
 
 namespace ConsoleApp
 {
-    [UnitOf(typeof(int), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+    [UnitOf(typeof(int), UOOpt.IntegralFull | UOOpt.Validate | UOOpt.MessagePackFormatter | UOOpt.DapperTypeHandler | UOOpt.EntityFrameworkValueConverter)]
     public readonly partial struct A
     {
         private partial void Validate()

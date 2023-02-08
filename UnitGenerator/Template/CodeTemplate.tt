@@ -21,6 +21,7 @@ using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
 <# } #>
 
+using NullableUnitGenerator;
 
 <# if (!string.IsNullOrEmpty(Namespace)) { #>
 namespace <#= Namespace #>
@@ -38,70 +39,8 @@ namespace <#= Namespace #>
     [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
 <# } #>
     [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-    readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
+    readonly partial struct <#= Name #> : IOptional<<#= Type #>>, IEquatable<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
     {
-<#if (IsIntegralNumericType()) { #>
-        /// <summary>Represents the largest possible value. This field is constant.</summary>
-        public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
-
-        /// <summary>Represents the smallest possible value. This field is constant.</summary>
-        public const <#= Type #> MinValue = <#= Type #>.MinValue;
-
-
-<# } #>
-        readonly bool m_isDefined = false;
-        readonly bool m_hasValue = false;
-        readonly <#= Type #> m_value = default(<#= Type #>);
-
-        /// <summary>undefined value instance.</summary>
-        public static <#= Name #> UndefinedValue => new();
-
-        /// <summary>null value instance.</summary>
-        public static <#= Name #> NullValue => new((<#= TypeNullable #>)null);
-
-        /// <summary>default value instance.</summary>
-        public static <#= Name #> DefaultValue => new(default(<#= Type #>));
-
-        /// <summary>default value instance.</summary>
-        public static Type PrimitiveType => typeof(<#= Type #>);
-
-
-        /// <summary>true if assigned; otherwise, false.</summary>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
-        [JsonIgnore]
-<# } #>
-        public bool IsDefined => m_isDefined;
-
-        /// <summary>true if assigned and not null; otherwise, false.</summary>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
-        [JsonIgnore]
-<# } #>
-        public bool HasValue => m_hasValue && m_isDefined;
-
-
-        /// <summary>return value if assigned and not null; otherwise, throw InvalidOperationException("NoValue")</summary>
-        /// <returns>value : if assigned and not null <br/> throw InvalidOperationException("NoValue") : otherwise</returns>
-        public <#= Type #> Value => HasValue ? m_value : throw new InvalidOperationException("NoValue");
-
-        /// <inheritdoc cref="Value" />
-        public <#= Type #> GetValue() => Value;
-
-        /// <summary>return value if assigned and not null; otherwise, null</summary>
-        /// <returns>value : if assigned and not null <br/> null : otherwise</returns>
-        public <#= TypeNullable #> GetValueOrNull() => HasValue ? m_value : null;
-
-        /// <summary>return value if assigned and not null; otherwise, default(<#= Type #>)</summary>
-        /// <returns>value : if assigned and not null <br/> default(<#= Type #>) : otherwise</returns>
-        public <#= Type #> GetValueOrDefault() => HasValue ? m_value : default(<#= Type #>);
-
-        /// <summary>return value if assigned and not null; otherwise, defaultValue</summary>
-        /// <returns>value : if assigned and not null <br/> defaultValue : otherwise</returns>
-        public <#= Type #> GetValueOrDefault(<#= Type #> defaultValue) => HasValue ? m_value : defaultValue;
-
-        /// <inheritdoc cref="Value" />
-        public <#= Type #> AsPrimitive() => Value;
-
-
         //
         // Constructor
         //
@@ -109,8 +48,8 @@ namespace <#= Namespace #>
         /// <summary>Complete Constructor</summary>
         public <#= Name #>(<#= Name #> value)
         {
-            m_isDefined = true;
-            m_hasValue = false;
+            IsUndefined = false;
+            IsNull = false;
             m_value = default(<#= Type #>);
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
@@ -122,8 +61,8 @@ namespace <#= Namespace #>
         /// <summary>Complete Constructor</summary>
         public <#= Name #>(<#= Type #> value)
         {
-            m_isDefined = true;
-            m_hasValue = true;
+            IsUndefined = false;
+            IsNull = false;
             m_value = (<#= Type #>)value;
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
@@ -135,15 +74,15 @@ namespace <#= Namespace #>
         /// <summary>Complete Constructor</summary>
         public <#= Name #>(<#= TypeNullable #> value)
         {
-            m_isDefined = true;
+            IsUndefined = false;
             if (value is not null)
             {
-                m_hasValue = true;
+                IsNull = false;
                 m_value = (<#= Type #>)value;
             }
             else
             {
-                m_hasValue = false;
+                IsNull = true;
                 m_value = default(<#= Type #>);
             }
 
@@ -151,6 +90,137 @@ namespace <#= Namespace #>
             this.Validate();
 <# } #>
         }
+
+        //
+        // IOptional<<#= Type #>>
+        //
+
+        /// <summary>undefined value instance.</summary>
+        public static <#= Name #> UndefinedValue
+            => new();
+
+        /// <summary>null value instance.</summary>
+        public static <#= Name #> NullValue
+            => new((<#= Type #>?)null);
+
+        /// <summary>default value instance.</summary>
+        public static <#= Name #> DefaultValue
+            => new(default(<#= Type #>));
+
+        /// <summary>default value instance.</summary>
+        public static Type PrimitiveType
+            => typeof(<#= Type #>);
+
+
+        /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
+        /// <returns><b><see langword="true"/></b> : if undefined</returns>
+        public bool IsUndefined { get; } = true;
+
+        /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
+        /// <returns><b><see langword="true"/></b> : if null</returns>
+        public bool IsNull { get; } = true;
+
+        /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException("NoValue")</summary>
+        /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("NoValue")</b> : otherwise</returns>
+        public <#= Type #> Value 
+            => HasValue ? m_value : throw new InvalidOperationException("NoValue");
+        internal readonly <#= Type #> m_value;
+
+
+        /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
+        /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
+        public bool HasValue
+            => !(IsUndefined || IsNull);
+
+
+        /// <inheritdoc cref="Value" />
+        public <#= Type #> AsPrimitive()
+            => Value;
+
+        /// <summary>return value if HasValue is true; otherwise, <see langword="default(T)"/></summary>
+        /// <returns><b>value</b> : if assigned and not null<br/><b><see langword="default(T)"/></b> : otherwise</returns>
+        public <#= Type #> OrDefault()
+            => HasValue ? m_value : default(<#= Type #>);
+
+        /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+        /// <returns><b>value</b> : if assigned and not true<br/><b>defaultValue</b> : otherwise</returns>
+        /// <!-- T? 型にしたいけど、継承できないので object? で代用する -->
+        public object? OrDefault(object? defaultValue)
+            => HasValue ? m_value : defaultValue;
+
+        /// <inheritdoc cref="OrDefault" />
+        public <#= Type #>? OrDefault(<#= Type #>? defaultValue)
+            => HasValue ? m_value : defaultValue;
+
+        /// <summary>return value if HasValue is true; otherwise, null</summary>
+        /// <returns><b>value</b> : if HasValue is true<br/><b><see langword="null"/></b> : otherwise</returns>
+        /// <!-- T? 型にしたいけど、継承できないので object? で代用する -->
+        public object? OrNull()
+            => (<#= Type #>?)(HasValue ? m_value : null);
+
+        /// <inheritdoc cref="Value" />
+        public <#= Type #> OrThrow()
+            => Value;
+
+        /// <summary>
+        /// return true and out parameter value if HasValue is true; otherwise, false.
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
+        public bool TryGet(out <#= Type #> value)
+        { 
+            value = m_value; 
+            return HasValue; 
+        }
+
+//        readonly <#= Type #> m_value = default(<#= Type #>);
+//
+//        /// <summary>undefined value instance.</summary>
+//        public static <#= Name #> UndefinedValue => new();
+//
+//        /// <summary>null value instance.</summary>
+//        public static <#= Name #> NullValue => new((<#= TypeNullable #>)null);
+//
+//        /// <summary>default value instance.</summary>
+//        public static <#= Name #> DefaultValue => new(default(<#= Type #>));
+//
+//        /// <summary>default value instance.</summary>
+//        public static Type PrimitiveType => typeof(<#= Type #>);
+//
+//
+//        /// <summary>true if assigned; otherwise, false.</summary>
+//<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+//        [JsonIgnore]
+//<# } #>
+//        public bool IsDefined => m_isDefined;
+//
+//        /// <summary>true if assigned and not null; otherwise, false.</summary>
+//<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+//        [JsonIgnore]
+//<# } #>
+//        public bool HasValue => m_hasValue && m_isDefined;
+//
+//        /// <summary>return value if assigned and not null; otherwise, throw InvalidOperationException("NoValue")</summary>
+//        /// <returns>value : if assigned and not null <br/> throw InvalidOperationException("NoValue") : otherwise</returns>
+//        public <#= Type #> Value => HasValue ? m_value : throw new InvalidOperationException("NoValue");
+//
+//        /// <inheritdoc cref="Value" />
+//        public <#= Type #> GetValue() => Value;
+//
+//        /// <summary>return value if assigned and not null; otherwise, null</summary>
+//        /// <returns>value : if assigned and not null <br/> null : otherwise</returns>
+//        public <#= TypeNullable #> GetValueOrNull() => HasValue ? m_value : null;
+//
+//        /// <summary>return value if assigned and not null; otherwise, default(<#= Type #>)</summary>
+//        /// <returns>value : if assigned and not null <br/> default(<#= Type #>) : otherwise</returns>
+//        public <#= Type #> GetValueOrDefault() => HasValue ? m_value : default(<#= Type #>);
+//
+//        /// <summary>return value if assigned and not null; otherwise, defaultValue</summary>
+//        /// <returns>value : if assigned and not null <br/> defaultValue : otherwise</returns>
+//        public <#= Type #> GetValueOrDefault(<#= Type #> defaultValue) => HasValue ? m_value : defaultValue;
+//
+//        /// <inheritdoc cref="Value" />
+//        public <#= Type #> AsPrimitive() => Value;
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
 
@@ -170,7 +240,7 @@ namespace <#= Namespace #>
         /// <summary>Returns the hash code for this instance.</summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
-            => new { m_isDefined, m_hasValue, m_value }.GetHashCode();
+            => new { IsUndefined, IsNull, m_value }.GetHashCode();
 
 
         //
@@ -181,12 +251,25 @@ namespace <#= Namespace #>
         /// <returns>The current string.</returns>
         public override string ToString()
 <# if (ToStringFormat == null) { #>
-            => HasValue ? m_value.ToString() : $"<{(!m_isDefined ? "undefined" : "null")}>";
+            => HasValue ? m_value.ToString() : $"<{(IsUndefined ? "undefined" : "null")}>";
 <# } else { #>
             => string.Format("<#= ToStringFormat #>", m_value);
 <# } #>
 
+<#if (IsIntegralNumericType()) { #>
 
+        //
+        // MaxValue, MinValue
+        //
+
+        /// <summary>Represents the largest possible value. This field is constant.</summary>
+        public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
+
+        /// <summary>Represents the smallest possible value. This field is constant.</summary>
+        public const <#= Type #> MinValue = <#= Type #>.MinValue;
+
+<# } #>
+ 
         //
         // Equals, IEquatable<<#= Name #>>
         //
@@ -195,13 +278,13 @@ namespace <#= Namespace #>
         /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
         public bool Equals(<#= Name #> other)
             => m_value.Equals(other.m_value) &&
-               m_hasValue.Equals(other.m_hasValue) &&
-               m_isDefined.Equals(other.m_isDefined);
+               IsNull.Equals(other.IsNull) &&
+               IsUndefined.Equals(other.IsUndefined);
 
         /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
         /// <returns>true if obj is an instance of <#= Type #> or <#= Name #> and equals the value of this instance; otherwise, false.</returns>
         public override bool Equals(object? obj)
-            => (m_isDefined && !m_hasValue && obj is null) ||
+            => (IsNull && obj is null) ||
             obj switch
             {
                 <#= Name #> vo => Equals(vo),
@@ -275,17 +358,17 @@ namespace <#= Namespace #>
         /// </returns>
         public static bool IsUndefinedOrNull(in <#= Name #> x, out <#= Name #> result)
         {
-            if (!x.m_isDefined)
-        {
+            if (x.IsUndefined)
+            {
                 result = UndefinedValue;
                 return true;
-        }
+            }
 
-            if (!x.m_hasValue)
-        {
+            if (x.IsNull)
+            {
                 result = NullValue;
                 return true;
-        }
+            }
 
             result = DefaultValue;
             return false;
@@ -300,17 +383,17 @@ namespace <#= Namespace #>
         /// </returns>
         public static bool IsUndefinedOrNull(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
         {
-            if (!x.m_isDefined || !y.m_isDefined)
-        {
+            if (x.IsUndefined || y.IsUndefined)
+            {
                 result = UndefinedValue;
                 return true;
-        }
+            }
 
-            if (!x.m_hasValue || !y.m_hasValue)
-        {
+            if (x.IsNull || y.IsNull)
+            {
                 result = NullValue;
                 return true;
-        }
+            }
 
             result = DefaultValue;
             return false;
@@ -373,7 +456,7 @@ namespace <#= Namespace #>
         /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
         /// <returns><#= TypeNullable #> value.</returns>
         public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= TypeNullable #>(<#= Name #> value)
-            => value.GetValueOrNull();
+            => (<#= TypeNullable #>)value.OrNull();
 
         /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
         /// <returns><#= Name #> value.</returns>
@@ -606,17 +689,15 @@ namespace <#= Namespace #>
             /// <summary>Write</summary>
             public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
             {
+               // undefined; value.IsUndefined の場合は key,value ともに書き込まない
+                if (value.IsUndefined)
+                    return;
+
                 var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
                 if (converter is not null)
-                {
-                    if (value.IsDefined)
-                        converter.Write(writer, value.GetValueOrNull(), options);
-                    // undefined; !value.IsDefined の場合は key,value ともに書き込まない
-                }
+                    converter.Write(writer, (<#= TypeNullable #>)value.OrNull(), options);
                 else
-                {
                     throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
-                }
             }
         
             /// <summary>Read</summary>
@@ -627,8 +708,8 @@ namespace <#= Namespace #>
                 {
                     var res = (reader.TokenType) switch
                     {
-                        JsonTokenType.Null => NullValue,
-                        JsonTokenType.None => UndefinedValue,
+                        JsonTokenType.Null => <#= Name #>.NullValue,
+                        JsonTokenType.None => <#= Name #>.UndefinedValue,
                         _ => new <#= Name #>(converter.Read(ref reader, typeToConvert, options))
                     };
                     return res;
@@ -726,7 +807,7 @@ namespace <#= Namespace #>
             public override void SetValue(System.Data.IDbDataParameter parameter, <#= Name #> value)
             {
                 parameter.DbType = System.Data.DbType.<#= GetDbType() #>;
-                parameter.Value = value.GetValueOrNull();
+                parameter.Value = (<#= TypeNullable #>)value.OrNull();
             }
         }
 
@@ -750,7 +831,7 @@ namespace <#= Namespace #>
             /// <summary>ValueConverter</summary>
             public <#= Name #>ValueConverter()
                 : base(
-                        convertToProviderExpression: x => x.GetValueOrNull(),
+                        convertToProviderExpression: x => (<#= TypeNullable #>)x.OrNull(),
                         convertFromProviderExpression: x => new <#= Name #>(x))
             {
             }
@@ -758,7 +839,7 @@ namespace <#= Namespace #>
             /// <summary>ValueConverter</summary>
             public <#= Name #>ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
                 : base(
-                        convertToProviderExpression: x => x.GetValueOrNull(),
+                        convertToProviderExpression: x => (<#= TypeNullable #>)x.OrNull(),
                         convertFromProviderExpression: x => new <#= Name #>(x),
                         mappingHints: mappingHints)
             {
@@ -834,7 +915,7 @@ namespace <#= Namespace #>
 
                     if (destinationType == ValueType)
                     {
-                        return wrappedValue.GetValueOrNull();
+                        return wrappedValue.OrNull();
                     }
                 }
 

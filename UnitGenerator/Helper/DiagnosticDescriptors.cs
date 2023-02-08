@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace NullableUnitGenerator.Helper;
+namespace NullableUnitGenerator.Helpers;
 
 
 /// <summary>

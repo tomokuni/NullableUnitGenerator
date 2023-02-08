@@ -7,7 +7,7 @@
 //     コードが再生成されると失われます。
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace NullableUnitGenerator
+namespace NullableUnitGenerator.Template
 {
     using System.Linq;
     using System.Text;
@@ -41,7 +41,7 @@ using System;
  if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
             this.Write(" \r\nusing System.Runtime.CompilerServices;\r\n");
  } 
-            this.Write("\r\n\r\n");
+            this.Write("\r\nusing NullableUnitGenerator;\r\n\r\n");
  if (!string.IsNullOrEmpty(Namespace)) { 
             this.Write("namespace ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
@@ -66,94 +66,19 @@ using System;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("TypeConverter))]\r\n    readonly partial struct ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" : IEquatable<");
+            this.Write(" : IOptional<");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(">, IEquatable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("> ");
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : ""));
-            this.Write("\r\n    {\r\n");
-if (IsIntegralNumericType()) { 
-            this.Write("        /// <summary>Represents the largest possible value. This field is constan" +
-                    "t.</summary>\r\n        public const ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" MaxValue = ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(".MaxValue;\r\n\r\n        /// <summary>Represents the smallest possible value. This f" +
-                    "ield is constant.</summary>\r\n        public const ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" MinValue = ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(".MinValue;\r\n\r\n\r\n");
- } 
-            this.Write("        readonly bool m_isDefined = false;\r\n        readonly bool m_hasValue = fa" +
-                    "lse;\r\n        readonly ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" m_value = default(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(");\r\n\r\n        /// <summary>undefined value instance.</summary>\r\n        public st" +
-                    "atic ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" UndefinedValue => new();\r\n\r\n        /// <summary>null value instance.</summary>\r" +
-                    "\n        public static ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" NullValue => new((");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(")null);\r\n\r\n        /// <summary>default value instance.</summary>\r\n        public" +
-                    " static ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" DefaultValue => new(default(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write("));\r\n\r\n        /// <summary>default value instance.</summary>\r\n        public sta" +
-                    "tic Type PrimitiveType => typeof(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(");\r\n\r\n\r\n        /// <summary>true if assigned; otherwise, false.</summary>\r\n");
- if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
-            this.Write("        [JsonIgnore]\r\n");
- } 
-            this.Write("        public bool IsDefined => m_isDefined;\r\n\r\n        /// <summary>true if ass" +
-                    "igned and not null; otherwise, false.</summary>\r\n");
- if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
-            this.Write("        [JsonIgnore]\r\n");
- } 
-            this.Write(@"        public bool HasValue => m_hasValue && m_isDefined;
-
-
-        /// <summary>return value if assigned and not null; otherwise, throw InvalidOperationException(""NoValue"")</summary>
-        /// <returns>value : if assigned and not null <br/> throw InvalidOperationException(""NoValue"") : otherwise</returns>
-        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" Value => HasValue ? m_value : throw new InvalidOperationException(\"NoValue\");\r\n\r" +
-                    "\n        /// <inheritdoc cref=\"Value\" />\r\n        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" GetValue() => Value;\r\n\r\n        /// <summary>return value if assigned and not nu" +
-                    "ll; otherwise, null</summary>\r\n        /// <returns>value : if assigned and not " +
-                    "null <br/> null : otherwise</returns>\r\n        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" GetValueOrNull() => HasValue ? m_value : null;\r\n\r\n        /// <summary>return va" +
-                    "lue if assigned and not null; otherwise, default(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(")</summary>\r\n        /// <returns>value : if assigned and not null <br/> default(" +
-                    "");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(") : otherwise</returns>\r\n        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" GetValueOrDefault() => HasValue ? m_value : default(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(");\r\n\r\n        /// <summary>return value if assigned and not null; otherwise, defa" +
-                    "ultValue</summary>\r\n        /// <returns>value : if assigned and not null <br/> " +
-                    "defaultValue : otherwise</returns>\r\n        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" GetValueOrDefault(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" defaultValue) => HasValue ? m_value : defaultValue;\r\n\r\n        /// <inheritdoc c" +
-                    "ref=\"Value\" />\r\n        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" AsPrimitive() => Value;\r\n\r\n\r\n        //\r\n        // Constructor\r\n        //\r\n\r\n " +
-                    "       /// <summary>Complete Constructor</summary>\r\n        public ");
+            this.Write("\r\n    {\r\n        //\r\n        // Constructor\r\n        //\r\n\r\n        /// <summary>C" +
+                    "omplete Constructor</summary>\r\n        public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value)\r\n        {\r\n            m_isDefined = true;\r\n            m_hasValue = fal" +
-                    "se;\r\n            m_value = default(");
+            this.Write(" value)\r\n        {\r\n            IsUndefined = false;\r\n            IsNull = false;" +
+                    "\r\n            m_value = default(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(");\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
@@ -165,8 +90,8 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" value)\r\n        {\r\n            m_isDefined = true;\r\n            m_hasValue = tru" +
-                    "e;\r\n            m_value = (");
+            this.Write(" value)\r\n        {\r\n            IsUndefined = false;\r\n            IsNull = false;" +
+                    "\r\n            m_value = (");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(")value;\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
@@ -178,18 +103,173 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" value)\r\n        {\r\n            m_isDefined = true;\r\n            if (value is not" +
-                    " null)\r\n            {\r\n                m_hasValue = true;\r\n                m_val" +
-                    "ue = (");
+            this.Write(" value)\r\n        {\r\n            IsUndefined = false;\r\n            if (value is no" +
+                    "t null)\r\n            {\r\n                IsNull = false;\r\n                m_value" +
+                    " = (");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(")value;\r\n            }\r\n            else\r\n            {\r\n                m_hasVal" +
-                    "ue = false;\r\n                m_value = default(");
+            this.Write(")value;\r\n            }\r\n            else\r\n            {\r\n                IsNull =" +
+                    " true;\r\n                m_value = default(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(");\r\n            }\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("            this.Validate();\r\n");
  } 
-            this.Write("        }\r\n\r\n");
+            this.Write("        }\r\n\r\n        //\r\n        // IOptional<");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(">\r\n        //\r\n\r\n        /// <summary>undefined value instance.</summary>\r\n      " +
+                    "  public static ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" UndefinedValue\r\n            => new();\r\n\r\n        /// <summary>null value instanc" +
+                    "e.</summary>\r\n        public static ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" NullValue\r\n            => new((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("?)null);\r\n\r\n        /// <summary>default value instance.</summary>\r\n        publi" +
+                    "c static ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" DefaultValue\r\n            => new(default(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("));\r\n\r\n        /// <summary>default value instance.</summary>\r\n        public sta" +
+                    "tic Type PrimitiveType\r\n            => typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@");
+
+
+        /// <summary><see langword=""true""/> if undefined; otherwise, <see langword=""false""/>.</summary>
+        /// <returns><b><see langword=""true""/></b> : if undefined</returns>
+        public bool IsUndefined { get; } = true;
+
+        /// <summary><see langword=""true""/> if null; otherwise, <see langword=""false""/>.</summary>
+        /// <returns><b><see langword=""true""/></b> : if null</returns>
+        public bool IsNull { get; } = true;
+
+        /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException(""NoValue"")</summary>
+        /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException(""NoValue"")</b> : otherwise</returns>
+        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" Value \r\n            => HasValue ? m_value : throw new InvalidOperationException(" +
+                    "\"NoValue\");\r\n        internal readonly ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@" m_value;
+
+
+        /// <summary><see langword=""true""/> if not undefined and not null; otherwise, <see langword=""false""/>.</summary>
+        /// <returns><b><see langword=""true""/></b> : if not undefined and not null</returns>
+        public bool HasValue
+            => !(IsUndefined || IsNull);
+
+
+        /// <inheritdoc cref=""Value"" />
+        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@" AsPrimitive()
+            => Value;
+
+        /// <summary>return value if HasValue is true; otherwise, <see langword=""default(T)""/></summary>
+        /// <returns><b>value</b> : if assigned and not null<br/><b><see langword=""default(T)""/></b> : otherwise</returns>
+        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" OrDefault()\r\n            => HasValue ? m_value : default(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@");
+
+        /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+        /// <returns><b>value</b> : if assigned and not true<br/><b>defaultValue</b> : otherwise</returns>
+        /// <!-- T? 型にしたいけど、継承できないので object? で代用する -->
+        public object? OrDefault(object? defaultValue)
+            => HasValue ? m_value : defaultValue;
+
+        /// <inheritdoc cref=""OrDefault"" />
+        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("? OrDefault(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@"? defaultValue)
+            => HasValue ? m_value : defaultValue;
+
+        /// <summary>return value if HasValue is true; otherwise, null</summary>
+        /// <returns><b>value</b> : if HasValue is true<br/><b><see langword=""null""/></b> : otherwise</returns>
+        /// <!-- T? 型にしたいけど、継承できないので object? で代用する -->
+        public object? OrNull()
+            => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("?)(HasValue ? m_value : null);\r\n\r\n        /// <inheritdoc cref=\"Value\" />\r\n      " +
+                    "  public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@" OrThrow()
+            => Value;
+
+        /// <summary>
+        /// return true and out parameter value if HasValue is true; otherwise, false.
+        /// </summary>
+        /// <param name=""value"">value</param>
+        /// <returns><b><see langword=""true""/> and out parameter value</b> : if HasValue is true,</returns>
+        public bool TryGet(out ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" value)\r\n        { \r\n            value = m_value; \r\n            return HasValue; " +
+                    "\r\n        }\r\n\r\n//        readonly ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" m_value = default(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(");\r\n//\r\n//        /// <summary>undefined value instance.</summary>\r\n//        pub" +
+                    "lic static ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" UndefinedValue => new();\r\n//\r\n//        /// <summary>null value instance.</summa" +
+                    "ry>\r\n//        public static ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" NullValue => new((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")null);\r\n//\r\n//        /// <summary>default value instance.</summary>\r\n//        " +
+                    "public static ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" DefaultValue => new(default(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("));\r\n//\r\n//        /// <summary>default value instance.</summary>\r\n//        publ" +
+                    "ic static Type PrimitiveType => typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(");\r\n//\r\n//\r\n//        /// <summary>true if assigned; otherwise, false.</summary>\r" +
+                    "\n//");
+ if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
+            this.Write("//        [JsonIgnore]\r\n//");
+ } 
+            this.Write("//        public bool IsDefined => m_isDefined;\r\n//\r\n//        /// <summary>true " +
+                    "if assigned and not null; otherwise, false.</summary>\r\n//");
+ if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
+            this.Write("//        [JsonIgnore]\r\n//");
+ } 
+            this.Write(@"//        public bool HasValue => m_hasValue && m_isDefined;
+//
+//        /// <summary>return value if assigned and not null; otherwise, throw InvalidOperationException(""NoValue"")</summary>
+//        /// <returns>value : if assigned and not null <br/> throw InvalidOperationException(""NoValue"") : otherwise</returns>
+//        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" Value => HasValue ? m_value : throw new InvalidOperationException(\"NoValue\");\r\n/" +
+                    "/\r\n//        /// <inheritdoc cref=\"Value\" />\r\n//        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" GetValue() => Value;\r\n//\r\n//        /// <summary>return value if assigned and no" +
+                    "t null; otherwise, null</summary>\r\n//        /// <returns>value : if assigned an" +
+                    "d not null <br/> null : otherwise</returns>\r\n//        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(" GetValueOrNull() => HasValue ? m_value : null;\r\n//\r\n//        /// <summary>retur" +
+                    "n value if assigned and not null; otherwise, default(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(")</summary>\r\n//        /// <returns>value : if assigned and not null <br/> defaul" +
+                    "t(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(") : otherwise</returns>\r\n//        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" GetValueOrDefault() => HasValue ? m_value : default(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(");\r\n//\r\n//        /// <summary>return value if assigned and not null; otherwise, " +
+                    "defaultValue</summary>\r\n//        /// <returns>value : if assigned and not null " +
+                    "<br/> defaultValue : otherwise</returns>\r\n//        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" GetValueOrDefault(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" defaultValue) => HasValue ? m_value : defaultValue;\r\n//\r\n//        /// <inheritd" +
+                    "oc cref=\"Value\" />\r\n//        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" AsPrimitive() => Value;\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("\r\n        //\r\n        // Validate\r\n        //\r\n\r\n        /// <summary>Validate</s" +
                     "ummary>\r\n        private partial void Validate();\r\n\r\n");
@@ -202,7 +282,7 @@ if (IsIntegralNumericType()) {
         /// <summary>Returns the hash code for this instance.</summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
-            => new { m_isDefined, m_hasValue, m_value }.GetHashCode();
+            => new { IsUndefined, IsNull, m_value }.GetHashCode();
 
 
         //
@@ -214,14 +294,29 @@ if (IsIntegralNumericType()) {
         public override string ToString()
 ");
  if (ToStringFormat == null) { 
-            this.Write("            => HasValue ? m_value.ToString() : $\"<{(!m_isDefined ? \"undefined\" : " +
-                    "\"null\")}>\";\r\n");
+            this.Write("            => HasValue ? m_value.ToString() : $\"<{(IsUndefined ? \"undefined\" : \"" +
+                    "null\")}>\";\r\n");
  } else { 
             this.Write("            => string.Format(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToStringFormat));
             this.Write("\", m_value);\r\n");
  } 
-            this.Write("\r\n\r\n        //\r\n        // Equals, IEquatable<");
+            this.Write("\r\n");
+if (IsIntegralNumericType()) { 
+            this.Write("\r\n        //\r\n        // MaxValue, MinValue\r\n        //\r\n\r\n        /// <summary>R" +
+                    "epresents the largest possible value. This field is constant.</summary>\r\n       " +
+                    " public const ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" MaxValue = ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(".MaxValue;\r\n\r\n        /// <summary>Represents the smallest possible value. This f" +
+                    "ield is constant.</summary>\r\n        public const ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" MinValue = ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(".MinValue;\r\n\r\n");
+ } 
+            this.Write(" \r\n        //\r\n        // Equals, IEquatable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n        //\r\n\r\n        /// <summary>Returns a value indicating whether this ins" +
                     "tance is same value to a specified ");
@@ -231,8 +326,8 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" other)
             => m_value.Equals(other.m_value) &&
-               m_hasValue.Equals(other.m_hasValue) &&
-               m_isDefined.Equals(other.m_isDefined);
+               IsNull.Equals(other.IsNull) &&
+               IsUndefined.Equals(other.IsUndefined);
 
         /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
         /// <returns>true if obj is an instance of ");
@@ -240,8 +335,8 @@ if (IsIntegralNumericType()) {
             this.Write(" or ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" and equals the value of this instance; otherwise, false.</returns>\r\n        publ" +
-                    "ic override bool Equals(object? obj)\r\n            => (m_isDefined && !m_hasValue" +
-                    " && obj is null) ||\r\n            obj switch\r\n            {\r\n                ");
+                    "ic override bool Equals(object? obj)\r\n            => (IsNull && obj is null) ||\r" +
+                    "\n            obj switch\r\n            {\r\n                ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" vo => Equals(vo),\r\n                ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -315,17 +410,17 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" result)
         {
-            if (!x.m_isDefined)
-        {
+            if (x.IsUndefined)
+            {
                 result = UndefinedValue;
                 return true;
-        }
+            }
 
-            if (!x.m_hasValue)
-        {
+            if (x.IsNull)
+            {
                 result = NullValue;
                 return true;
-        }
+            }
 
             result = DefaultValue;
             return false;
@@ -346,17 +441,17 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" result)
         {
-            if (!x.m_isDefined || !y.m_isDefined)
-        {
+            if (x.IsUndefined || y.IsUndefined)
+            {
                 result = UndefinedValue;
                 return true;
-        }
+            }
 
-            if (!x.m_hasValue || !y.m_hasValue)
-        {
+            if (x.IsNull || y.IsNull)
+            {
                 result = NullValue;
                 return true;
-        }
+            }
 
             result = DefaultValue;
             return false;
@@ -420,7 +515,9 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
             this.Write("(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value)\r\n            => value.GetValueOrNull();\r\n\r\n        /// <summary>");
+            this.Write(" value)\r\n            => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")value.OrNull();\r\n\r\n        /// <summary>");
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit"));
             this.Write(" operator</summary>\r\n        /// <returns>");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -765,38 +862,37 @@ if (IsIntegralNumericType()) {
                     "verride bool HandleNull\r\n                => true;\r\n\r\n            /// <summary>Wr" +
                     "ite</summary>\r\n            public override void Write(Utf8JsonWriter writer, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value, JsonSerializerOptions options)\r\n            {\r\n                var conver" +
-                    "ter = options.GetConverter(typeof(");
+            this.Write(@" value, JsonSerializerOptions options)
+            {
+               // undefined; value.IsUndefined の場合は key,value ともに書き込まない
+                if (value.IsUndefined)
+                    return;
+
+                var converter = options.GetConverter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
             this.Write(")) as JsonConverter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(@">;
-                if (converter is not null)
-                {
-                    if (value.IsDefined)
-                        converter.Write(writer, value.GetValueOrNull(), options);
-                    // undefined; !value.IsDefined の場合は key,value ともに書き込まない
-                }
-                else
-                {
-                    throw new JsonException($""{typeof(");
+            this.Write(">;\r\n                if (converter is not null)\r\n                    converter.Wri" +
+                    "te(writer, (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(")} converter does not found.\");\r\n                }\r\n            }\r\n        \r\n    " +
-                    "        /// <summary>Read</summary>\r\n            public override ");
+            this.Write(")value.OrNull(), options);\r\n                else\r\n                    throw new J" +
+                    "sonException($\"{typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")} converter does not found.\");\r\n            }\r\n        \r\n            /// <summar" +
+                    "y>Read</summary>\r\n            public override ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions option" +
                     "s)\r\n            {\r\n                var converter = options.GetConverter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
             this.Write(")) as JsonConverter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(@">;
-                if (converter is not null)
-                {
-                    var res = (reader.TokenType) switch
-                    {
-                        JsonTokenType.Null => NullValue,
-                        JsonTokenType.None => UndefinedValue,
-                        _ => new ");
+            this.Write(">;\r\n                if (converter is not null)\r\n                {\r\n              " +
+                    "      var res = (reader.TokenType) switch\r\n                    {\r\n              " +
+                    "          JsonTokenType.Null => ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(".NullValue,\r\n                        JsonTokenType.None => ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(".UndefinedValue,\r\n                        _ => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(converter.Read(ref reader, typeToConvert, options))\r\n                    };\r\n   " +
                     "                 return res;\r\n                }\r\n                else\r\n         " +
@@ -902,16 +998,12 @@ if (IsSupportUtf8Formatter()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value)\r\n            {\r\n                parameter.DbType = System.Data.DbType.");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetDbType()));
-            this.Write(@";
-                parameter.Value = value.GetValueOrNull();
-            }
-        }
-
-        /// <summary>Dapper.SqlMapper.AddTypeHandler</summary>
-        [ModuleInitializer]
-        public static void AddTypeHandler()
-        {
-            Dapper.SqlMapper.AddTypeHandler(new ");
+            this.Write(";\r\n                parameter.Value = (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")value.OrNull();\r\n            }\r\n        }\r\n\r\n        /// <summary>Dapper.SqlMapp" +
+                    "er.AddTypeHandler</summary>\r\n        [ModuleInitializer]\r\n        public static " +
+                    "void AddTypeHandler()\r\n        {\r\n            Dapper.SqlMapper.AddTypeHandler(ne" +
+                    "w ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(".");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -931,16 +1023,18 @@ if (IsSupportUtf8Formatter()) {
                     "ic ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("ValueConverter()\r\n                : base(\r\n                        convertToProvi" +
-                    "derExpression: x => x.GetValueOrNull(),\r\n                        convertFromProv" +
-                    "iderExpression: x => new ");
+                    "derExpression: x => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")x.OrNull(),\r\n                        convertFromProviderExpression: x => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(x))\r\n            {\r\n            }\r\n\r\n            /// <summary>ValueConverter</su" +
                     "mmary>\r\n            public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@"ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
-                : base(
-                        convertToProviderExpression: x => x.GetValueOrNull(),
-                        convertFromProviderExpression: x => new ");
+            this.Write("ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMap" +
+                    "pingHints mappingHints = null)\r\n                : base(\r\n                       " +
+                    " convertToProviderExpression: x => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")x.OrNull(),\r\n                        convertFromProviderExpression: x => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(x),\r\n                        mappingHints: mappingHints)\r\n            {\r\n       " +
                     "     }\r\n        }\r\n\r\n");
@@ -1016,7 +1110,7 @@ if (IsSupportUtf8Formatter()) {
 
                     if (destinationType == ValueType)
                     {
-                        return wrappedValue.GetValueOrNull();
+                        return wrappedValue.OrNull();
                     }
                 }
 
