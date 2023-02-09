@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullableUnitGenerator", "UnitGenerator\NullableUnitGenerator.csproj", "{208D16B4-5904-4E06-8A41-D06C3FE7293E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{34EB4113-923D-4855-979C-A0467461B75C}"
+	ProjectSection(SolutionItems) = preProject
+		IOptional.cs = IOptional.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "sandbox\ConsoleApp\ConsoleApp.csproj", "{8AF2ABCF-38FB-4D64-A051-8735AF83E223}"
 EndProject

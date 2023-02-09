@@ -1,18 +1,19 @@
 using System.Text.Json.Serialization;
-using WebApi.Model.Base;
+using WebApiApp.Models.Base;
 
 namespace WebApiApp.Models;
 
 
 public record WeatherForecast
 {
-    public VoInt VoInt { get; set; }
+    //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public VoInt VInt { get; set; }
 
-    public VoDouble VoDouble { get; set; }
+    public VoDouble VDouble { get; set; }
 
-    public VoDecimal VoDecimal { get; set; }
+    public VoDecimal VDecimal { get; set; }
 
-    public VoDatetime VoDatetime { get; set; }
+    public VoDatetime VDatetime { get; set; }
 
-    public VoString VoString { get; set; }
+    public VoString VString { get; set; }
 }

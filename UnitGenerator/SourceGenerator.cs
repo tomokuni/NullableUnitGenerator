@@ -77,10 +77,10 @@ public sealed class SourceGenerator : IIncrementalGenerator
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
 
-        var template = new IOptionalTemplate();
-        var text = template.TransformText();
-        context.AddSource($"IOptional.Generated.cs", text);
-        token.ThrowIfCancellationRequested();
+        //var template = new IOptionalTemplate();
+        //var text = template.TransformText();
+        //context.AddSource($"IOptional.Generated.cs", text);
+        //token.ThrowIfCancellationRequested();
 
         AddCsResource("UnitOfAttribute.cs");
         token.ThrowIfCancellationRequested();

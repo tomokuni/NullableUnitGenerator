@@ -16,8 +16,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.3</VersionPrefix>
-        <VersionSuffix>beta-20230208</VersionSuffix>
+        <VersionPrefix>0.0.1.4</VersionPrefix>
+        <VersionSuffix>beta-20230209</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -40,6 +40,14 @@
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Template\IOptionalTemplate.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Template\IOptionalTemplate.tt" />
+    </ItemGroup>
 
     <ItemGroup>
         <!-- Create nuget package as analyzer -->
@@ -69,19 +77,10 @@
             <Generator>TextTemplatingFilePreprocessor</Generator>
             <LastGenOutput>CodeTemplate.cs</LastGenOutput>
         </None>
-        <None Update="Template\IOptionalTemplate.tt">
-          <Generator>TextTemplatingFilePreprocessor</Generator>
-          <LastGenOutput>IOptionalTemplate.cs</LastGenOutput>
-        </None>
         <Compile Update="Template\CodeTemplate.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>CodeTemplate.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Template\IOptionalTemplate.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>IOptionalTemplate.tt</DependentUpon>
         </Compile>
     </ItemGroup>
 

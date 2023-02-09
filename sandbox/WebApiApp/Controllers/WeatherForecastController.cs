@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApiApp.Models;
+using WebApiApp.Models.Base;
 
 namespace WebApi.Controllers;
 [ApiController]
@@ -27,11 +28,11 @@ public class WeatherForecastController : ControllerBase
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
-            VoInt = new(index),
-            VoDatetime = new (DateTime.Now.AddDays(index)),
-            VoDouble = new (Random.Shared.Next(-20, 55)),
-            //VoDecimal = new(Random.Shared.Next(-20, 55)),
-            VoString = new (Summaries[Random.Shared.Next(Summaries.Length)])
+            VInt = VoInt.UndefinedValue, //VoInt = new(index)
+            VDatetime = new (DateTime.Now.AddDays(index)),
+            VDouble = new (Random.Shared.Next(-20, 55)),
+            VDecimal = new(Random.Shared.Next(-20, 55)),
+            VString = new (Summaries[Random.Shared.Next(Summaries.Length)])
         })
         .ToArray();
     }
