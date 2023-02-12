@@ -26,7 +26,7 @@ public class WeatherForecastController : ControllerBase
     [HttpPost(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get(WeatherForecast wf)
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        return Enumerable.Range(1, 1).Select(index => new WeatherForecast
         {
             VInt = VoInt.UndefinedValue, //VoInt = new(index)
             VDatetime = new (DateTime.Now.AddDays(index)),

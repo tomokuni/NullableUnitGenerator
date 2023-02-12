@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using NullableUnitGenerator;
+using System.Diagnostics;
 
 //var a = UnitGenerateOptions.JsonConverterDictionaryKeySupport;
 
@@ -19,13 +20,50 @@ var json = JsonSerializer.Serialize(new Dictionary<Guid, string> { { Guid.NewGui
 
 Console.WriteLine(json);
 
-
-
-
-[UnitOf(typeof(int))]
-public readonly partial struct NoNamespace
+int cnt = 10000000;
+var sw = new Stopwatch();
+sw.Start();
+for (int i = 0; i < cnt; i++)
 {
+    sw.Stop();
+    var a = Random.Shared.Next(999999999);
+    var b = Random.Shared.Next(999999999);
+    sw.Start();
+    var res = a == b;
 }
+sw.Stop();
+Console.WriteLine($"数値比較 : {sw.ElapsedMilliseconds}");
+
+sw.Restart();
+for (int i = 0; i < cnt; i++)
+{
+    sw.Stop();
+    var a = Random.Shared.Next(999999999).ToString();
+    var b = Random.Shared.Next(999999999).ToString();
+    sw.Start();
+    var res = a == b;
+}
+sw.Stop();
+Console.WriteLine($"文字列比較 : {sw.ElapsedMilliseconds}");
+
+sw.Restart();
+for (int i = 0; i < cnt; i++)
+{
+    sw.Stop();
+    var a = Random.Shared.Next(999999999);
+    var b = Random.Shared.Next(999999999);
+    sw.Start();
+    var res = a.ToString() == b.ToString();
+}
+sw.Stop();
+Console.WriteLine($"文字列化比較 : {sw.ElapsedMilliseconds}");
+
+
+
+//[UnitOf(typeof(int))]
+//public readonly partial struct NoNamespace
+//{
+//}
 
 [UnitOf(typeof(Guid), UnitGenerateOptions.Comparable | UnitGenerateOptions.WithoutComparisonOperator)]
 public readonly partial struct FooId { }

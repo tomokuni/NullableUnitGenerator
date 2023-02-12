@@ -16,8 +16,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.4</VersionPrefix>
-        <VersionSuffix>beta-20230209</VersionSuffix>
+        <VersionPrefix>0.0.1.5</VersionPrefix>
+        <VersionSuffix>beta-20230212</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -40,14 +40,6 @@
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="Template\IOptionalTemplate.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Template\IOptionalTemplate.tt" />
-    </ItemGroup>
 
     <ItemGroup>
         <!-- Create nuget package as analyzer -->

@@ -5,10 +5,12 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullableUnitGenerator", "UnitGenerator\NullableUnitGenerator.csproj", "{208D16B4-5904-4E06-8A41-D06C3FE7293E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{34EB4113-923D-4855-979C-A0467461B75C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{7B1D8933-E875-4320-87BD-34818F4D1BDF}"
 	ProjectSection(SolutionItems) = preProject
-		IOptional.cs = IOptional.cs
+		etc\IOptional.cs = etc\IOptional.cs
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{34EB4113-923D-4855-979C-A0467461B75C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "sandbox\ConsoleApp\ConsoleApp.csproj", "{8AF2ABCF-38FB-4D64-A051-8735AF83E223}"
 EndProject
@@ -16,11 +18,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkApp", "sandb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileGenerate", "sandbox\FileGenerate\FileGenerate.csproj", "{F8353A7A-290E-41D7-A6F8-8D8DBDD44433}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiApp", "sandbox\WebApiApp\WebApiApp.csproj", "{25224A24-5FD5-410D-B4BC-31DAA5098673}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{187FBF64-D2AA-444D-AFB1-CE999BC6AD34}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitGenerator.Tests", "tests\UnitGenerator.Tests\UnitGenerator.Tests.csproj", "{5DA06D43-A023-4464-B856-8BB42E8E4A05}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiApp", "sandbox\WebApiApp\WebApiApp.csproj", "{25224A24-5FD5-410D-B4BC-31DAA5098673}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

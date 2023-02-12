@@ -1,6 +1,8 @@
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using WebApiApp.Models.Base;
 
@@ -14,18 +16,26 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        //builder.Services.AddControllers();
+        builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+                {
+                    Modifiers = { ValueObjectTypeInfoResolver.IgnoreUndefinedValue }
+                };
+            });
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         //builder.Services.AddSwaggerGen();
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v3", new OpenApiInfo { Title = "API", Version = "v3" });
-            c.MapType<VoInt>(() => new OpenApiSchema { Type = "integer", Format = "int32", Nullable = true });
-            c.MapType<VoDouble>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
-            c.MapType<VoDecimal>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
-            c.MapType<VoDatetime>(() => new OpenApiSchema { Type = "string", Format = "date", Nullable = true });
-            c.MapType<VoString>(() => new OpenApiSchema { Type = "string", Format = "string", Nullable = true });
+            //c.MapType<VoInt>(() => new OpenApiSchema { Type = "integer", Format = "int32", Nullable = true });
+            //c.MapType<VoDouble>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
+            //c.MapType<VoDecimal>(() => new OpenApiSchema { Type = "number", Format = "double", Nullable = true });
+            //c.MapType<VoDatetime>(() => new OpenApiSchema { Type = "string", Format = "date", Nullable = true });
+            //c.MapType<VoString>(() => new OpenApiSchema { Type = "string", Format = "string", Nullable = true });
         });
 
         var app = builder.Build();

@@ -9,888 +9,884 @@
 #pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 using System;
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #> 
-using MessagePack;
-using MessagePack.Formatters;
+<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+using System.Runtime.CompilerServices;
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #> 
+<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
 using System.Text.Json;
 using System.Text.Json.Serialization;
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #> 
-using System.Runtime.CompilerServices;
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+using MessagePack;
+using MessagePack.Formatters;
 <# } #>
 
 using NullableUnitGenerator;
 
 <# if (!string.IsNullOrEmpty(Namespace)) { #>
-namespace <#= Namespace #>
+namespace <#= Namespace #>;
+<# } #>
+
+
+/// <summary>
+/// <#= Name #> is Nullable ValueObject<br/>
+/// Primitive type is <#= Type #>
+/// </summary>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+[MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
+<# } #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+[JsonConverter(typeof(<#= Name #>JsonConverter))]
+<# } #>
+[System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
+readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
 {
+    //
+    // Constructor
+    //
 
-<# } #>
-    /// <summary>
-    /// <#= Name #> is Nullable ValueObject<br/>
-    /// Primitive type is <#= Type #>
-    /// </summary>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #> 
-    [JsonConverter(typeof(<#= Name #>JsonConverter))]
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #> 
-    [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
-<# } #>
-    [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-    readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
+    /// <summary>Complete Constructor</summary>
+    public <#= Name #>(<#= Name #> value)
     {
-        //
-        // Constructor
-        //
-
-        /// <summary>Complete Constructor</summary>
-        public <#= Name #>(<#= Name #> value)
-        {
-            m_state = HAS_VALUE;
-            m_value = value.m_value;
+        m_state = HAS_VALUE;
+        m_value = value.m_value;
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-            this.Validate();
+        this.Validate();
 <# } #>
-        }
+    }
 
 <# if (IsValueType) { #>
-        /// <summary>Complete Constructor</summary>
-        public <#= Name #>(<#= Type #> value)
+    /// <summary>Complete Constructor</summary>
+    public <#= Name #>(<#= Type #> value)
+    {
+        m_state = HAS_VALUE;
+        m_value = (<#= Type #>)value;
+
+<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+        this.Validate();
+<# } #>
+    }
+<# } #>
+
+    /// <summary>Complete Constructor</summary>
+    public <#= Name #>(<#= TypeNullable #> value)
+    {
+        if (value is not null)
         {
             m_state = HAS_VALUE;
             m_value = (<#= Type #>)value;
-
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-            this.Validate();
-<# } #>
         }
-<# } #>
-
-        /// <summary>Complete Constructor</summary>
-        public <#= Name #>(<#= TypeNullable #> value)
+        else
         {
-            if (value is not null)
-            {
-                m_state = HAS_VALUE;
-                m_value = (<#= Type #>)value;
-            }
-            else
-            {
-                m_state = NULL_VALUE;
-                m_value = default(<#= Type #>);
-            }
-
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-            this.Validate();
-<# } #>
-        }
-
-
-        //
-        // static property
-        //
-
-        /// <summary>undefined value instance.</summary>
-        public static <#= Name #> UndefinedValue
-            => new();
-
-        /// <summary>null value instance.</summary>
-        public static <#= Name #> NullValue
-            => new((<#= Type #>?)null);
-
-        /// <summary>default value instance.</summary>
-        public static <#= Name #> DefaultValue
-            => new(default(<#= Type #>));
-
-        /// <summary>default value instance.</summary>
-        public static Type PrimitiveType
-            => typeof(<#= Type #>);
-
-
-        //
-        // const
-        //
-
-        internal const byte UNDEFINED_VALUE = 0;
-        internal const byte NULL_VALUE = 1;
-        internal const byte HAS_VALUE = 3;
-
-
-        //
-        // backing field
-        //
-
-        internal readonly <#= Type #> m_value = default(<#= Type #>);
-        internal readonly byte m_state = UNDEFINED_VALUE;
-
-
-        //
-        // get state property
-        //
-
-        /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
-        /// <returns><b><see langword="true"/></b> : if undefined</returns>
-        public bool IsUndefined
-            => m_state == UNDEFINED_VALUE;
-
-        /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
-        /// <returns><b><see langword="true"/></b> : if null</returns>
-        public bool IsNull
-            => m_state == NULL_VALUE;
-
-        /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
-        /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
-        public bool HasValue
-             => m_state == HAS_VALUE;
-
-
-        //
-        // get value property
-        //
-
-        /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException("NoValue")</summary>
-        /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("NoValue")</b> : otherwise</returns>
-        public <#= Type #> Value 
-            => HasValue ? m_value : throw new InvalidOperationException("NoValue");
-
-        /// <inheritdoc cref="Value" />
-        public <#= Type #> AsPrimitive()
-            => Value;
-
-        /// <summary>return value if HasValue is true; otherwise, <see langword="default(T)"/></summary>
-        /// <returns><b>value</b> : if assigned and not null<br/><b><see langword="default(T)"/></b> : otherwise</returns>
-        public <#= Type #> GetOrDefault()
-            => HasValue ? m_value : default(<#= Type #>);
-
-        /// <inheritdoc cref="OrDefault" />
-        public <#= Type #>? GetOrDefault(<#= Type #>? defaultValue)
-            => HasValue ? m_value : defaultValue;
-
-        /// <summary>return value if HasValue is true; otherwise, null</summary>
-        /// <returns><b>value</b> : if HasValue is true<br/><b><see langword="null"/></b> : otherwise</returns>
-        public <#= Type #>? GetOrNull()
-            => HasValue ? m_value : null;
-
-        /// <inheritdoc cref="Value" />
-        public <#= Type #> GetOrThrow()
-            => Value;
-
-        /// <summary>
-        /// return true and out parameter value if HasValue is true; otherwise, false.
-        /// </summary>
-        /// <param name="value">value</param>
-        /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
-        public bool TryGet(out <#= Type #> value)
-        { 
-            value = m_value; 
-            return HasValue; 
+            m_state = NULL_VALUE;
+            m_value = default(<#= Type #>);
         }
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+        this.Validate();
+<# } #>
+    }
 
-        //
-        // Validate
-        //
 
-        /// <summary>Validate</summary>
-        private partial void Validate();
+    //
+    // static property
+    //
+
+    /// <summary>undefined value instance.</summary>
+    public static <#= Name #> UndefinedValue
+        => new();
+
+    /// <summary>null value instance.</summary>
+    public static <#= Name #> NullValue
+        => new((<#= Type #>?)null);
+
+    /// <summary>default value instance.</summary>
+    public static <#= Name #> DefaultValue
+        => new(default(<#= Type #>));
+
+    /// <summary>default value instance.</summary>
+    public static Type PrimitiveType
+        => typeof(<#= Type #>);
+
+
+    //
+    // const
+    //
+
+    internal const byte UNDEFINED_VALUE = 0;
+    internal const byte NULL_VALUE = 1;
+    internal const byte HAS_VALUE = 3;
+
+
+    //
+    // backing field
+    //
+
+    internal readonly <#= Type #> m_value = default(<#= Type #>);
+    internal readonly byte m_state = UNDEFINED_VALUE;
+
+
+    //
+    // get state property
+    //
+
+    /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
+    /// <returns><b><see langword="true"/></b> : if undefined</returns>
+    public bool IsUndefined
+        => m_state == UNDEFINED_VALUE;
+
+    /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
+    /// <returns><b><see langword="true"/></b> : if null</returns>
+    public bool IsNull
+        => m_state == NULL_VALUE;
+
+    /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
+    /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
+    public bool HasValue
+            => m_state == HAS_VALUE;
+
+
+    //
+    // get value property
+    //
+
+    /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException("NoValue")</summary>
+    /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("NoValue")</b> : otherwise</returns>
+    public <#= Type #> Value
+        => HasValue ? m_value : throw new InvalidOperationException("NoValue");
+
+    /// <inheritdoc cref="Value" />
+    public <#= Type #> AsPrimitive()
+        => Value;
+
+    /// <summary>return value if HasValue is true; otherwise, <see langword="default(T)"/></summary>
+    /// <returns><b>value</b> : if assigned and not null<br/><b><see langword="default(T)"/></b> : otherwise</returns>
+    public <#= Type #> GetOrDefault()
+        => HasValue ? m_value : default(<#= Type #>);
+
+    /// <inheritdoc cref="OrDefault" />
+    public <#= Type #>? GetOrDefault(<#= Type #>? defaultValue)
+        => HasValue ? m_value : defaultValue;
+
+    /// <summary>return value if HasValue is true; otherwise, null</summary>
+    /// <returns><b>value</b> : if HasValue is true<br/><b><see langword="null"/></b> : otherwise</returns>
+    public <#= Type #>? GetOrNull()
+        => HasValue ? m_value : null;
+
+    /// <inheritdoc cref="Value" />
+    public <#= Type #> GetOrThrow()
+        => Value;
+
+    /// <summary>
+    /// return true and out parameter value if HasValue is true; otherwise, false.
+    /// </summary>
+    /// <param name="value">value</param>
+    /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
+    public bool TryGet(out <#= Type #> value)
+    {
+        value = m_value;
+        return HasValue;
+    }
+
+<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+
+    //
+    // Validate
+    //
+
+    /// <summary>Validate</summary>
+    private partial void Validate();
 
 <# } #>
 
-        //
-        // GetHashCode
-        //
+    //
+    // GetHashCode
+    //
 
-        /// <summary>Returns the hash code for this instance.</summary>
-        /// <returns>A 32-bit signed integer hash code.</returns>
-        public override int GetHashCode()
-            => new { IsUndefined, IsNull, m_value }.GetHashCode();
+    /// <summary>Returns the hash code for this instance.</summary>
+    /// <returns>A 32-bit signed integer hash code.</returns>
+    public override int GetHashCode()
+        => new { IsUndefined, IsNull, m_value }.GetHashCode();
 
 
-        //
-        // ToString
-        //
+    //
+    // ToString
+    //
 
-        /// <summary>Returns this instance of System.String; no actual conversion is performed.</summary>
-        /// <returns>The current string.</returns>
-        public override string ToString()
+    /// <summary>Returns this instance of System.String; no actual conversion is performed.</summary>
+    /// <returns>The current string.</returns>
+    public override string ToString()
 <# if (ToStringFormat == null) { #>
-            => HasValue ? m_value.ToString() : $"<{(IsUndefined ? "undefined" : "null")}>";
+        => HasValue ? m_value.ToString() : $"<{(IsUndefined ? "undefined" : "null")}>";
 <# } else { #>
-            => string.Format("<#= ToStringFormat #>", m_value);
+        => string.Format("<#= ToStringFormat #>", m_value);
 <# } #>
 
 <#if (IsIntegralNumericType()) { #>
 
-        //
-        // MaxValue, MinValue
-        //
+    //
+    // MaxValue, MinValue
+    //
 
-        /// <summary>Represents the largest possible value. This field is constant.</summary>
-        public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
+    /// <summary>Represents the largest possible value. This field is constant.</summary>
+    public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
 
-        /// <summary>Represents the smallest possible value. This field is constant.</summary>
-        public const <#= Type #> MinValue = <#= Type #>.MinValue;
+    /// <summary>Represents the smallest possible value. This field is constant.</summary>
+    public const <#= Type #> MinValue = <#= Type #>.MinValue;
 
 <# } #>
- 
-        //
-        // Equals, IEquatable<<#= Name #>>
-        //
 
-        /// <summary>Returns a value indicating whether this instance is same value to a specified <#= Name #> value.</summary>
-        /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-        public bool Equals(<#= Name #> other)
-            => m_value.Equals(other.m_value) &&
-               IsNull.Equals(other.IsNull) &&
-               IsUndefined.Equals(other.IsUndefined);
+    //
+    // Equals, IEquatable<<#= Name #>>
+    //
 
-        /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
-        /// <returns>true if obj is an instance of <#= Type #> or <#= Name #> and equals the value of this instance; otherwise, false.</returns>
-        public override bool Equals(object? obj)
-            => (IsNull && obj is null) ||
-            obj switch
-            {
-                <#= Name #> vo => Equals(vo),
-                <#= Type #> v => Equals(new(v)),
-                _ => false,
-            };
+    /// <summary>Returns a value indicating whether this instance is same value to a specified <#= Name #> value.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public bool Equals(<#= Name #> other)
+        => m_value.Equals(other.m_value) &&
+            IsNull.Equals(other.IsNull) &&
+            IsUndefined.Equals(other.IsUndefined);
+
+    /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
+    /// <returns>true if obj is an instance of <#= Type #> or <#= Name #> and equals the value of this instance; otherwise, false.</returns>
+    public override bool Equals(object? obj)
+        => (IsNull && obj is null) ||
+        obj switch
+        {
+            <#= Name #> vo => Equals(vo),
+            <#= Type #> v => Equals(new(v)),
+            _ => false,
+        };
 
 <# if (HasFlag(UnitGenerateOptions.Comparable)) { #>
 
-        //
-        // CompareTo, IComparable<<#= Name #>>    // UnitGenerateOptions.Comparable
-        //
+    //
+    // CompareTo, IComparable<<#= Name #>>    // UnitGenerateOptions.Comparable
+    //
 
-        /// <summary>Compares this instance to a specified <#= Name #> and returns an indication of their relative values.</summary>
-        /// <returns>
-        /// A signed number indicating the relative values of this instance and value.<br/>
-        /// <b>Return Value</b> – Description<br/>
-        /// <b>Less than zero</b> – This instance is less than value.<br/>
-        /// <b>Zero</b> – This instance is equal to value.<br/>
-        /// <b>Greater than zero</b> – This instance is greater than value.
-        /// </returns>
-        public int CompareTo(<#= Name #> other)
-            => IsUndefinedOrNull(this, other, out <#= Name #> result)
-                ? 0
-                : m_value.CompareTo(other.m_value);
+    /// <summary>Compares this instance to a specified <#= Name #> and returns an indication of their relative values.</summary>
+    /// <returns>
+    /// A signed number indicating the relative values of this instance and value.<br/>
+    /// <b>Return Value</b> – Description<br/>
+    /// <b>Less than zero</b> – This instance is less than value.<br/>
+    /// <b>Zero</b> – This instance is equal to value.<br/>
+    /// <b>Greater than zero</b> – This instance is greater than value.
+    /// </returns>
+    public int CompareTo(<#= Name #> other)
+        => IsUndefinedOrNull(this, other, out <#= Name #> result)
+            ? 0
+            : m_value.CompareTo(other.m_value);
 
 <# } #>
 <# if (Type == "Guid" || Type == "System.Guid") { #>
 
-        //
-        // Guid
-        //
+    //
+    // Guid
+    //
 
-        /// <summary>NewGuid</summary>
-        /// <returns>Guid.NewGuid()</returns>
-        public static <#= Name #> New()
-            => new <#= Name #>(Guid.NewGuid());
+    /// <summary>NewGuid</summary>
+    /// <returns>Guid.NewGuid()</returns>
+    public static <#= Name #> New()
+        => new <#= Name #>(Guid.NewGuid());
 
-        /// <inheritdoc cref="New()" />
-        public static <#= Name #> New<#= Name #>()
-            => new <#= Name #>(Guid.NewGuid());
+    /// <inheritdoc cref="New()" />
+    public static <#= Name #> New<#= Name #>()
+        => new <#= Name #>(Guid.NewGuid());
 
 <# } #>
 <# if (Type == "Ulid" || Type == "System.Ulid") { #>
 
-        //
-        // Ulid
-        //
+    //
+    // Ulid
+    //
 
-        /// <summary>NewUlid</summary>
-        /// <returns>Ulid.NewUlid()</returns>
-        public static <#= Name #> New()
-            => new <#= Name #>(Ulid.NewUlid());
+    /// <summary>NewUlid</summary>
+    /// <returns>Ulid.NewUlid()</returns>
+    public static <#= Name #> New()
+        => new <#= Name #>(Ulid.NewUlid());
 
-        /// <inheritdoc cref="New()" />
-        public static <#= Name #> New<#= Name #>()
-            => new <#= Name #>(Ulid.NewUlid());
+    /// <inheritdoc cref="New()" />
+    public static <#= Name #> New<#= Name #>()
+        => new <#= Name #>(Ulid.NewUlid());
 
 <# } #>
 
-        //
-        // IsUndefinedOrNull
-        //
+    //
+    // IsUndefinedOrNull
+    //
 
-        /// <summary>Determine if a value is undefined or null.</summary>
-        /// <returns>
-        /// <b>Return Value</b> – <b>out result Value</b> – Description<br/>
-        /// <b>true</b> – <b>UndefinedValue</b> – if value is undefined.<br/>
-        /// <b>true</b> – <b>NullValue</b> – if value is null.<br/>
-        /// <b>false</b> – <b>DefaultValue</b> – if value is set.
-        /// </returns>
-        public static bool IsUndefinedOrNull(in <#= Name #> x, out <#= Name #> result)
+    /// <summary>Determine if a value is undefined or null.</summary>
+    /// <returns>
+    /// <b>Return Value</b> – <b>out result Value</b> – Description<br/>
+    /// <b>true</b> – <b>UndefinedValue</b> – if value is undefined.<br/>
+    /// <b>true</b> – <b>NullValue</b> – if value is null.<br/>
+    /// <b>false</b> – <b>DefaultValue</b> – if value is set.
+    /// </returns>
+    public static bool IsUndefinedOrNull(in <#= Name #> x, out <#= Name #> result)
+    {
+        if (x.IsUndefined)
         {
-            if (x.IsUndefined)
-            {
-                result = UndefinedValue;
-                return true;
-            }
-
-            if (x.IsNull)
-            {
-                result = NullValue;
-                return true;
-            }
-
-            result = DefaultValue;
-            return false;
+            result = UndefinedValue;
+            return true;
         }
 
-        /// <summary>DDetermines if either value is undefined or null.</summary>
-        /// <returns>
-        /// <b>Return Value</b> – <b>out result Value</b> – Description<br/>
-        /// <b>true</b> – <b>UndefinedValue</b> – if either value is undefined.<br/>
-        /// <b>true</b> – <b>NullValue</b> – if either value is null.<br/>
-        /// <b>false</b> – <b>DefaultValue</b> – if either value is set.
-        /// </returns>
-        public static bool IsUndefinedOrNull(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
+        if (x.IsNull)
         {
-            if (x.IsUndefined || y.IsUndefined)
-            {
-                result = UndefinedValue;
-                return true;
-            }
-
-            if (x.IsNull || y.IsNull)
-            {
-                result = NullValue;
-                return true;
-            }
-
-            result = DefaultValue;
-            return false;
+            result = NullValue;
+            return true;
         }
 
-<# if (HasFlag(UnitGenerateOptions.ParseMethod)) { #> 
+        result = DefaultValue;
+        return false;
+    }
 
-        //
-        // Parse, TryParse    // UnitGenerateOptions.ParseMethod
-        //
+    /// <summary>DDetermines if either value is undefined or null.</summary>
+    /// <returns>
+    /// <b>Return Value</b> – <b>out result Value</b> – Description<br/>
+    /// <b>true</b> – <b>UndefinedValue</b> – if either value is undefined.<br/>
+    /// <b>true</b> – <b>NullValue</b> – if either value is null.<br/>
+    /// <b>false</b> – <b>DefaultValue</b> – if either value is set.
+    /// </returns>
+    public static bool IsUndefinedOrNull(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
+    {
+        if (x.IsUndefined || y.IsUndefined)
+        {
+            result = UndefinedValue;
+            return true;
+        }
 
-        /// <summary>Converts the string representation of a number.</summary>
-        /// <returns>A equivalent to the number contained in s.</returns>
-        /// <exception cref="System.ArgumentNullException" >s is null.</exception>
-        /// <exception cref="System.FormatException" >is not in the correct format.</exception>
-        /// <exception cref="System.OverflowException" >s represents a number less than MinValue or greater than MaxValue.</exception>
-        public static <#= Name #> Parse(string s)
+        if (x.IsNull || y.IsNull)
+        {
+            result = NullValue;
+            return true;
+        }
+
+        result = DefaultValue;
+        return false;
+    }
+
+<# if (HasFlag(UnitGenerateOptions.ParseMethod)) { #>
+
+    //
+    // Parse, TryParse    // UnitGenerateOptions.ParseMethod
+    //
+
+    /// <summary>Converts the string representation of a number.</summary>
+    /// <returns>A equivalent to the number contained in s.</returns>
+    /// <exception cref="System.ArgumentNullException" >s is null.</exception>
+    /// <exception cref="System.FormatException" >is not in the correct format.</exception>
+    /// <exception cref="System.OverflowException" >s represents a number less than MinValue or greater than MaxValue.</exception>
+    public static <#= Name #> Parse(string s)
 <# if (Type == "string") { #>
-            => new <#= Name #>(s);
+        => new <#= Name #>(s);
 
 <# } else { #>
-            => new <#= Name #>(<#= Type #>.Parse(s));
+        => new <#= Name #>(<#= Type #>.Parse(s));
 
 <# } #>
-        /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
-        /// <returns>true if s was converted successfully; otherwise, false.</returns>
-        public static bool TryParse(string s, out <#= Name #> result)
-        {
+    /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
+    /// <returns>true if s was converted successfully; otherwise, false.</returns>
+    public static bool TryParse(string s, out <#= Name #> result)
+    {
 <# if (Type == "string") { #>
-            try
-            {
-                result = Parse(s);    
-                return true;
-            } 
-            catch 
-            {
-                result = NullValue;
-                return false;
-            }
-<# } else { #>
-            if(<#= Type #>.TryParse(s, out var r))
-            {
-                result = new <#= Name #>(r);
-                return true;
-            }
-            else
-            {
-                result = NullValue;
-                return false;
-            }
-<# } #>
+        try
+        {
+            result = Parse(s);
+            return true;
         }
+        catch
+        {
+            result = NullValue;
+            return false;
+        }
+<# } else { #>
+        if(<#= Type #>.TryParse(s, out var r))
+        {
+            result = new <#= Name #>(r);
+            return true;
+        }
+        else
+        {
+            result = NullValue;
+            return false;
+        }
+<# } #>
+    }
 
 <# } #>
 
-        //
-        // implicit, explicit operator
-        //
+    //
+    // implicit, explicit operator
+    //
 
-        /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
-        /// <returns><#= TypeNullable #> value.</returns>
-        public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= TypeNullable #>(<#= Name #> value)
-            => (<#= TypeNullable #>)value.GetOrNull();
+    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
+    /// <returns><#= TypeNullable #> value.</returns>
+    public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= TypeNullable #>(<#= Name #> value)
+        => (<#= TypeNullable #>)value.GetOrNull();
 
-        /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
-        /// <returns><#= Name #> value.</returns>
-        public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= Name #>(<#= TypeNullable #> value)
-            => new <#= Name #>(value);
+    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
+    /// <returns><#= Name #> value.</returns>
+    public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= Name #>(<#= TypeNullable #> value)
+        => new <#= Name #>(value);
 
 
-        //
-        // ==, != operator
-        //
+    //
+    // ==, != operator
+    //
 
-        /// <summary>Returns a value indicating whether two instances are same value.</summary>
-        /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-        public static bool operator ==(in <#= Name #> x, in <#= Name #> y)
-            => x.Equals(y);
+    /// <summary>Returns a value indicating whether two instances are same value.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator ==(in <#= Name #> x, in <#= Name #> y)
+        => x.Equals(y);
 
-        /// <summary>Returns a value indicates whether two instances are different values.</summary>
-        /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-        public static bool operator !=(in <#= Name #> x, in <#= Name #> y)
-            => !x.Equals(y);
+    /// <summary>Returns a value indicates whether two instances are different values.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator !=(in <#= Name #> x, in <#= Name #> y)
+        => !x.Equals(y);
 
-        /// <summary>Returns a value indicating whether two instances are same value.</summary>
-        /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-        public static bool operator ==(in <#= Name #> x, in <#= TypeNullable #> y)
-            => x.Equals(y);
+    /// <summary>Returns a value indicating whether two instances are same value.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator ==(in <#= Name #> x, in <#= TypeNullable #> y)
+        => x.Equals(y);
 
-        /// <summary>Returns a value indicates whether two instances are different values.</summary>
-        /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-        public static bool operator !=(in <#= Name #> x, in <#= TypeNullable #> y)
-            => !x.Equals(y);
+    /// <summary>Returns a value indicates whether two instances are different values.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator !=(in <#= Name #> x, in <#= TypeNullable #> y)
+        => !x.Equals(y);
 
 <# if (HasFlag(UnitGenerateOptions.Comparable) && !HasFlag(UnitGenerateOptions.WithoutComparisonOperator)) { #>
 
-        //
-        // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
-        //
+    //
+    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
+    //
 
-        /// <summary>operator &gt;</summary>
-        public static bool operator >(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? false
-                : x.m_value > y.m_value;
+    /// <summary>operator &gt;</summary>
+    public static bool operator >(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? false
+            : x.m_value > y.m_value;
 
-        /// <summary>operator &lt;</summary>
-        public static bool operator <(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? false
-                : x.m_value < y.m_value;
+    /// <summary>operator &lt;</summary>
+    public static bool operator <(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? false
+            : x.m_value < y.m_value;
 
-        /// <summary>operator &gt;=</summary>
-        public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? false
-                : x.m_value >= y.m_value;
+    /// <summary>operator &gt;=</summary>
+    public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? false
+            : x.m_value >= y.m_value;
 
-        /// <summary>operator &lt;=</summary>
-        public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? false
-                : x.m_value <= y.m_value;
+    /// <summary>operator &lt;=</summary>
+    public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? false
+            : x.m_value <= y.m_value;
 
-        /// <summary>operator &gt;</summary>
-        public static bool operator >(in <#= Name #> x, in <#= TypeNullable #> y)
-            => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-                ? false
-                : x.m_value > y;
+    /// <summary>operator &gt;</summary>
+    public static bool operator >(in <#= Name #> x, in <#= TypeNullable #> y)
+        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
+            ? false
+            : x.m_value > y;
 
-        /// <summary>operator &lt;</summary>
-        public static bool operator <(in <#= Name #> x, in <#= TypeNullable #> y)
-            => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-                ? false
-                : x.m_value < y;
+    /// <summary>operator &lt;</summary>
+    public static bool operator <(in <#= Name #> x, in <#= TypeNullable #> y)
+        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
+            ? false
+            : x.m_value < y;
 
-        /// <summary>operator &gt;=</summary>
-        public static bool operator >=(in <#= Name #> x, in <#= TypeNullable #> y)
-            => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-                ? false
-                : x.m_value >= y;
+    /// <summary>operator &gt;=</summary>
+    public static bool operator >=(in <#= Name #> x, in <#= TypeNullable #> y)
+        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
+            ? false
+            : x.m_value >= y;
 
-        /// <summary>operator &lt;=</summary>
-        public static bool operator <=(in <#= Name #> x, in <#= TypeNullable #> y)
-            => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-                ? false
-                : x.m_value <= y;
+    /// <summary>operator &lt;=</summary>
+    public static bool operator <=(in <#= Name #> x, in <#= TypeNullable #> y)
+        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
+            ? false
+            : x.m_value <= y;
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { #> 
+<# if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { #>
 
-        //
-        // UnitGenerateOptions.MinMaxMethod
-        //
+    //
+    // UnitGenerateOptions.MinMaxMethod
+    //
 
-        /// <summary>Min</summary>
-        public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(Math.Min(x.m_value, y.m_value));
+    /// <summary>Min</summary>
+    public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(Math.Min(x.m_value, y.m_value));
 
-        /// <summary>Max</summary>
-        public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(Math.Max(x.m_value, y.m_value));
+    /// <summary>Max</summary>
+    public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(Math.Max(x.m_value, y.m_value));
 
 <# } #>
 <# if (Type == "bool") { #>
 
-        //
-        // bool operator
-        //
+    //
+    // bool operator
+    //
 
-        /// <summary>operator true</summary>
-        public static <#= Type #> operator true(<#= Name #> x)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : x.m_value;
-        
-        /// <summary>operator false</summary>
-        public static <#= Type #> operator false(<#= Name #> x)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : !x.m_value;
-        
-        /// <summary>operator !</summary>
-        public static <#= Type #> operator !(<#= Name #> x)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : !x.m_value;
+    /// <summary>operator true</summary>
+    public static <#= Type #> operator true(<#= Name #> x)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : x.m_value;
+
+    /// <summary>operator false</summary>
+    public static <#= Type #> operator false(<#= Name #> x)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : !x.m_value;
+
+    /// <summary>operator !</summary>
+    public static <#= Type #> operator !(<#= Name #> x)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : !x.m_value;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { #>
 
-        //
-        // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
-        //
+    //
+    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
+    //
 
-        /// <summary>operator +</summary>
-        public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)));
+    /// <summary>operator +</summary>
+    public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)));
 
-        /// <summary>operator -</summary>
-        public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)));
+    /// <summary>operator -</summary>
+    public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)));
 
-        /// <summary>operator *</summary>
-        public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)));
+    /// <summary>operator *</summary>
+    public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)));
 
-        /// <summary>operator /</summary>
-        public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)));
+    /// <summary>operator /</summary>
+    public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)));
 
-        /// <summary>operator %</summary>
-        public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
-            => IsUndefinedOrNull(x, y, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)));
+    /// <summary>operator %</summary>
+    public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
+        => IsUndefinedOrNull(x, y, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)));
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { #>
 
-        //
-        // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
-        //
+    //
+    // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
+    //
 
-        /// <summary>operator ++</summary>
-        public static <#= Name #> operator ++(in <#= Name #> x)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)));
+    /// <summary>operator ++</summary>
+    public static <#= Name #> operator ++(in <#= Name #> x)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)));
 
-        /// <summary>operator --</summary>
-        public static <#= Name #> operator --(in <#= Name #> x)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)));
+    /// <summary>operator --</summary>
+    public static <#= Name #> operator --(in <#= Name #> x)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)));
 
-        /// <summary>operator +</summary>
-        public static <#= Name #> operator +(in <#= Name #> x, in <#= Type #> y)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)));
+    /// <summary>operator +</summary>
+    public static <#= Name #> operator +(in <#= Name #> x, in <#= Type #> y)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)));
 
-        /// <summary>operator -</summary>
-        public static <#= Name #> operator -(in <#= Name #> x, in <#= Type #> y)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)));
+    /// <summary>operator -</summary>
+    public static <#= Name #> operator -(in <#= Name #> x, in <#= Type #> y)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)));
 
-        /// <summary>operator *</summary>
-        public static <#= Name #> operator *(in <#= Name #> x, in <#= Type #> y)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)));
+    /// <summary>operator *</summary>
+    public static <#= Name #> operator *(in <#= Name #> x, in <#= Type #> y)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)));
 
-        /// <summary>operator /</summary>
-        public static <#= Name #> operator /(in <#= Name #> x, in <#= Type #> y)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)));
+    /// <summary>operator /</summary>
+    public static <#= Name #> operator /(in <#= Name #> x, in <#= Type #> y)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)));
 
-        /// <summary>operator %</summary>
-        public static <#= Name #> operator %(in <#= Name #> x, in <#= Type #> y)
-            => IsUndefinedOrNull(x, out <#= Name #> result)
-                ? result
-                : new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)));
+    /// <summary>operator %</summary>
+    public static <#= Name #> operator %(in <#= Name #> x, in <#= Type #> y)
+        => IsUndefinedOrNull(x, out <#= Name #> result)
+            ? result
+            : new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)));
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
 
-        //
-        // UnitGenerateOptions.JsonConverter
-        //
+    //
+    // UnitGenerateOptions.JsonConverter
+    //
 
-        /// <summary>JsonConverter</summary>
-        private class <#= Name #>JsonConverter : JsonConverter<<#= Name #>>
+    /// <summary>JsonConverter</summary>
+    private class <#= Name #>JsonConverter : JsonConverter<<#= Name #>>
+    {
+        /// <summary>HandleNull</summary>
+        public override bool HandleNull
+            => true;
+
+        /// <summary>Write</summary>
+        public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
         {
-            /// <summary>HandleNull</summary>
-            public override bool HandleNull
-                => true;
+            // undefined; value.IsUndefined の場合は key,value ともに書き込まない
+            if (value.IsUndefined)
+                return;
 
-            /// <summary>Write</summary>
-            public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
-            {
-               // undefined; value.IsUndefined の場合は key,value ともに書き込まない
-                if (value.IsUndefined)
-                    return;
+            var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
+            if (converter is not null)
+                converter.Write(writer, (<#= TypeNullable #>)value.GetOrNull(), options);
+            else
+                throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
+        }
 
-                var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
-                if (converter is not null)
-                    converter.Write(writer, (<#= TypeNullable #>)value.GetOrNull(), options);
-                else
-                    throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
-            }
-        
-            /// <summary>Read</summary>
-            public override <#= Name #> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        /// <summary>Read</summary>
+        public override <#= Name #> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
+            if (converter is not null)
             {
-                var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
-                if (converter is not null)
+                var res = (reader.TokenType) switch
                 {
-                    var res = (reader.TokenType) switch
-                    {
-                        JsonTokenType.Null => <#= Name #>.NullValue,
-                        JsonTokenType.None => <#= Name #>.UndefinedValue,
-                        _ => new <#= Name #>(converter.Read(ref reader, typeToConvert, options))
-                    };
-                    return res;
-                }
-                else
-                {
-                    throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
-                }
+                    JsonTokenType.Null => <#= Name #>.NullValue,
+                    JsonTokenType.None => <#= Name #>.UndefinedValue,
+                    _ => new <#= Name #>(converter.Read(ref reader, typeToConvert, options))
+                };
+                return res;
             }
+            else
+            {
+                throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
+            }
+        }
 
 <#if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  #>
-            /// <summary>WriteAsPropertyName</summary>
-            public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
-            {
+        /// <summary>WriteAsPropertyName</summary>
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
+        {
 <#if (IsSupportUtf8Formatter()) {  #>
-                Span<byte> buffer = stackalloc byte[36];
-                if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
-                {
-                    writer.WritePropertyName(buffer.Slice(0, written));
-                }
-                else
-                {
-                    writer.WritePropertyName(value.m_value.ToString());
-                }
-<# } else if (IsUlid()) { #>
-                writer.WritePropertyName(value.m_value.ToString());
-<# } else { #>
-                writer.WritePropertyName(value.m_value.ToString());
-<# } #>
-            }
-
-            /// <summary>ReadAsPropertyName</summary>
-            public override <#= Name #> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            Span<byte> buffer = stackalloc byte[36];
+            if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
             {
-<#if (IsSupportUtf8Formatter()) {  #>
-                if (System.Buffers.Text.Utf8Parser.TryParse(reader.ValueSpan, out <#= Type #> value, out var consumed))
-                {
-                    return new <#= Name #>(value);
-                }
-                else
-                {
-                    return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
-                }
-<# } else if (IsUlid()) { #>
-                return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
-<# } else if(Type == "string")  { #>
-                    return new <#= Name #>(reader.GetString());
-<# } else { #>
-                return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
-<# } #>
+                writer.WritePropertyName(buffer.Slice(0, written));
             }
+            else
+            {
+                writer.WritePropertyName(value.m_value.ToString());
+            }
+<# } else if (IsUlid()) { #>
+            writer.WritePropertyName(value.m_value.ToString());
+<# } else { #>
+            writer.WritePropertyName(value.m_value.ToString());
 <# } #>
         }
+
+        /// <summary>ReadAsPropertyName</summary>
+        public override <#= Name #> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+<#if (IsSupportUtf8Formatter()) {  #>
+            if (System.Buffers.Text.Utf8Parser.TryParse(reader.ValueSpan, out <#= Type #> value, out var consumed))
+            {
+                return new <#= Name #>(value);
+            }
+            else
+            {
+                return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
+            }
+<# } else if (IsUlid()) { #>
+            return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
+<# } else if(Type == "string")  { #>
+                return new <#= Name #>(reader.GetString());
+<# } else { #>
+            return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
+<# } #>
+        }
+<# } #>
+    }
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
 
-        //
-        // UnitGenerateOptions.MessagePackFormatter
-        //
+    //
+    // UnitGenerateOptions.MessagePackFormatter
+    //
 
-        /// <summary>IMessagePackFormatter</summary>
-        private class <#= Name #>MessagePackFormatter : IMessagePackFormatter<<#= Name #>>
+    /// <summary>IMessagePackFormatter</summary>
+    private class <#= Name #>MessagePackFormatter : IMessagePackFormatter<<#= Name #>>
+    {
+        /// <summary>Serialize</summary>
+        public void Serialize(ref MessagePackWriter writer, <#= Name #> value, MessagePackSerializerOptions options)
         {
-            /// <summary>Serialize</summary>
-            public void Serialize(ref MessagePackWriter writer, <#= Name #> value, MessagePackSerializerOptions options)
-            {
-                options.Resolver.GetFormatterWithVerify<<#= Type #>>().Serialize(ref writer, value.m_value, options);
-            }
-
-            /// <summary>Deserialize</summary>
-            public <#= Name #> Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
-            {
-                return new <#= Name #>(options.Resolver.GetFormatterWithVerify<<#= Type #>>().Deserialize(ref reader, options));
-            }
+            options.Resolver.GetFormatterWithVerify<<#= Type #>>().Serialize(ref writer, value.m_value, options);
         }
+
+        /// <summary>Deserialize</summary>
+        public <#= Name #> Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+        {
+            return new <#= Name #>(options.Resolver.GetFormatterWithVerify<<#= Type #>>().Deserialize(ref reader, options));
+        }
+    }
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
 
-        //
-        // UnitGenerateOptions.DapperTypeHandler
-        //
+    //
+    // UnitGenerateOptions.DapperTypeHandler
+    //
 
-        /// <summary>Dapper.SqlMapper.TypeHandler</summary>
-        public class <#= Name #>TypeHandler : Dapper.SqlMapper.TypeHandler<<#= Name #>>
+    /// <summary>Dapper.SqlMapper.TypeHandler</summary>
+    public class <#= Name #>TypeHandler : Dapper.SqlMapper.TypeHandler<<#= Name #>>
+    {
+        /// <summary>Parse</summary>
+        public override <#= Name #> Parse(object value)
         {
-            /// <summary>Parse</summary>
-            public override <#= Name #> Parse(object value)
-            {
-                return new <#= Name #>((<#= TypeNullable #>)value);
-            }
-
-            /// <summary>SetValue</summary>
-            public override void SetValue(System.Data.IDbDataParameter parameter, <#= Name #> value)
-            {
-                parameter.DbType = System.Data.DbType.<#= GetDbType() #>;
-                parameter.Value = (<#= TypeNullable #>)value.GetOrNull();
-            }
+            return new <#= Name #>((<#= TypeNullable #>)value);
         }
 
-        /// <summary>Dapper.SqlMapper.AddTypeHandler</summary>
-        [ModuleInitializer]
-        public static void AddTypeHandler()
+        /// <summary>SetValue</summary>
+        public override void SetValue(System.Data.IDbDataParameter parameter, <#= Name #> value)
         {
-            Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>TypeHandler());
+            parameter.DbType = System.Data.DbType.<#= GetDbType() #>;
+            parameter.Value = (<#= TypeNullable #>)value.GetOrNull();
         }
+    }
+
+    /// <summary>Dapper.SqlMapper.AddTypeHandler</summary>
+    [ModuleInitializer]
+    public static void AddTypeHandler()
+    {
+        Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>TypeHandler());
+    }
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
 
-        //
-        // UnitGenerateOptions.EntityFrameworkValueConverter
-        //
+    //
+    // UnitGenerateOptions.EntityFrameworkValueConverter
+    //
 
-        /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter</summary>
-        public class <#= Name #>ValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<<#= Name #>, <#= TypeNullable #>>
+    /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter</summary>
+    public class <#= Name #>ValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<<#= Name #>, <#= TypeNullable #>>
+    {
+        /// <summary>ValueConverter</summary>
+        public <#= Name #>ValueConverter()
+            : base(
+                    convertToProviderExpression: x => (<#= TypeNullable #>)x.GetOrNull(),
+                    convertFromProviderExpression: x => new <#= Name #>(x))
         {
-            /// <summary>ValueConverter</summary>
-            public <#= Name #>ValueConverter()
-                : base(
-                        convertToProviderExpression: x => (<#= TypeNullable #>)x.GetOrNull(),
-                        convertFromProviderExpression: x => new <#= Name #>(x))
-            {
-            }
-
-            /// <summary>ValueConverter</summary>
-            public <#= Name #>ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
-                : base(
-                        convertToProviderExpression: x => (<#= TypeNullable #>)x.GetOrNull(),
-                        convertFromProviderExpression: x => new <#= Name #>(x),
-                        mappingHints: mappingHints)
-            {
-            }
         }
 
-<# } #>
-
-        //
-        // TypeConverter
-        //
-
-        /// <summary>System.ComponentModel.TypeConverter</summary>
-        private class <#= Name #>TypeConverter : System.ComponentModel.TypeConverter
+        /// <summary>ValueConverter</summary>
+        public <#= Name #>ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
+            : base(
+                    convertToProviderExpression: x => (<#= TypeNullable #>)x.GetOrNull(),
+                    convertFromProviderExpression: x => new <#= Name #>(x),
+                    mappingHints: mappingHints)
         {
-            private static readonly Type WrapperType = typeof(<#= Name #>);
-            private static readonly Type ValueType = typeof(<#= Type #>);
-
-            /// <summary>CanConvertFrom</summary>
-            public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, Type sourceType)
-            {
-                if (sourceType == WrapperType || sourceType == ValueType)
-                {
-                    return true;
-                }
-
-                return base.CanConvertFrom(context, sourceType);
-            }
-
-            /// <summary>CanConvertTo</summary>
-            public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext? context, Type? destinationType)
-            {
-                if (destinationType == WrapperType || destinationType == ValueType)
-                {
-                    return true;
-                }
-
-                return base.CanConvertTo(context, destinationType);
-            }
-
-            /// <summary>ConvertFrom</summary>
-            public override object? ConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object value)
-            {
-                if (value != null)
-                {
-                    var t = value.GetType();
-                    if (t == typeof(<#= Name #>))
-                    {
-                        return (<#= Name #>)value;
-                    }
-                    if (t == typeof(<#= Type #>))
-                    {
-                        return new <#= Name #>((<#= Type #>)value);
-                    }
-                }
-                else
-                {
-                    return <#= Name #>.NullValue;
-                }
-
-                return base.ConvertFrom(context, culture, value);
-            }
-
-            /// <summary>ConvertTo</summary>
-            public override object? ConvertTo(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType)
-            {
-                if (value is <#= Name #> wrappedValue)
-                {
-                    if (destinationType == WrapperType)
-                    {
-                        return wrappedValue;
-                    }
-
-                    if (destinationType == ValueType)
-                    {
-                        return wrappedValue.GetOrNull();
-                    }
-                }
-
-                return base.ConvertTo(context, culture, value, destinationType);
-            }
         }
     }
 
-<# if (!string.IsNullOrEmpty(Namespace)) { #>
-}
 <# } #>
+
+    //
+    // TypeConverter
+    //
+
+    /// <summary>System.ComponentModel.TypeConverter</summary>
+    private class <#= Name #>TypeConverter : System.ComponentModel.TypeConverter
+    {
+        private static readonly Type WrapperType = typeof(<#= Name #>);
+        private static readonly Type ValueType = typeof(<#= Type #>);
+
+        /// <summary>CanConvertFrom</summary>
+        public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, Type sourceType)
+        {
+            if (sourceType == WrapperType || sourceType == ValueType)
+            {
+                return true;
+            }
+
+            return base.CanConvertFrom(context, sourceType);
+        }
+
+        /// <summary>CanConvertTo</summary>
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext? context, Type? destinationType)
+        {
+            if (destinationType == WrapperType || destinationType == ValueType)
+            {
+                return true;
+            }
+
+            return base.CanConvertTo(context, destinationType);
+        }
+
+        /// <summary>ConvertFrom</summary>
+        public override object? ConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object value)
+        {
+            if (value != null)
+            {
+                var t = value.GetType();
+                if (t == typeof(<#= Name #>))
+                {
+                    return (<#= Name #>)value;
+                }
+                if (t == typeof(<#= Type #>))
+                {
+                    return new <#= Name #>((<#= Type #>)value);
+                }
+            }
+            else
+            {
+                return <#= Name #>.NullValue;
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        /// <summary>ConvertTo</summary>
+        public override object? ConvertTo(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType)
+        {
+            if (value is <#= Name #> wrappedValue)
+            {
+                if (destinationType == WrapperType)
+                {
+                    return wrappedValue;
+                }
+
+                if (destinationType == ValueType)
+                {
+                    return wrappedValue.GetOrNull();
+                }
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
+}

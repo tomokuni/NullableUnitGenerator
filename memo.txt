@@ -14,6 +14,7 @@ C#の値型でもnullを扱えるようにするNullable
 .NET 6からのC# Incremental Source Generatorの開発入門
   https://zenn.dev/pcysl5edgo/articles/6d9be0dd99c008#source-generatorの失敗
 
+
 ■T4
 tangible T4 Editor
   https://t4-editor.tangible-engineering.com/T4-Editor-Visual-T4-Editing.html
@@ -31,5 +32,21 @@ DateOnly in Swagger and API Controllers
 
 Qowaiv
   https://github.com/Qowaiv/Qowaiv
+
+
+■Text.Json ソースコード
+dotnet/runtime/src/libraries/System.Text.Json/src/System/Text/Json/
+  https://github.com/dotnet/runtime/tree/main/src/libraries/System.Text.Json/src/System/Text/Json
+
+
+■その他
+C# で、同じソースコードから常に同じバイナリを生成する
+  https://ufcpp.net/blog/2019/5/deterministicbuilds/
+
+Announcing .NET Community Toolkit 8.1! Better, faster MVVM source generators, .NET 7 support, and more!
+  https://www.joyk.com/dig/detail/1674703721389300
+
+
+
 
 

@@ -2,38 +2,45 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 using NullableUnitGenerator.Template;
-using NullableUnitGenerator.Helper;
 
 namespace NullableUnitGenerator;
 
 
+/// <summary>
+/// ソースジェネレータ
+/// </summary>
 [Generator(LanguageNames.CSharp)]
 public sealed class SourceGenerator : IIncrementalGenerator
 {
+    /// <summary>
+    /// ソース生成の開始ポイント
+    /// </summary>
+    /// <param name="context"></param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        // 特に処理せずにソース生成するものは先に実施しておく
         context.RegisterPostInitializationOutput(callback: GenerateInitialCode);
 
         var source = context.SyntaxProvider.ForAttributeWithMetadataName(
             "NullableUnitGenerator.UnitOfAttribute",    // 引っ掛ける属性のフルネーム
             static (node, token) => true,               // predicate, 属性で既に絞れてるので特別何かやりたいことがなければ基本true
             static (context, token) => context);        // GeneratorAttributeSyntaxContextにはNode, SemanticModel(Compilation), Symbolが入ってて便利
-        context.RegisterSourceOutput(source, Emit);
+        context.RegisterSourceOutput(source, Emit);     // 複雑になるので、メソッドを分ける
     }
 
+    /// <summary>
+    /// 分割したソース生成の実行部分
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="source"></param>
+    /// <exception cref="Exception"></exception>
     void Emit(SourceProductionContext context, GeneratorAttributeSyntaxContext source)
     {
         CancellationToken token = context.CancellationToken;
@@ -65,13 +72,17 @@ public sealed class SourceGenerator : IIncrementalGenerator
         token.ThrowIfCancellationRequested();
 
         string fullType = template.Namespace is null 
-            ? $"{template.Name}" 
+            ? $"NoNamespace.{template.Name}" 
             : $"{template.Namespace}.{template.Name}";
-        context.AddSource($"{fullType}.Generated.cs", text);
+        context.AddSource($"{fullType}.g.cs", text);
 
         token.ThrowIfCancellationRequested();
     }
 
+    /// <summary>
+    /// 特に処理せずにソース生成するものは先に実施しておく
+    /// </summary>
+    /// <param name="context"></param>
     private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
     {
         CancellationToken token = context.CancellationToken;
@@ -91,10 +102,18 @@ public sealed class SourceGenerator : IIncrementalGenerator
         AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
         token.ThrowIfCancellationRequested();
 
+        //
+        // ローカル関数
+        //
         void AddCsResource(string resourceName)
-            => context.AddSource(hintName: resourceName, source: StringResourceRead(resourceName));
+            => context.AddSource(hintName: $"UnitOf.{resourceName}", source: StringResourceRead(resourceName));
     }
 
+    /// <summary>
+    /// 実行中のアセンブリに含まれるファイルを文字列として取得する
+    /// </summary>
+    /// <param name="resourceName"></param>
+    /// <returns></returns>
     public static string StringResourceRead(string resourceName)
     {
         var assembly = Assembly.GetExecutingAssembly();
