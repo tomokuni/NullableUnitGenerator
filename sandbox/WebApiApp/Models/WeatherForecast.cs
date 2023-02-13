@@ -9,7 +9,7 @@ public record WeatherForecast
     //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public VoInt VInt { get; set; }
 
-    public VoDouble VDouble { get; set; }
+    public double VDouble { get; set; }
 
     public VoDecimal VDecimal { get; set; }
 

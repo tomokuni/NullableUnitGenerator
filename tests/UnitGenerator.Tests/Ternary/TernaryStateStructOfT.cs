@@ -25,26 +25,20 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     }
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateStruct(T? value)
-    {
-        if (value is not null)
-        {
-            m_state = HAS_VALUE;
-            m_value = (T)value;
-        }
-        else
-        {
-            m_state = NULL_VALUE;
-            m_value = default(T);
-        }
-    }
+    public TernaryStateStruct(TernaryStateStruct<T> value)
+        => (m_state, m_value) = (HAS_VALUE, value.m_value);
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateStruct(TernaryStateStruct<T> value)
-    {
-        m_state = HAS_VALUE;
-        m_value = value.m_value;
-    }
+    public TernaryStateStruct(T value)
+        => (m_state, m_value) = (HAS_VALUE, value);
+
+    /// <summary>Complete Constructor</summary>
+    public TernaryStateStruct(T? value)
+        => (m_state, m_value) = value switch
+        {
+            not null => (HAS_VALUE, (T)value),
+            _ => (NULL_VALUE, default(T))
+        };
 
 
     //

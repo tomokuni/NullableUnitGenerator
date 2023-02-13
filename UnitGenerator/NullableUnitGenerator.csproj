@@ -16,8 +16,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.5</VersionPrefix>
-        <VersionSuffix>beta-20230212</VersionSuffix>
+        <VersionPrefix>0.0.1.6</VersionPrefix>
+        <VersionSuffix>beta-20230213</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>

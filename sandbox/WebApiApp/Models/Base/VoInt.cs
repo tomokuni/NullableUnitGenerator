@@ -115,7 +115,10 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
     /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
     [JsonIgnore]
     public bool HasValue
-            => m_state == HAS_VALUE;
+        => m_state == HAS_VALUE;
+
+    public byte State
+        => m_state;
 
 
     //
@@ -124,7 +127,6 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
     /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException("NoValue")</summary>
     /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("NoValue")</b> : otherwise</returns>
-    [JsonIgnore]
     public int Value
         => HasValue ? m_value : throw new InvalidOperationException("NoValue");
 

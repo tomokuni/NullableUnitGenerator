@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,10 +21,12 @@ public class Program
         builder.Services.AddControllers()
         .AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
-                {
-                    Modifiers = { ValueObjectTypeInfoResolver.IgnoreUndefinedValue }
-                };
+                options.JsonSerializerOptions.TypeInfoResolver = new ValueObjectResolver();
+                //options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+                //{
+                //    Modifiers = { ValueObjectTypeInfoResolver.IgnoreUndefinedValue }
+                //};
+                //options.JsonSerializerOptions.Converters.Add(new VoIntJsonConverter());
             });
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

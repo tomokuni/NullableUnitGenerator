@@ -25,26 +25,16 @@ public readonly record struct TernaryStateClass<T> : ITernaryState<T>, ITernaryS
     }
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateClass(T? value)
-    {
-        if (value is not null)
-        {
-            m_state = HAS_VALUE;
-            m_value = (T)value;
-        }
-        else
-        {
-            m_state = NULL_VALUE;
-            m_value = default(T);
-        }
-    }
+    public TernaryStateClass(TernaryStateClass<T> value)
+        => (m_state, m_value) = (HAS_VALUE, value.m_value);
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateClass(TernaryStateClass<T> value)
-    {
-        m_state = HAS_VALUE;
-        m_value = value.m_value;
-    }
+    public TernaryStateClass(T? value)
+        => (m_state, m_value) = value switch
+        {
+            not null => (HAS_VALUE, (T)value),
+            _ => (NULL_VALUE, default(T)),
+        };
 
 
     //

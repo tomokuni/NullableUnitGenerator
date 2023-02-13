@@ -28,9 +28,9 @@ public class WeatherForecastController : ControllerBase
     {
         return Enumerable.Range(1, 1).Select(index => new WeatherForecast
         {
-            VInt = VoInt.UndefinedValue, //VoInt = new(index)
+            VInt = VoInt.NullValue, //VoInt.UndefinedValue, //VoInt = new(index)
             VDatetime = new (DateTime.Now.AddDays(index)),
-            VDouble = new (Random.Shared.Next(-20, 55)),
+            VDouble = Random.Shared.Next(-20, 55),
             VDecimal = new(Random.Shared.Next(-20, 55)),
             VString = new (Summaries[Random.Shared.Next(Summaries.Length)])
         })

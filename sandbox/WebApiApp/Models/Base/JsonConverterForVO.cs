@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,45 +10,32 @@ using System.Text.Json.Serialization.Metadata;
 namespace WebApiApp.Models.Base;
 
 
-[JsonSourceGenerationOptions(DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault, GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(VoInt),GenerationMode = JsonSourceGenerationMode.Metadata)]
 internal partial class VoIntJsonContext : JsonSerializerContext
 {
 }
 
-
-
-public static class ValueObjectTypeInfoResolver
+public class ValueObjectResolver : DefaultJsonTypeInfoResolver
 {
-    public static void IgnoreUndefinedValue(JsonTypeInfo typeInfo)
+    public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
     {
-        if (typeInfo.Type != typeof(VoInt))
-            return;
-
-        
-        // Remove any properties included by the default resolver
-        //typeInfo.Properties.Clear();
-
-        const BindingFlags Flags = BindingFlags.Public | BindingFlags.Instance;
-        foreach (var propInfo in typeInfo.Type.GetProperties(Flags))
+        JsonTypeInfo typeInfo = base.GetTypeInfo(type, options);
+        foreach (JsonPropertyInfo property in typeInfo.Properties.Reverse())
         {
-            if (propInfo.Name == "Value")
+            if (property.PropertyType.Name.ToLower() == "voint")
             {
-                JsonPropertyInfo propertyInfo = typeInfo.CreateJsonPropertyInfo(propInfo.PropertyType, propInfo.Name);
-                propertyInfo.Get = obj => propInfo.GetValue(obj);
-                propertyInfo.Set = (obj, value) => propInfo.SetValue(obj, value);
-
-                //typeInfo.Properties.Add(propertyInfo);
-                propertyInfo.ShouldSerialize = static (obj, value) => false;
+                property.ShouldSerialize = static (obj, value) =>
+                    !((dynamic)obj)["VInt"].IsUndefined;
             }
         }
+        return typeInfo;
     }
 }
 
 
 
 /// <summary>JsonConverter</summary>
-public class VoIntJsonConverter : JsonConverter<VoInt>
+public class VoIntJsonConverter : JsonConverter<VoInt>, IJsonOnSerializing
 {
     /// <summary>HandleNull</summary>
     public override bool HandleNull
@@ -62,7 +50,11 @@ public class VoIntJsonConverter : JsonConverter<VoInt>
     public override void Write(Utf8JsonWriter writer, VoInt value, JsonSerializerOptions options)
     {
         // undefined; value.IsUndefined の場合は key,value ともに書き込まない
-        if (value.IsNull || value.IsUndefined)
+        if (value.IsUndefined)
+        {
+            writer.Reset();
+        }
+        else if(value.IsNull)
         {
             //writer.WriteNull(nameof(VoInt));
             writer.WriteNullValue();
@@ -124,6 +116,11 @@ public class VoIntJsonConverter : JsonConverter<VoInt>
         {
             return new VoInt(int.Parse(reader.GetString()));
         }
+    }
+
+    public void OnSerializing()
+    {
+        throw new NotImplementedException();
     }
 }
 

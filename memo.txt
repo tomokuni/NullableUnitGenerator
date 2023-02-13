@@ -46,6 +46,10 @@ C# で、同じソースコードから常に同じバイナリを生成する
 Announcing .NET Community Toolkit 8.1! Better, faster MVVM source generators, .NET 7 support, and more!
   https://www.joyk.com/dig/detail/1674703721389300
 
+What’s new in System.Text.Json in .NET 7
+  https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-7
+
+
 
 
 
