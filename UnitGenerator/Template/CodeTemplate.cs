@@ -174,7 +174,9 @@ using System;
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" GetOrDefault()\r\n        => HasValue ? m_value : default(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(");\r\n\r\n    /// <inheritdoc cref=\"OrDefault\" />\r\n    public ");
+            this.Write(");\r\n\r\n    /// <summary>return value if HasValue is true; otherwise, defaultValue<" +
+                    "/summary>\r\n    /// <returns><b>value</b> : if assigned and not null<br/><b>defau" +
+                    "ltValue</b> : otherwise</returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write("? GetOrDefault(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));

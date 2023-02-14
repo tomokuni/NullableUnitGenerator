@@ -9,10 +9,10 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// UnitGenerator の OpenApiDataType を定義する属性
+/// NullableUnitGenerator の OpenApiDataType を定義する属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-internal class UnitOfOpenApiDataTypeAttribute : Attribute
+public class UnitOfOpenApiDataTypeAttribute : Attribute
 {
     /// <summary>For OpenApiSchema.Tepe</summary>
     public string Type { get; }

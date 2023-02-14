@@ -11,8 +11,7 @@ namespace WebApiApp.Models.Base;
 //[UnitOf(typeof(int), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable)]
 //[JsonConverter(typeof(VoIntJsonConverter))]
 public readonly partial struct VoInt
-{
-}
+{ }
 
 [UnitOf(typeof(double), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
 public readonly partial struct VoDouble

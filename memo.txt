@@ -49,6 +49,13 @@ Announcing .NET Community Toolkit 8.1! Better, faster MVVM source generators, .N
 What’s new in System.Text.Json in .NET 7
   https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-7
 
+値オブジェクトの定義と差異について
+  https://blog.j5ik2o.me/entry/2022/05/22/204535
+
+値オブジェクト（Value Object）は3種類ある
+  https://panda-program.com/posts/three-types-of-value-object
+
+
 
 
 

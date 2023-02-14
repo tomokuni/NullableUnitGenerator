@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>library</OutputType>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <OutputType>library</OutputType>
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
         <IsRoslynComponent>true</IsRoslynComponent>
         <Deterministic>true</Deterministic>
         <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
 
         <!-- does not need runtime self -->
@@ -16,8 +17,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.6</VersionPrefix>
-        <VersionSuffix>beta-20230213</VersionSuffix>
+        <VersionPrefix>0.0.1.7</VersionPrefix>
+        <VersionSuffix>beta-20230214</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -32,18 +33,26 @@
         <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
         <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
+        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
         <!-- Create nuget package as analyzer -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\README.md">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -51,16 +60,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup>
         <EmbeddedResource Include="Template\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
         <EmbeddedResource Include="Template\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
+        <EmbeddedResource Include="Template\UnitOfHelper.cs" LogicalName="UnitOfHelper.cs" />
         <EmbeddedResource Include="Template\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
     </ItemGroup>
 
@@ -69,11 +71,32 @@
             <Generator>TextTemplatingFilePreprocessor</Generator>
             <LastGenOutput>CodeTemplate.cs</LastGenOutput>
         </None>
-        <Compile Update="Template\CodeTemplate.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>CodeTemplate.tt</DependentUpon>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="Helper\CodeDomShims.cs" />
+        <Compile Include="Helper\DiagnosticDescriptors.cs" />
+        <Compile Include="Helper\Extensions.cs" />
+        <Compile Include="SourceGenerator.cs" />
+        <Compile Include="Template\CodeTemplate.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>CodeTemplate.tt</DependentUpon>
         </Compile>
+        <Compile Include="Template\CodeTemplate.Partial.cs" />
+        <Compile Include="Template\UnitGenerateOptions.cs" />
+        <Compile Include="Template\UnitOfAttribute.cs" />
+        <Compile Include="Template\UnitOfHelper.cs" />
+        <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

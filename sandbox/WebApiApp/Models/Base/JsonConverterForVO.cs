@@ -114,7 +114,7 @@ public class VoIntJsonConverter : JsonConverter<VoInt>, IJsonOnSerializing
         }
         else
         {
-            return new VoInt(int.Parse(reader.GetString()));
+            return new VoInt(int.Parse(reader.GetString()!));
         }
     }
 
@@ -253,7 +253,7 @@ public class VoIntJsonConverter2 : JsonConverterFactory
             }
             else
             {
-                return new VoInt(int.Parse(reader.GetString()));
+                return new VoInt(int.Parse(reader.GetString()!));
             }
         }
     }

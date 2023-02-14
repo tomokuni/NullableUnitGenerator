@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NullableUnitGenerator.Template;
 
 namespace NullableUnitGenerator;
 
@@ -58,7 +57,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
             throw new Exception("require UnitOf attribute parameter [Type]");
         var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
 
-        var template = new CodeTemplate()
+        var template = new Template.CodeTemplate()
         {
             Name = typeSymbol.Name,
             Namespace = ns.IsGlobalNamespace ? null : ns.ToDisplayString(),
@@ -93,20 +92,23 @@ public sealed class SourceGenerator : IIncrementalGenerator
         //context.AddSource($"IOptional.Generated.cs", text);
         //token.ThrowIfCancellationRequested();
 
-        AddCsResource("UnitOfAttribute.cs");
-        token.ThrowIfCancellationRequested();
+        //AddCsResource("UnitGenerateOptions.cs");
+        //token.ThrowIfCancellationRequested();
 
-        AddCsResource("UnitGenerateOptions.cs");
-        token.ThrowIfCancellationRequested();
+        //AddCsResource("UnitOfAttribute.cs");
+        //token.ThrowIfCancellationRequested();
 
-        AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
-        token.ThrowIfCancellationRequested();
+        //AddCsResource("UnitOfHelper.cs");
+        //token.ThrowIfCancellationRequested();
 
-        //
-        // ローカル関数
-        //
-        void AddCsResource(string resourceName)
-            => context.AddSource(hintName: $"UnitOf.{resourceName}", source: StringResourceRead(resourceName));
+        //AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
+        //token.ThrowIfCancellationRequested();
+
+        ////
+        //// ローカル関数
+        ////
+        //void AddCsResource(string resourceName)
+        //    => context.AddSource(hintName: $"UnitOf.{resourceName}", source: StringResourceRead(resourceName));
     }
 
     /// <summary>

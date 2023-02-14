@@ -24,8 +24,15 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
 		<PackageReference Include="Dapper" Version="2.0.123" />
 		<PackageReference Include="MessagePack" Version="2.4.59" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
-		<ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\sandbox\ConsoleApp\ConsoleApp.csproj" />
+	  <ProjectReference Include="..\..\sandbox\EntityFrameworkApp\EntityFrameworkApp.csproj" />
+	  <ProjectReference Include="..\..\sandbox\FileGenerate\FileGenerate.csproj" />
+	  <ProjectReference Include="..\..\sandbox\WebApiApp\WebApiApp.csproj" />
+	  <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
 	</ItemGroup>
 
 </Project>

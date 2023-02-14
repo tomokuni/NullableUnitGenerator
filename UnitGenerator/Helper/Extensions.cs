@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace NullableUnitGenerator.Helper;
+namespace NullableUnitGenerator;
 
 
 internal static class NullableUnitGeneratorExtensions

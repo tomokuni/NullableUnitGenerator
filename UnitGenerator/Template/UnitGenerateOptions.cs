@@ -7,7 +7,7 @@ namespace NullableUnitGenerator;
 
 
 [Flags]
-internal enum UnitGenerateOptions
+public enum UnitGenerateOptions
 {
     /// <summary>None</summary>
     None = 0,

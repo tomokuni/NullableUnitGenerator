@@ -3,59 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MessagePack.Resolvers;
-using Newtonsoft.Json.Linq;
-using TernaryUnitGenerator.Ternary;
 
-namespace UnitGenerator.Tests.Ternary;
+//#pragma warning disable CS8632 // '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
+//#pragma warning disable CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。Null 許容として宣言することをご検討ください。
+//#pragma warning disable CS0108 // メンバーは継承されたメンバーを非表示にします。キーワード new がありません
+
+namespace NullableUnitGenerator.TernaryState;
 
 
 /// <summary>
-/// TernaryStateStruct&lt;T&gt;
+/// 3状態を表現するジェネリック構造体 TernaryState&lt;T&gt;  (UNDEF, NULL, Value)
 /// </summary>
-public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStruct<T>>, ITernaryState where T : struct
+public readonly record struct TernaryState<T> : IEquatable<TernaryState<T>>, ITernaryState<T>, ITernaryState
 {
     //
     // Constructor
     //
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateStruct()
+    public TernaryState()
     {
     }
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateStruct(TernaryStateStruct<T> value)
-        => (m_state, m_value) = (HAS_VALUE, value.m_value);
+    public TernaryState(TernaryState<T> value)
+        => (m_state, m_value) = (value.m_state, value.m_value);
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateStruct(T value)
-        => (m_state, m_value) = (HAS_VALUE, value);
+    private TernaryState((byte state, T value) value)
+        => (m_state, m_value) = value.state switch
+        {
+            UNDEF_VALUE => (UNDEF_VALUE, default(T)!),
+            NULL_VALUE => (NULL_VALUE, default(T)!),
+            _ => (HAS_VALUE, value.value)
+        };
 
     /// <summary>Complete Constructor</summary>
-    public TernaryStateStruct(T? value)
+    public TernaryState(T? value)
         => (m_state, m_value) = value switch
         {
-            not null => (HAS_VALUE, (T)value),
-            _ => (NULL_VALUE, default(T))
+            not null => (HAS_VALUE, value),
+            _ => (NULL_VALUE, default(T)!)
         };
 
 
     //
     // static property
     //
-
+    
     /// <summary>undefined value instance.</summary>
-    public static TernaryStateStruct<T> UndefinedValue
-        => new();
+    public static TernaryState<T> UndefinedValue
+        => new((UNDEF_VALUE, default(T)!));
 
     /// <summary>null value instance.</summary>
-    public static TernaryStateStruct<T> NullValue
-        => new(null);
+    public static TernaryState<T> NullValue
+        => new((NULL_VALUE, default(T)!));
 
     /// <summary>default value instance.</summary>
-    public static TernaryStateStruct<T> DefaultValue
-        => new(default(T));
+    public static TernaryState<T> DefaultValue
+        => new((HAS_VALUE, default(T)!));
 
     /// <summary>default value instance.</summary>
     public static Type BaseType
@@ -73,11 +79,11 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     /// <b>true</b> – <b>NullValue</b> – if either value is null.<br/>
     /// <b>false</b> – <b>DefaultValue</b> – if either value is set.
     /// </returns>
-    public static byte CheckState(in TernaryStateStruct<T> x, in TernaryStateStruct<T> y)
+    public static byte CheckState(in TernaryState<T> x, in TernaryState<T> y)
         => (x, y) switch
         {
-            { x.IsUndefined: true } => UNDEFINED_VALUE,
-            { y.IsUndefined: true } => UNDEFINED_VALUE,
+            { x.IsUndef: true } => UNDEF_VALUE,
+            { y.IsUndef: true } => UNDEF_VALUE,
             { x.IsNull: true } => NULL_VALUE,
             { y.IsNull: true } => NULL_VALUE,
             _ => HAS_VALUE,
@@ -90,10 +96,10 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     /// <b>true</b> – <b>NullValue</b> – if value is null.<br/>
     /// <b>false</b> – <b>DefaultValue</b> – if value is set.
     /// </returns>
-    public static byte CheckState(in TernaryStateStruct<T> x)
+    public static byte CheckState(in TernaryState<T> x)
         => x switch
         {
-            { IsUndefined: true } => UNDEFINED_VALUE,
+            { IsUndef: true } => UNDEF_VALUE,
             { IsNull: true } => NULL_VALUE,
             _ => HAS_VALUE,
         };
@@ -103,10 +109,10 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     // const
     //
 
-    internal const byte UNDEFINED_VALUE = 0;
-    internal const byte NULL_VALUE = 2;
+    internal const byte UNDEF_VALUE = 0;
+    internal const byte NULL_VALUE = 1;
     internal const byte HAS_VALUE = 3;
-    public const string UNDEFINED_STRING = "<<(undefined)>>";
+    public const string UNDEF_STRING = "<<(undef)>>";
     public const string NULL_STRING = "<<(null)>>";
 
 
@@ -114,8 +120,8 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     // backing field
     //
 
-    internal readonly T m_value = default(T);
-    internal readonly byte m_state = UNDEFINED_VALUE;
+    internal readonly T m_value = default(T)!;
+    internal readonly byte m_state = UNDEF_VALUE;
 
 
     //
@@ -124,8 +130,8 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
 
     /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if undefined</returns>
-    public bool IsUndefined 
-        => m_state == UNDEFINED_VALUE;
+    public bool IsUndef 
+        => m_state == UNDEF_VALUE;
 
     /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if null</returns>
@@ -137,7 +143,7 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     public bool HasValue
         => m_state == HAS_VALUE;
 
-    /// <summary>return value state (UNDEFINED_VALUE or NULL_VALUE or HAS_VALUE).</summary>
+    /// <summary>return value state (UNDEF_VALUE or NULL_VALUE or HAS_VALUE).</summary>
     /// <returns><b>UNDEFINED_VALUE</b><br/><b>NULL_VALUE</b><br/><b>HAS_VALUE</b></returns>
     public byte State
         => m_state;
@@ -150,7 +156,7 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     /// <summary>return value if HasValue is true; &lt;null&gt; if IsNull is true; &lt;undefined&gt; if IsUndefined is true.</summary>
     /// <returns><b>value</b> : if HasValue is true<br/><b>&lt;null&gt;</b> : if IsNull is true<br/><b>&lt;undefined&gt;</b> : if IsUndefined is true</returns>
     public string ValueString
-        => HasValue ? m_value!.ToString()! : (IsNull ? NULL_STRING : UNDEFINED_STRING);
+        => HasValue ? m_value!.ToString()! : (IsNull ? NULL_STRING : UNDEF_STRING);
 
     //
     // GetHashCode
@@ -175,16 +181,19 @@ public readonly record struct TernaryStateStruct<T> : IEquatable<TernaryStateStr
     //
     // IEquatable<TernaryStateStruct<T>>, Object.Equals
     //   is implemented on the record type
+    // ITernaryState<T>
     //
 
     /// <summary>Returns a value indicating whether this instance is same value to a specified <#= Name #> value.</summary>
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    //public bool Equals(TernaryStateStruct<T> other)
-    //    => m_value.Equals(other.m_value) &&
-    //        IsNull.Equals(other.IsNull) &&
-    //        IsUndefined.Equals(other.IsUndefined);
+    public bool Equals(ITernaryState<T>? other)
+        => other is not null &&
+            IsUndef.Equals(other.IsUndef) &&
+            IsNull.Equals(other.IsNull) &&
+            Value!.Equals(other.Value);
 
     /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
     /// <returns>true if obj is an instance of <#= Type #> or <#= Name #> and equals the value of this instance; otherwise, false.</returns>
     //public override bool Equals(object obj);
+
 }

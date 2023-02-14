@@ -10,13 +10,13 @@
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.0.123" />
         <PackageReference Include="MessagePack" Version="2.4.59" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
         <PackageReference Include="Ulid" Version="1.2.6" />
         <PackageReference Include="Ulid.MessagePack" Version="1.2.6" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>
 
 </Project>

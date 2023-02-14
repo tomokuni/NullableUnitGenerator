@@ -9,10 +9,10 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// UnitOfAttribute
+/// NullableUnitGenerator でコード自動生成するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-internal class UnitOfAttribute : Attribute
+public class UnitOfAttribute : Attribute
 {
     /// <summary>primitive type</summary>
     public Type Type { get; }

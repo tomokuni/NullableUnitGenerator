@@ -165,7 +165,8 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     public <#= Type #> GetOrDefault()
         => HasValue ? m_value : default(<#= Type #>);
 
-    /// <inheritdoc cref="OrDefault" />
+    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <returns><b>value</b> : if assigned and not null<br/><b>defaultValue</b> : otherwise</returns>
     public <#= Type #>? GetOrDefault(<#= Type #>? defaultValue)
         => HasValue ? m_value : defaultValue;
 
