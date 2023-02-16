@@ -17,8 +17,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.7</VersionPrefix>
-        <VersionSuffix>beta-20230214</VersionSuffix>
+        <VersionPrefix>0.0.1.8</VersionPrefix>
+        <VersionSuffix>beta-20230216</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -84,10 +84,14 @@
           <DependentUpon>CodeTemplate.tt</DependentUpon>
         </Compile>
         <Compile Include="Template\CodeTemplate.Partial.cs" />
+        <Compile Include="TernaryStateValue\ITernaryStateValue.cs" />
+        <Compile Include="TernaryStateValue\ITernaryStateValueOfT.cs" />
+        <Compile Include="TernaryStateValue\TernaryState.cs" />
         <Compile Include="Template\UnitGenerateOptions.cs" />
         <Compile Include="Template\UnitOfAttribute.cs" />
         <Compile Include="Template\UnitOfHelper.cs" />
         <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
+        <Compile Include="TernaryStateValue\TernaryStateValueOfT.cs" />
     </ItemGroup>
 
     <ItemGroup>

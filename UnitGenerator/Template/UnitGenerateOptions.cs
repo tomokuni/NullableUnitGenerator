@@ -6,6 +6,9 @@ using System;
 namespace NullableUnitGenerator;
 
 
+/// <summary>
+/// UnitGenerate の生成オプション
+/// </summary>
 [Flags]
 public enum UnitGenerateOptions
 {
