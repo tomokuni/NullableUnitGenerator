@@ -8,7 +8,7 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// UnitOfHelper
+/// UnitOf のヘルパー関数群
 /// </summary>
 public static class UnitOfHelper
 {

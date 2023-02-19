@@ -64,6 +64,7 @@
         <EmbeddedResource Include="Template\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
         <EmbeddedResource Include="Template\UnitOfHelper.cs" LogicalName="UnitOfHelper.cs" />
         <EmbeddedResource Include="Template\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
+        <EmbeddedResource Include="Template\UnitOfState.cs" LogicalName="UnitOfState.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -88,6 +89,7 @@
         <Compile Include="Template\UnitOfAttribute.cs" />
         <Compile Include="Template\UnitOfHelper.cs" />
         <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
+        <Compile Include="Template\UnitOfState.cs" />
     </ItemGroup>
 
     <ItemGroup>

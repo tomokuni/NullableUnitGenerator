@@ -9,6 +9,8 @@
 #pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 <# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
 using System.Runtime.CompilerServices;
 <# } #>
@@ -29,7 +31,7 @@ namespace <#= Namespace #>;
 
 
 /// <summary>
-/// <#= Name #> is Nullable ValueObject<br/>
+/// <#= Name #> is TernaryType ValueObject<br/>
 /// Primitive type is <#= Type #>
 /// </summary>
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
@@ -39,7 +41,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
+readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
 {
     //
     // Constructor
@@ -48,7 +50,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(<#= Name #> value)
     {
-        m_state = HAS_VALUE;
+        m_state = UnitOfState.Value;
         m_value = value.m_value;
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
@@ -60,7 +62,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(<#= Type #> value)
     {
-        m_state = HAS_VALUE;
+        m_state = UnitOfState.Value;
         m_value = (<#= Type #>)value;
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
@@ -74,12 +76,12 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     {
         if (value is not null)
         {
-            m_state = HAS_VALUE;
+            m_state = UnitOfState.Value;
             m_value = (<#= Type #>)value;
         }
         else
         {
-            m_state = NULL_VALUE;
+            m_state = UnitOfState.Null;
             m_value = default(<#= Type #>);
         }
 
@@ -90,11 +92,11 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
 
 
     //
-    // static property
+    // static
     //
 
     /// <summary>undefined value instance.</summary>
-    public static <#= Name #> UndefinedValue
+    public static <#= Name #> UndefValue
         => new();
 
     /// <summary>null value instance.</summary>
@@ -106,82 +108,145 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
         => new(default(<#= Type #>));
 
     /// <summary>default value instance.</summary>
-    public static Type PrimitiveType
+    public static Type GetPrimitiveType
         => typeof(<#= Type #>);
+
+    /// <summary>Determines if either value is undefined or null.</summary>
+    /// <returns>
+    /// Return Value – Description<br/>
+    /// <b>UnitOfState.Undef</b> – if either value is undefined.<br/>
+    /// <b>UnitOfState.Null</b> – if either value is null.<br/>
+    /// <b>UnitOfState.Value</b> – if either value is set.
+    /// </returns>
+    public static UnitOfState CheckState(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
+    {
+        var (state, outVal) = (x, y) switch
+        {
+            { x.IsUndef: true } => (UnitOfState.Undef, <#= Name #>.UndefValue),
+            { y.IsUndef: true } => (UnitOfState.Undef, <#= Name #>.UndefValue),
+            { x.IsNull: true } => (UnitOfState.Null, <#= Name #>.NullValue),
+            { y.IsNull: true } => (UnitOfState.Null, <#= Name #>.NullValue),
+            _ => (UnitOfState.Value, <#= Name #>.DefaultValue),
+        };
+        result = outVal;
+        return state;
+    }
+
+    /// <summary>Determine if a value is undefined or null.</summary>
+    /// <returns>
+    /// Return Value – Description<br/>
+    /// <b>UnitOfState.Undef</b> – if value is undefined.<br/>
+    /// <b>UnitOfState.Null</b> – if value is null.<br/>
+    /// <b>UnitOfState.Value</b> – if value is set.
+    /// </returns>
+    public static UnitOfState CheckState(in <#= Name #> x, out <#= Name #> result)
+    {
+        var (state, outVal) = x switch
+        {
+            { IsUndef: true } => (UnitOfState.Undef, <#= Name #>.UndefValue),
+            { IsNull: true } => (UnitOfState.Null, <#= Name #>.NullValue),
+            _ => (UnitOfState.Value, <#= Name #>.DefaultValue),
+        };
+        result = outVal;
+        return state;
+    }
 
 
     //
     // const
     //
 
-    internal const byte UNDEFINED_VALUE = 0;
-    internal const byte NULL_VALUE = 1;
-    internal const byte HAS_VALUE = 3;
+    public const string DISPLAY_STRING_AS_UNDEF = "~undef~";
+    public const string DISPLAY_STRING_AS_NULL = "~null~";
 
 
     //
     // backing field
     //
 
-    internal readonly <#= Type #> m_value = default(<#= Type #>);
-    internal readonly byte m_state = UNDEFINED_VALUE;
+    internal readonly <#= Type #> m_value = default;
+    internal readonly UnitOfState m_state = UnitOfState.Undef;
 
 
     //
-    // get state property
+    // get state
     //
 
     /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if undefined</returns>
-    public bool IsUndefined
-        => m_state == UNDEFINED_VALUE;
+    public bool IsUndef
+        => m_state == UnitOfState.Undef;
 
     /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if null</returns>
     public bool IsNull
-        => m_state == NULL_VALUE;
+        => m_state == UnitOfState.Null;
+
+    /// <summary><see langword="true"/> if undefined or null; otherwise, <see langword="false"/>.</summary>
+    /// <returns><b><see langword="true"/></b> : if null or undefined</returns>
+    public bool IsUndefOrNull
+        => m_state != UnitOfState.Value;
+
+    /// <summary><see langword="true"/> if default; otherwise, <see langword="false"/>.</summary>
+    /// <returns><b><see langword="true"/></b> : if default</returns>
+    public bool IsDefault
+        => m_state == UnitOfState.Value && m_value == default;
 
     /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
     public bool HasValue
-            => m_state == HAS_VALUE;
+        => m_state == UnitOfState.Value;
+
+    /// <summary>return value state.</summary>
+    /// <returns><b>UnitOfState.Undef</b><br/><b>UnitOfState.Null</b><br/><b>UnitOfState.Value</b></returns>
+    public UnitOfState State
+        => m_state;
 
 
     //
-    // get value property
+    // get value
     //
 
-    /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException("NoValue")</summary>
-    /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("NoValue")</b> : otherwise</returns>
+    /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException()</summary>
+    /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("~undef~")</b> : undefined<br/><b>throw InvalidOperationException("~null~")</b> : null</returns>
     public <#= Type #> Value
-        => HasValue ? m_value : throw new InvalidOperationException("NoValue");
+        => HasValue ? m_value : throw new InvalidOperationException(IsNull ? DISPLAY_STRING_AS_NULL : DISPLAY_STRING_AS_UNDEF);
 
     /// <inheritdoc cref="Value" />
     public <#= Type #> AsPrimitive()
         => Value;
 
-    /// <summary>return value if HasValue is true; otherwise, <see langword="default(T)"/></summary>
-    /// <returns><b>value</b> : if assigned and not null<br/><b><see langword="default(T)"/></b> : otherwise</returns>
-    public <#= Type #> GetOrDefault()
-        => HasValue ? m_value : default(<#= Type #>);
+    /// <summary>return inner value</summary>
+    /// <returns>inner value</returns>
+    public <#= Type #>  GetRawValue()
+        => m_value;
 
+    /// <inheritdoc cref="Value" />
+    public <#= Type #>  GetOrThrow()
+        => Value;
+
+    /// <summary>return value if HasValue is true; otherwise, <see langword="default"/></summary>
+    /// <returns><b>value</b> : if assigned and not null<br/><b><see langword="default"/></b> : otherwise</returns>
+    public <#= Type #> GetOrDefault(bool treatUndefAsNull = false)
+        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? default : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
+
+<# if (IsValueType) { #>
     /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
     /// <returns><b>value</b> : if assigned and not null<br/><b>defaultValue</b> : otherwise</returns>
-    public <#= Type #>? GetOrDefault(<#= Type #>? defaultValue)
-        => HasValue ? m_value : defaultValue;
+    public <#= TypeNullable #> GetOr(<#= TypeNullable #> defaultValue, bool treatUndefAsNull = false)
+        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? defaultValue : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
+<# } #>
+
+    /// <inheritdoc cref="GetOr" />
+    public <#= Type #> GetOr(<#= Type #> defaultValue, bool treatUndefAsNull = false)
+        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? defaultValue : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
 
     /// <summary>return value if HasValue is true; otherwise, null</summary>
     /// <returns><b>value</b> : if HasValue is true<br/><b><see langword="null"/></b> : otherwise</returns>
-    public <#= Type #>? GetOrNull()
+    public <#= TypeNullable #> GetOrNull()
         => HasValue ? m_value : null;
 
-    /// <inheritdoc cref="Value" />
-    public <#= Type #> GetOrThrow()
-        => Value;
-
-    /// <summary>
-    /// return true and out parameter value if HasValue is true; otherwise, false.
-    /// </summary>
+    /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name="value">value</param>
     /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
     public bool TryGet(out <#= Type #> value)
@@ -208,7 +273,10 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     /// <summary>Returns the hash code for this instance.</summary>
     /// <returns>A 32-bit signed integer hash code.</returns>
     public override int GetHashCode()
-        => new { IsUndefined, IsNull, m_value }.GetHashCode();
+        => (m_state, m_value).GetHashCode();
+
+    public int GetHashCode(<#= Name #> obj)
+        => (obj.m_state, obj.m_value).GetHashCode();
 
 
     //
@@ -219,24 +287,26 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     /// <returns>The current string.</returns>
     public override string ToString()
 <# if (ToStringFormat == null) { #>
-        => HasValue ? m_value.ToString() : $"<{(IsUndefined ? "undefined" : "null")}>";
+        => HasValue ? m_value.ToString() : $"{(IsUndef ? DISPLAY_STRING_AS_UNDEF : DISPLAY_STRING_AS_NULL)}";
 <# } else { #>
         => string.Format("<#= ToStringFormat #>", m_value);
 <# } #>
 
-<#if (IsIntegralNumericType()) { #>
 
     //
-    // MaxValue, MinValue
+    // implicit, explicit operator
     //
 
-    /// <summary>Represents the largest possible value. This field is constant.</summary>
-    public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
+    ///// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
+    ///// <returns><#= TypeNullable #> value.</returns>
+    //public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= TypeNullable #>(<#= Name #> value)
+    //    => (<#= TypeNullable #>)value.GetOrNull();
 
-    /// <summary>Represents the smallest possible value. This field is constant.</summary>
-    public const <#= Type #> MinValue = <#= Type #>.MinValue;
+    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
+    /// <returns><#= Name #> value.</returns>
+    public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= Name #>(<#= TypeNullable #> value)
+        => new <#= Name #>(value);
 
-<# } #>
 
     //
     // Equals, IEquatable<<#= Name #>>
@@ -245,20 +315,40 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     /// <summary>Returns a value indicating whether this instance is same value to a specified <#= Name #> value.</summary>
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
     public bool Equals(<#= Name #> other)
-        => m_value.Equals(other.m_value) &&
-            IsNull.Equals(other.IsNull) &&
-            IsUndefined.Equals(other.IsUndefined);
+        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
 
     /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
     /// <returns>true if obj is an instance of <#= Type #> or <#= Name #> and equals the value of this instance; otherwise, false.</returns>
     public override bool Equals(object? obj)
-        => (IsNull && obj is null) ||
-        obj switch
-        {
-            <#= Name #> vo => Equals(vo),
-            <#= Type #> v => Equals(new(v)),
-            _ => false,
-        };
+        => obj is <#= Name #> ts ? Equals(ts) : base.Equals(obj);
+        
+    public bool Equals(<#= Name #> x, <#= Name #> y)
+        => x.Equals(y.m_state) && x.Equals(y.m_value);
+
+
+    //
+    // ==, != operator
+    //
+
+    /// <summary>Returns a value indicating whether two instances are same value.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator ==(in <#= Name #> x, in <#= Name #> y)
+        => x.Equals(y);
+
+    /// <summary>Returns a value indicates whether two instances are different values.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator !=(in <#= Name #> x, in <#= Name #> y)
+        => !x.Equals(y);
+
+    /// <summary>Returns a value indicating whether two instances are same value.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator ==(in <#= Name #> x, in <#= Type #> y)
+        => x.Equals(y);
+
+    /// <summary>Returns a value indicates whether two instances are different values.</summary>
+    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    public static bool operator !=(in <#= Name #> x, in <#= Type #> y)
+        => !x.Equals(y);
 
 <# if (HasFlag(UnitGenerateOptions.Comparable)) { #>
 
@@ -275,9 +365,40 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
     /// <b>Greater than zero</b> – This instance is greater than value.
     /// </returns>
     public int CompareTo(<#= Name #> other)
-        => IsUndefinedOrNull(this, other, out <#= Name #> result)
-            ? 0
-            : m_value.CompareTo(other.m_value);
+        => CheckState(this, other, out _) == UnitOfState.Value
+            ? m_value.CompareTo(other.m_value)
+            : 0;
+
+<# } #>
+<# if (HasFlag(UnitGenerateOptions.Comparable) && !HasFlag(UnitGenerateOptions.WithoutComparisonOperator)) { #>
+
+    //
+    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
+    //
+
+    /// <summary>operator &gt;</summary>
+    public static bool operator >(in <#= Name #> x, in <#= Name #> y)
+        => CheckState(x, y, out _) == UnitOfState.Value
+            ? x.m_value > y.m_value
+            : false;
+
+    /// <summary>operator &lt;</summary>
+    public static bool operator <(in <#= Name #> x, in <#= Name #> y)
+        => CheckState(x, y, out _) == UnitOfState.Value
+            ? x.m_value < y.m_value
+            : false;
+
+    /// <summary>operator &gt;=</summary>
+    public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
+        => CheckState(x, y, out _) == UnitOfState.Value
+            ? x.m_value >= y.m_value
+            : false;
+
+    /// <summary>operator &lt;=</summary>
+    public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
+        => CheckState(x, y, out _) == UnitOfState.Value
+            ? x.m_value <= y.m_value
+            : false;
 
 <# } #>
 <# if (Type == "Guid" || Type == "System.Guid") { #>
@@ -296,6 +417,19 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
         => new <#= Name #>(Guid.NewGuid());
 
 <# } #>
+<#if (IsIntegralNumericType()) { #>
+
+    //
+    // MaxValue, MinValue
+    //
+
+    /// <summary>Represents the largest possible value. This field is constant.</summary>
+    public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
+
+    /// <summary>Represents the smallest possible value. This field is constant.</summary>
+    public const <#= Type #> MinValue = <#= Type #>.MinValue;
+
+<# } #>
 <# if (Type == "Ulid" || Type == "System.Ulid") { #>
 
     //
@@ -312,60 +446,6 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
         => new <#= Name #>(Ulid.NewUlid());
 
 <# } #>
-
-    //
-    // IsUndefinedOrNull
-    //
-
-    /// <summary>Determine if a value is undefined or null.</summary>
-    /// <returns>
-    /// <b>Return Value</b> – <b>out result Value</b> – Description<br/>
-    /// <b>true</b> – <b>UndefinedValue</b> – if value is undefined.<br/>
-    /// <b>true</b> – <b>NullValue</b> – if value is null.<br/>
-    /// <b>false</b> – <b>DefaultValue</b> – if value is set.
-    /// </returns>
-    public static bool IsUndefinedOrNull(in <#= Name #> x, out <#= Name #> result)
-    {
-        if (x.IsUndefined)
-        {
-            result = UndefinedValue;
-            return true;
-        }
-
-        if (x.IsNull)
-        {
-            result = NullValue;
-            return true;
-        }
-
-        result = DefaultValue;
-        return false;
-    }
-
-    /// <summary>DDetermines if either value is undefined or null.</summary>
-    /// <returns>
-    /// <b>Return Value</b> – <b>out result Value</b> – Description<br/>
-    /// <b>true</b> – <b>UndefinedValue</b> – if either value is undefined.<br/>
-    /// <b>true</b> – <b>NullValue</b> – if either value is null.<br/>
-    /// <b>false</b> – <b>DefaultValue</b> – if either value is set.
-    /// </returns>
-    public static bool IsUndefinedOrNull(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
-    {
-        if (x.IsUndefined || y.IsUndefined)
-        {
-            result = UndefinedValue;
-            return true;
-        }
-
-        if (x.IsNull || y.IsNull)
-        {
-            result = NullValue;
-            return true;
-        }
-
-        result = DefaultValue;
-        return false;
-    }
 
 <# if (HasFlag(UnitGenerateOptions.ParseMethod)) { #>
 
@@ -417,100 +497,6 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
 
 <# } #>
 
-    //
-    // implicit, explicit operator
-    //
-
-    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
-    /// <returns><#= TypeNullable #> value.</returns>
-    public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= TypeNullable #>(<#= Name #> value)
-        => (<#= TypeNullable #>)value.GetOrNull();
-
-    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
-    /// <returns><#= Name #> value.</returns>
-    public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= Name #>(<#= TypeNullable #> value)
-        => new <#= Name #>(value);
-
-
-    //
-    // ==, != operator
-    //
-
-    /// <summary>Returns a value indicating whether two instances are same value.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator ==(in <#= Name #> x, in <#= Name #> y)
-        => x.Equals(y);
-
-    /// <summary>Returns a value indicates whether two instances are different values.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator !=(in <#= Name #> x, in <#= Name #> y)
-        => !x.Equals(y);
-
-    /// <summary>Returns a value indicating whether two instances are same value.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator ==(in <#= Name #> x, in <#= TypeNullable #> y)
-        => x.Equals(y);
-
-    /// <summary>Returns a value indicates whether two instances are different values.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator !=(in <#= Name #> x, in <#= TypeNullable #> y)
-        => !x.Equals(y);
-
-<# if (HasFlag(UnitGenerateOptions.Comparable) && !HasFlag(UnitGenerateOptions.WithoutComparisonOperator)) { #>
-
-    //
-    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
-    //
-
-    /// <summary>operator &gt;</summary>
-    public static bool operator >(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? false
-            : x.m_value > y.m_value;
-
-    /// <summary>operator &lt;</summary>
-    public static bool operator <(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? false
-            : x.m_value < y.m_value;
-
-    /// <summary>operator &gt;=</summary>
-    public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? false
-            : x.m_value >= y.m_value;
-
-    /// <summary>operator &lt;=</summary>
-    public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? false
-            : x.m_value <= y.m_value;
-
-    /// <summary>operator &gt;</summary>
-    public static bool operator >(in <#= Name #> x, in <#= TypeNullable #> y)
-        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-            ? false
-            : x.m_value > y;
-
-    /// <summary>operator &lt;</summary>
-    public static bool operator <(in <#= Name #> x, in <#= TypeNullable #> y)
-        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-            ? false
-            : x.m_value < y;
-
-    /// <summary>operator &gt;=</summary>
-    public static bool operator >=(in <#= Name #> x, in <#= TypeNullable #> y)
-        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-            ? false
-            : x.m_value >= y;
-
-    /// <summary>operator &lt;=</summary>
-    public static bool operator <=(in <#= Name #> x, in <#= TypeNullable #> y)
-        => IsUndefinedOrNull(x, new <#= Name #>(y), out <#= Name #> result)
-            ? false
-            : x.m_value <= y;
-
-<# } #>
 <# if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { #>
 
     //
@@ -519,15 +505,15 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
 
     /// <summary>Min</summary>
     public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(Math.Min(x.m_value, y.m_value));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
+            : result;
 
     /// <summary>Max</summary>
     public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(Math.Max(x.m_value, y.m_value));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
+            : result;
 
 <# } #>
 <# if (Type == "bool") { #>
@@ -538,21 +524,21 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
 
     /// <summary>operator true</summary>
     public static <#= Type #> operator true(<#= Name #> x)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : x.m_value;
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? x.m_value
+            : result;
 
     /// <summary>operator false</summary>
     public static <#= Type #> operator false(<#= Name #> x)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : !x.m_value;
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? !x.m_value
+            : result;
 
     /// <summary>operator !</summary>
     public static <#= Type #> operator !(<#= Name #> x)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : !x.m_value;
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? !x.m_value
+            : result;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { #>
@@ -563,33 +549,33 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
 
     /// <summary>operator +</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)))
+            : result;
 
     /// <summary>operator -</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)))
+            : result;
 
     /// <summary>operator *</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)))
+            : result;
 
     /// <summary>operator /</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)))
+            : result;
 
     /// <summary>operator %</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
-        => IsUndefinedOrNull(x, y, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)));
+        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)))
+            : result;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { #>
@@ -600,45 +586,45 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
 
     /// <summary>operator ++</summary>
     public static <#= Name #> operator ++(in <#= Name #> x)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)))
+            : result;
 
     /// <summary>operator --</summary>
     public static <#= Name #> operator --(in <#= Name #> x)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)))
+            : result;
 
     /// <summary>operator +</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Type #> y)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)))
+            : result;
 
     /// <summary>operator -</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Type #> y)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)))
+            : result;
 
     /// <summary>operator *</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Type #> y)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)))
+            : result;
 
     /// <summary>operator /</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Type #> y)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)))
+            : result;
 
     /// <summary>operator %</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Type #> y)
-        => IsUndefinedOrNull(x, out <#= Name #> result)
-            ? result
-            : new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)));
+        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)))
+            : result;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
@@ -658,7 +644,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
         public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
         {
             // undefined; value.IsUndefined の場合は key,value ともに書き込まない
-            if (value.IsUndefined)
+            if (value.IsUndef)
                 return;
 
             var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
@@ -677,7 +663,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>> <#= HasFlag(UnitGe
                 var res = (reader.TokenType) switch
                 {
                     JsonTokenType.Null => <#= Name #>.NullValue,
-                    JsonTokenType.None => <#= Name #>.UndefinedValue,
+                    JsonTokenType.None => <#= Name #>.UndefValue,
                     _ => new <#= Name #>(converter.Read(ref reader, typeToConvert, options))
                 };
                 return res;
