@@ -25,6 +25,7 @@
 		<PackageReference Include="Dapper" Version="2.0.123" />
 		<PackageReference Include="MessagePack" Version="2.4.59" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
+		<ProjectReference Include="..\..\TernaryType\Estable.TernaryType.csproj" />
 	  <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
 	</ItemGroup>
 

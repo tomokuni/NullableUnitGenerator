@@ -5,9 +5,9 @@
         <OutputType>library</OutputType>
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
-        <IsRoslynComponent>true</IsRoslynComponent>
         <Deterministic>true</Deterministic>
         <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
+        <IsRoslynComponent>true</IsRoslynComponent>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
 
@@ -17,8 +17,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.8</VersionPrefix>
-        <VersionSuffix>beta-20230216</VersionSuffix>
+        <VersionPrefix>0.0.1.9</VersionPrefix>
+        <VersionSuffix>beta-20230219</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -71,6 +71,11 @@
             <Generator>TextTemplatingFilePreprocessor</Generator>
             <LastGenOutput>CodeTemplate.cs</LastGenOutput>
         </None>
+        <Compile Include="Template\CodeTemplate.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CodeTemplate.tt</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -78,20 +83,11 @@
         <Compile Include="Helper\DiagnosticDescriptors.cs" />
         <Compile Include="Helper\Extensions.cs" />
         <Compile Include="SourceGenerator.cs" />
-        <Compile Include="Template\CodeTemplate.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>CodeTemplate.tt</DependentUpon>
-        </Compile>
         <Compile Include="Template\CodeTemplate.Partial.cs" />
-        <Compile Include="TernaryStateValue\ITernaryStateValue.cs" />
-        <Compile Include="TernaryStateValue\ITernaryStateValueOfT.cs" />
-        <Compile Include="TernaryStateValue\TernaryState.cs" />
         <Compile Include="Template\UnitGenerateOptions.cs" />
         <Compile Include="Template\UnitOfAttribute.cs" />
         <Compile Include="Template\UnitOfHelper.cs" />
         <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
-        <Compile Include="TernaryStateValue\TernaryStateValueOfT.cs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace TernaryStateValue;
+namespace Estable.TernaryType;
 
 
 /// <summary>
