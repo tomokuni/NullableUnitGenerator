@@ -77,22 +77,29 @@ using System.Diagnostics.CodeAnalysis;
             this.Write("\r\n{\r\n    //\r\n    // Constructor\r\n    //\r\n\r\n    /// <summary>Complete Constructor<" +
                     "/summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(");
+            this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value)\r\n    {\r\n        m_state = UnitOfState.Value;\r\n        m_value = value.m_v" +
-                    "alue;\r\n\r\n");
+            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (value.m_state, value.m_value);\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("        this.Validate();\r\n");
  } 
-            this.Write("    }\r\n\r\n");
+            this.Write("    }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("(in TernaryState state, in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" value = default)\r\n    {\r\n        (m_state, m_value) = (state, value) switch\r\n   " +
+                    "     {\r\n            (TernaryState.Undef, _) => (state, default),\r\n            (T" +
+                    "ernaryState.Null, _) => (state, default),\r\n");
+ if (!IsValueType) { 
+            this.Write("            (_, null) => (state, default),\r\n");
+ } 
+            this.Write("            _ => (state, value)\r\n        };\r\n    }\r\n\r\n");
  if (IsValueType) { 
             this.Write("    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(");
+            this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" value)\r\n    {\r\n        m_state = UnitOfState.Value;\r\n        m_value = (");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(")value;\r\n\r\n");
+            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (TernaryState.Value, value);\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("        this.Validate();\r\n");
  } 
@@ -100,61 +107,84 @@ using System.Diagnostics.CodeAnalysis;
  } 
             this.Write("\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(");
+            this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" value)\r\n    {\r\n        if (value is not null)\r\n        {\r\n            m_state = " +
-                    "UnitOfState.Value;\r\n            m_value = (");
+            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = value switch\r\n        {\r\n           " +
+                    " null => (TernaryState.Null, default),\r\n            _ => (TernaryState.Value, (");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(")value;\r\n        }\r\n        else\r\n        {\r\n            m_state = UnitOfState.Nu" +
-                    "ll;\r\n            m_value = default(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(");\r\n        }\r\n\r\n");
+            this.Write(")value),\r\n        };\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("        this.Validate();\r\n");
  } 
-            this.Write("    }\r\n\r\n\r\n    //\r\n    // static\r\n    //\r\n\r\n    /// <summary>undefined value inst" +
-                    "ance.</summary>\r\n    public static ");
+            this.Write(@"    }
+
+
+    //
+    // static define
+    //
+
+    /// <summary>Display string as Undef.</summary>
+    public static readonly string sUndef = $""~{TernaryState.Undef}~"";
+
+    /// <summary>Display string as Null.</summary>
+    public static readonly string sNull = $""~{TernaryState.Null}~"";
+
+
+    //
+    // static property
+    //
+
+    /// <summary>Undefined value instance.</summary>
+    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" UndefValue\r\n        => new();\r\n\r\n    /// <summary>null value instance.</summary>" +
-                    "\r\n    public static ");
+            this.Write(" UndefValue { get; } = new(TernaryState.Undef, default);\r\n\r\n    /// <summary>Null" +
+                    " value instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" NullValue\r\n        => new((");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write("?)null);\r\n\r\n    /// <summary>default value instance.</summary>\r\n    public static" +
-                    " ");
+            this.Write(" NullValue { get; } = new(TernaryState.Null, default);\r\n\r\n    /// <summary>Value " +
+                    "state default value instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" DefaultValue\r\n        => new(default(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write("));\r\n\r\n    /// <summary>default value instance.</summary>\r\n    public static Type" +
-                    " GetPrimitiveType\r\n        => typeof(");
+            this.Write(" ValueStateDefaultValue { get; } = new(TernaryState.Value, default);\r\n\r\n    stati" +
+                    "c readonly Type BaseType = typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(@");
+    /// <summary>Get base type.</summary>
+    public static Type GetBaseType() => BaseType;
+
+    /// <summary>Is base type nullable?</summary>
+    public static bool IsNullable { get; } 
+        = !BaseType.IsValueType  // 値型でない -> Nullable
+        || Nullable.GetUnderlyingType(BaseType) != null;  // 非Null許容型が取得できる -> Null許容演算子が指定されている -> Nullable
+
+
+    //
+    // static method
+    //
 
     /// <summary>Determines if either value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>UnitOfState.Undef</b> – if either value is undefined.<br/>
-    /// <b>UnitOfState.Null</b> – if either value is null.<br/>
-    /// <b>UnitOfState.Value</b> – if either value is set.
+    /// <b>TernaryState.Undef</b> – if either value is undefined.<br/>
+    /// <b>TernaryState.Null</b> – if either value is null.<br/>
+    /// <b>TernaryState.Value</b> – if either value is set.
     /// </returns>
-    public static UnitOfState CheckState(in ");
+    public static TernaryState CheckState(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" result)\r\n    {\r\n        var (state, outVal) = (x, y) switch\r\n        {\r\n        " +
-                    "    { x.IsUndef: true } => (UnitOfState.Undef, ");
+                    "    { x.IsUndef: true } => (TernaryState.Undef, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".UndefValue),\r\n            { y.IsUndef: true } => (UnitOfState.Undef, ");
+            this.Write(".UndefValue),\r\n            { y.IsUndef: true } => (TernaryState.Undef, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".UndefValue),\r\n            { x.IsNull: true } => (UnitOfState.Null, ");
+            this.Write(".UndefValue),\r\n            { x.IsNull: true } => (TernaryState.Null, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".NullValue),\r\n            { y.IsNull: true } => (UnitOfState.Null, ");
+            this.Write(".NullValue),\r\n            { y.IsNull: true } => (TernaryState.Null, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".NullValue),\r\n            _ => (UnitOfState.Value, ");
+            this.Write(".NullValue),\r\n            _ => (TernaryState.Value, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@".DefaultValue),
+            this.Write(@".ValueStateDefaultValue),
         };
         result = outVal;
         return state;
@@ -163,134 +193,121 @@ using System.Diagnostics.CodeAnalysis;
     /// <summary>Determine if a value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>UnitOfState.Undef</b> – if value is undefined.<br/>
-    /// <b>UnitOfState.Null</b> – if value is null.<br/>
-    /// <b>UnitOfState.Value</b> – if value is set.
+    /// <b>TernaryState.Undef</b> – if value is undefined.<br/>
+    /// <b>TernaryState.Null</b> – if value is null.<br/>
+    /// <b>TernaryState.Value</b> – if value is set.
     /// </returns>
-    public static UnitOfState CheckState(in ");
+    public static TernaryState CheckState(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" result)\r\n    {\r\n        var (state, outVal) = x switch\r\n        {\r\n            {" +
-                    " IsUndef: true } => (UnitOfState.Undef, ");
+                    " IsUndef: true } => (TernaryState.Undef, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".UndefValue),\r\n            { IsNull: true } => (UnitOfState.Null, ");
+            this.Write(".UndefValue),\r\n            { IsNull: true } => (TernaryState.Null, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".NullValue),\r\n            _ => (UnitOfState.Value, ");
+            this.Write(".NullValue),\r\n            _ => (TernaryState.Value, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@".DefaultValue),
-        };
-        result = outVal;
-        return state;
-    }
-
-
-    //
-    // const
-    //
-
-    public const string DISPLAY_STRING_AS_UNDEF = ""~undef~"";
-    public const string DISPLAY_STRING_AS_NULL = ""~null~"";
-
-
-    //
-    // backing field
-    //
-
-    internal readonly ");
+            this.Write(".ValueStateDefaultValue),\r\n        };\r\n        result = outVal;\r\n        return s" +
+                    "tate;\r\n    }\r\n\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    internal readonly " +
+                    "");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" m_value = default;\r\n    internal readonly UnitOfState m_state = UnitOfState.Unde" +
-                    "f;\r\n\r\n\r\n    //\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see langword=\"true" +
-                    "\"/> if undefined; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <return" +
-                    "s><b><see langword=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUnde" +
-                    "f\r\n        => m_state == UnitOfState.Undef;\r\n\r\n    /// <summary><see langword=\"t" +
-                    "rue\"/> if null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns>" +
-                    "<b><see langword=\"true\"/></b> : if null</returns>\r\n    public bool IsNull\r\n     " +
-                    "   => m_state == UnitOfState.Null;\r\n\r\n    /// <summary><see langword=\"true\"/> if" +
-                    " undefined or null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <retu" +
-                    "rns><b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n    public b" +
-                    "ool IsUndefOrNull\r\n        => m_state != UnitOfState.Value;\r\n\r\n    /// <summary>" +
-                    "<see langword=\"true\"/> if default; otherwise, <see langword=\"false\"/>.</summary>" +
-                    "\r\n    /// <returns><b><see langword=\"true\"/></b> : if default</returns>\r\n    pub" +
-                    "lic bool IsDefault\r\n        => m_state == UnitOfState.Value && m_value == defaul" +
-                    "t;\r\n\r\n    /// <summary><see langword=\"true\"/> if not undefined and not null; oth" +
-                    "erwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><see langword=\"t" +
-                    "rue\"/></b> : if not undefined and not null</returns>\r\n    public bool HasValue\r\n" +
-                    "        => m_state == UnitOfState.Value;\r\n\r\n    /// <summary>return value state." +
-                    "</summary>\r\n    /// <returns><b>UnitOfState.Undef</b><br/><b>UnitOfState.Null</b" +
-                    "><br/><b>UnitOfState.Value</b></returns>\r\n    public UnitOfState State\r\n        " +
-                    "=> m_state;\r\n\r\n\r\n    //\r\n    // get value\r\n    //\r\n\r\n    /// <summary>return val" +
-                    "ue if HasValue is true; otherwise, throw InvalidOperationException()</summary>\r\n" +
-                    "    /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperatio" +
-                    "nException(\"~undef~\")</b> : undefined<br/><b>throw InvalidOperationException(\"~n" +
-                    "ull~\")</b> : null</returns>\r\n    public ");
+            this.Write(" m_value = default;\r\n    internal readonly TernaryState m_state = TernaryState.Un" +
+                    "def;\r\n\r\n\r\n    //\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see langword=\"tr" +
+                    "ue\"/> if undefined; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <retu" +
+                    "rns><b><see langword=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUn" +
+                    "def\r\n        => m_state == TernaryState.Undef;\r\n\r\n    /// <summary><see langword" +
+                    "=\"true\"/> if null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <retur" +
+                    "ns><b><see langword=\"true\"/></b> : if null</returns>\r\n    public bool IsNull\r\n  " +
+                    "      => m_state == TernaryState.Null;\r\n\r\n    /// <summary><see langword=\"true\"/" +
+                    "> if undefined or null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <" +
+                    "returns><b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n    publ" +
+                    "ic bool IsUndefOrNull\r\n        => m_state != TernaryState.Value;\r\n\r\n    /// <sum" +
+                    "mary><see langword=\"true\"/> if not undefined and not null; otherwise, <see langw" +
+                    "ord=\"false\"/>.</summary>\r\n    /// <returns><b><see langword=\"true\"/></b> : if no" +
+                    "t undefined and not null</returns>\r\n    public bool HasValue\r\n        => m_state" +
+                    " == TernaryState.Value;\r\n\r\n    /// <summary>return value state.</summary>\r\n    /" +
+                    "// <returns>\r\n    /// <b>Undef</b><br/>\r\n    /// <b>Null</b><br/>\r\n    /// <b>Va" +
+                    "lue</b>\r\n    /// </returns>\r\n    public TernaryState State\r\n        => m_state;\r" +
+                    "\n\r\n\r\n    //\r\n    // get value\r\n    //\r\n\r\n    /// <summary>return value if HasVal" +
+                    "ue is true; otherwise, throw InvalidOperationException()</summary>\r\n    /// <ret" +
+                    "urns>\r\n    /// <b>value</b> : if HasValue is true<br/>\r\n    /// <b>throw Invalid" +
+                    "OperationException(\"Value is Null.\")</b> : if IsNull is true<br/>\r\n    /// <b>th" +
+                    "row InvalidOperationException(\"Value is Undef.\")</b> : if IsUndef is true\r\n    /" +
+                    "// </returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" Value\r\n        => HasValue ? m_value : throw new InvalidOperationException(IsNul" +
-                    "l ? DISPLAY_STRING_AS_NULL : DISPLAY_STRING_AS_UNDEF);\r\n\r\n    /// <inheritdoc cr" +
-                    "ef=\"Value\" />\r\n    public ");
+            this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    publ" +
+                    "ic ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" AsPrimitive()\r\n        => Value;\r\n\r\n    /// <summary>return inner value</summary" +
-                    ">\r\n    /// <returns>inner value</returns>\r\n    public ");
+            this.Write(" AsPrimitive()\r\n        => Value;\r\n\r\n    /// <summary>return raw value</summary>\r" +
+                    "\n    /// <returns>inner raw value</returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write("  GetRawValue()\r\n        => m_value;\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    " +
-                    "public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(@"  GetOrThrow()
-        => Value;
+            this.Write(@"  GetRawValue()
+        => m_value;
 
-    /// <summary>return value if HasValue is true; otherwise, <see langword=""default""/></summary>
-    /// <returns><b>value</b> : if assigned and not null<br/><b><see langword=""default""/></b> : otherwise</returns>
+    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>defaultValue</b> : otherwise
+    /// </returns>
     public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" GetOrDefault(bool treatUndefAsNull = false)\r\n        => HasValue ? m_value : ((I" +
-                    "sNull || treatUndefAsNull) ? default : throw new InvalidOperationException(DISPL" +
-                    "AY_STRING_AS_UNDEF));\r\n\r\n");
+            this.Write(" GetOr(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" defaultValue)\r\n        => HasValue ? m_value : defaultValue;\r\n\r\n");
  if (IsValueType) { 
-            this.Write("    /// <summary>return value if HasValue is true; otherwise, defaultValue</summa" +
-                    "ry>\r\n    /// <returns><b>value</b> : if assigned and not null<br/><b>defaultValu" +
-                    "e</b> : otherwise</returns>\r\n    public ");
+            this.Write("    /// <inheritdoc cref=\"GetOr\" />\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" GetOr(");
+            this.Write(" GetOr(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" defaultValue, bool treatUndefAsNull = false)\r\n        => HasValue ? m_value : ((" +
-                    "IsNull || treatUndefAsNull) ? defaultValue : throw new InvalidOperationException" +
-                    "(DISPLAY_STRING_AS_UNDEF));\r\n");
+            this.Write(" defaultValue)\r\n        => HasValue ? m_value : defaultValue;\r\n");
  } 
-            this.Write("\r\n    /// <inheritdoc cref=\"GetOr\" />\r\n    public ");
+            this.Write(@"
+    /// <summary>return value if HasValue is true; otherwise, <see langword=""default""/></summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b><see langword=""default""/></b> : otherwise
+    /// </returns>
+    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" GetOr(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(@" defaultValue, bool treatUndefAsNull = false)
-        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? defaultValue : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
+            this.Write(@" GetOrDefault()
+        => GetOr(default);
 
-    /// <summary>return value if HasValue is true; otherwise, null</summary>
-    /// <returns><b>value</b> : if HasValue is true<br/><b><see langword=""null""/></b> : otherwise</returns>
+    /// <summary>return value if HasValue is true; otherwise, <see langword=""null""/></summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b><see langword=""null""/></b> : otherwise
+    /// </returns>
     public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(@" GetOrNull()
-        => HasValue ? m_value : null;
+            this.Write(" GetOrNull()\r\n        => GetOr(null);\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n   " +
+                    " public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(@" GetOrThrow()
+        => (m_state, m_value) switch
+        {
+            (TernaryState.Value, _) => m_value,
+            (TernaryState.Null, _) => throw new InvalidOperationException($""Value is {TernaryState.Null}.""),
+            _ => throw new InvalidOperationException($""Value is {TernaryState.Undef}.""),
+        };
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name=""value"">value</param>
+    /// <param name=""defaultValue"">defaultValue</param>
     /// <returns><b><see langword=""true""/> and out parameter value</b> : if HasValue is true,</returns>
     public bool TryGet(out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" value)\r\n    {\r\n        value = m_value;\r\n        return HasValue;\r\n    }\r\n\r\n");
+            this.Write(" value, in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" defaultValue = default)\r\n    {\r\n        value = HasValue ? m_value : defaultValu" +
+                    "e;\r\n        return HasValue;\r\n    }\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("\r\n    //\r\n    // Validate\r\n    //\r\n\r\n    /// <summary>Validate</summary>\r\n    pri" +
                     "vate partial void Validate();\r\n\r\n");
  } 
-            this.Write(@"
-    //
-    // GetHashCode
-    //
-
-    /// <summary>Returns the hash code for this instance.</summary>
-    /// <returns>A 32-bit signed integer hash code.</returns>
-    public override int GetHashCode()
-        => (m_state, m_value).GetHashCode();
-
-    public int GetHashCode(");
+            this.Write("\r\n    //\r\n    // GetHashCode\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public overrid" +
+                    "e int GetHashCode()\r\n        => (m_state, m_value).GetHashCode();\r\n\r\n    /// <in" +
+                    "heritdoc/>\r\n    public int GetHashCode(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" obj)
         => (obj.m_state, obj.m_value).GetHashCode();
@@ -305,61 +322,75 @@ using System.Diagnostics.CodeAnalysis;
     public override string ToString()
 ");
  if (ToStringFormat == null) { 
-            this.Write("        => HasValue ? m_value.ToString() : $\"{(IsUndef ? DISPLAY_STRING_AS_UNDEF " +
-                    ": DISPLAY_STRING_AS_NULL)}\";\r\n");
+            this.Write("        => ValueString;\r\n");
  } else { 
-            this.Write("        => string.Format(\"");
+            this.Write("        => HasValue ? string.Format(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToStringFormat));
-            this.Write("\", m_value);\r\n");
+            this.Write("\", m_value) : (IsNull ? sNull : sUndef);\r\n");
  } 
-            this.Write("\r\n\r\n    //\r\n    // implicit, explicit operator\r\n    //\r\n\r\n    ///// <summary>");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit"));
-            this.Write(" operator</summary>\r\n    ///// <returns>");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" value.</returns>\r\n    //public static ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit"));
-            this.Write(" operator ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write("(");
+            this.Write(@"
+    /// <summary>return value string.</summary>
+    /// <returns>
+    /// <b>ValueString</b> : if HasValue is true<br/>
+    /// <b>""~Null~""</b> : if IsNull is true<br/>
+    /// <b>""~Undef~""</b> : if IsUndefined is true
+    /// </returns>
+    string ValueString
+        => HasValue ? $""{m_value}"" : (IsNull ? sNull : sUndef);
+
+
+    //
+    // implicit, explicit operator
+    //
+
+    /// <summary>explicit(明示的) operator</summary>
+    public static explicit operator ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value)\r\n    //    => (");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(")value.GetOrNull();\r\n\r\n    /// <summary>");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit"));
+            this.Write(" value)\r\n        => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(")value.GetOrThrow();\r\n\r\n    /// <summary>");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)"));
             this.Write(" operator</summary>\r\n    /// <returns>");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value.</returns>\r\n    public static ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit"));
-            this.Write(" operator ");
+            this.Write(" value.</returns>\r\n    public static implicit operator ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(");
+            this.Write("(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" value)\r\n        => new(value);\r\n\r\n");
+ if (IsValueType) { 
+            this.Write("    /// <summary>explicit(明示的) operator</summary>\r\n    /// <returns>");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" value)\r\n        => new ");
+            this.Write(" value.</returns>\r\n    public static explicit operator ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(value);\r\n\r\n\r\n    //\r\n    // Equals, IEquatable<");
+            this.Write(" value)\r\n        => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")value.GetOrNull();\r\n\r\n    /// <summary>");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)"));
+            this.Write(" operator</summary>\r\n    /// <returns>");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(">\r\n    //\r\n\r\n    /// <summary>Returns a value indicating whether this instance is" +
-                    " same value to a specified ");
+            this.Write(" value.</returns>\r\n    public static implicit operator ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value.</summary>\r\n    /// <returns>true if other has the same value as this inst" +
-                    "ance; otherwise, false.</returns>\r\n    public bool Equals(");
+            this.Write("(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(" value)\r\n        => new(value);\r\n\r\n");
+ } 
+            this.Write("\r\n    //\r\n    // Equals, IEquatable<");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(">\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" other)\r\n        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value" +
-                    ");\r\n\r\n    /// <summary>Returns a value indicating whether this instance is same " +
-                    "value to a specified object.</summary>\r\n    /// <returns>true if obj is an insta" +
-                    "nce of ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" or ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" and equals the value of this instance; otherwise, false.</returns>\r\n    public o" +
-                    "verride bool Equals(object? obj)\r\n        => obj is ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" ts ? Equals(ts) : base.Equals(obj);\r\n        \r\n    public bool Equals(");
+                    ");\r\n        \r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@" y)
-        => x.Equals(y.m_state) && x.Equals(y.m_value);
+            this.Write(" y)\r\n        => x.Equals(y);\r\n\r\n    /// <inheritdoc/>\r\n    public override bool E" +
+                    "quals(object? obj)\r\n        => obj is ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(@" ts && Equals(ts);
 
 
     //
@@ -381,25 +412,7 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@" y)
-        => !x.Equals(y);
-
-    /// <summary>Returns a value indicating whether two instances are same value.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator ==(in ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" x, in ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(@" y)
-        => x.Equals(y);
-
-    /// <summary>Returns a value indicates whether two instances are different values.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator !=(in ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" x, in ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" y)\r\n        => !x.Equals(y);\r\n\r\n");
+            this.Write(" y)\r\n        => !(x == y);\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Comparable)) { 
             this.Write("\r\n    //\r\n    // CompareTo, IComparable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -416,8 +429,8 @@ using System.Diagnostics.CodeAnalysis;
     /// </returns>
     public int CompareTo(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" other)\r\n        => CheckState(this, other, out _) == UnitOfState.Value\r\n        " +
-                    "    ? m_value.CompareTo(other.m_value)\r\n            : 0;\r\n\r\n");
+            this.Write(" other)\r\n        => CheckState(this, other, out _) == TernaryState.Value\r\n       " +
+                    "    ? m_value.CompareTo(other.m_value)\r\n           : 0;\r\n\r\n");
  } 
  if (HasFlag(UnitGenerateOptions.Comparable) && !HasFlag(UnitGenerateOptions.WithoutComparisonOperator)) { 
             this.Write("\r\n    //\r\n    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and W" +
@@ -426,26 +439,26 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" y)\r\n        => CheckState(x, y, out _) == UnitOfState.Value\r\n            ? x.m_v" +
-                    "alue > y.m_value\r\n            : false;\r\n\r\n    /// <summary>operator &lt;</summar" +
-                    "y>\r\n    public static bool operator <(in ");
+            this.Write(" y)\r\n        => CheckState(x, y, out _) == TernaryState.Value\r\n            ? x.m_" +
+                    "value > y.m_value\r\n            : false;\r\n\r\n    /// <summary>operator &lt;</summa" +
+                    "ry>\r\n    public static bool operator <(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" y)\r\n        => CheckState(x, y, out _) == UnitOfState.Value\r\n            ? x.m_v" +
-                    "alue < y.m_value\r\n            : false;\r\n\r\n    /// <summary>operator &gt;=</summa" +
-                    "ry>\r\n    public static bool operator >=(in ");
+            this.Write(" y)\r\n        => CheckState(x, y, out _) == TernaryState.Value\r\n            ? x.m_" +
+                    "value < y.m_value\r\n            : false;\r\n\r\n    /// <summary>operator &gt;=</summ" +
+                    "ary>\r\n    public static bool operator >=(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" y)\r\n        => CheckState(x, y, out _) == UnitOfState.Value\r\n            ? x.m_v" +
-                    "alue >= y.m_value\r\n            : false;\r\n\r\n    /// <summary>operator &lt;=</summ" +
-                    "ary>\r\n    public static bool operator <=(in ");
+            this.Write(" y)\r\n        => CheckState(x, y, out _) == TernaryState.Value\r\n            ? x.m_" +
+                    "value >= y.m_value\r\n            : false;\r\n\r\n    /// <summary>operator &lt;=</sum" +
+                    "mary>\r\n    public static bool operator <=(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" y)\r\n        => CheckState(x, y, out _) == UnitOfState.Value\r\n            ? x.m_v" +
-                    "alue <= y.m_value\r\n            : false;\r\n\r\n");
+            this.Write(" y)\r\n        => CheckState(x, y, out _) == TernaryState.Value\r\n            ? x.m_" +
+                    "value <= y.m_value\r\n            : false;\r\n\r\n");
  } 
  if (Type == "Guid" || Type == "System.Guid") { 
             this.Write("\r\n    //\r\n    // Guid\r\n    //\r\n\r\n    /// <summary>NewGuid</summary>\r\n    /// <ret" +
@@ -544,7 +557,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(Math.Max(x.m_value, y.m_value))\r\n            : result;\r\n\r\n    /// <summary>Max</" +
                     "summary>\r\n    public static ");
@@ -555,7 +568,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(Math.Max(x.m_value, y.m_value))\r\n            : result;\r\n\r\n");
  } 
@@ -567,22 +580,22 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? x.m_value\r\n            : result;\r\n\r\n" +
-                    "    /// <summary>operator false</summary>\r\n    public static ");
+            this.Write(" result) == TernaryState.Value\r\n            ? x.m_value\r\n            : result;\r\n\r" +
+                    "\n    /// <summary>operator false</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" operator false(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? !x.m_value\r\n            : result;\r\n\r" +
-                    "\n    /// <summary>operator !</summary>\r\n    public static ");
+            this.Write(" result) == TernaryState.Value\r\n            ? !x.m_value\r\n            : result;\r\n" +
+                    "\r\n    /// <summary>operator !</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" operator !(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? !x.m_value\r\n            : result;\r\n\r" +
-                    "\n");
+            this.Write(" result) == TernaryState.Value\r\n            ? !x.m_value\r\n            : result;\r\n" +
+                    "\r\n");
  } 
  if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { 
             this.Write("\r\n    //\r\n    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator" +
@@ -594,7 +607,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -607,7 +620,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -620,7 +633,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -633,7 +646,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -646,7 +659,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => CheckState(x, y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -661,7 +674,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -672,7 +685,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -685,7 +698,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" y)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -698,7 +711,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" y)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -711,7 +724,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" y)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -724,7 +737,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" y)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -737,7 +750,7 @@ if (IsIntegralNumericType()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" y)\r\n        => CheckState(x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" result) == UnitOfState.Value\r\n            ? new ");
+            this.Write(" result) == TernaryState.Value\r\n            ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));

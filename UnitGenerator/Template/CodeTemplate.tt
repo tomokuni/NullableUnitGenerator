@@ -48,22 +48,34 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     //
 
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(<#= Name #> value)
+    public <#= Name #>(in <#= Name #> value)
     {
-        m_state = UnitOfState.Value;
-        m_value = value.m_value;
+        (m_state, m_value) = (value.m_state, value.m_value);
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
         this.Validate();
 <# } #>
+    }
+
+    /// <summary>Complete Constructor</summary>
+    public <#= Name #>(in TernaryState state, in <#= Type #> value = default)
+    {
+        (m_state, m_value) = (state, value) switch
+        {
+            (TernaryState.Undef, _) => (state, default),
+            (TernaryState.Null, _) => (state, default),
+<# if (!IsValueType) { #>
+            (_, null) => (state, default),
+<# } #>
+            _ => (state, value)
+        };
     }
 
 <# if (IsValueType) { #>
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(<#= Type #> value)
+    public <#= Name #>(in <#= Type #> value)
     {
-        m_state = UnitOfState.Value;
-        m_value = (<#= Type #>)value;
+        (m_state, m_value) = (TernaryState.Value, value);
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
         this.Validate();
@@ -72,18 +84,13 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 <# } #>
 
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(<#= TypeNullable #> value)
+    public <#= Name #>(in <#= TypeNullable #> value)
     {
-        if (value is not null)
+        (m_state, m_value) = value switch
         {
-            m_state = UnitOfState.Value;
-            m_value = (<#= Type #>)value;
-        }
-        else
-        {
-            m_state = UnitOfState.Null;
-            m_value = default(<#= Type #>);
-        }
+            null => (TernaryState.Null, default),
+            _ => (TernaryState.Value, (<#= Type #>)value),
+        };
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
         this.Validate();
@@ -92,41 +99,59 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
 
     //
-    // static
+    // static define
     //
 
-    /// <summary>undefined value instance.</summary>
-    public static <#= Name #> UndefValue
-        => new();
+    /// <summary>Display string as Undef.</summary>
+    public static readonly string sUndef = $"~{TernaryState.Undef}~";
 
-    /// <summary>null value instance.</summary>
-    public static <#= Name #> NullValue
-        => new((<#= Type #>?)null);
+    /// <summary>Display string as Null.</summary>
+    public static readonly string sNull = $"~{TernaryState.Null}~";
 
-    /// <summary>default value instance.</summary>
-    public static <#= Name #> DefaultValue
-        => new(default(<#= Type #>));
 
-    /// <summary>default value instance.</summary>
-    public static Type GetPrimitiveType
-        => typeof(<#= Type #>);
+    //
+    // static property
+    //
+
+    /// <summary>Undefined value instance.</summary>
+    public static <#= Name #> UndefValue { get; } = new(TernaryState.Undef, default);
+
+    /// <summary>Null value instance.</summary>
+    public static <#= Name #> NullValue { get; } = new(TernaryState.Null, default);
+
+    /// <summary>Value state default value instance.</summary>
+    public static <#= Name #> ValueStateDefaultValue { get; } = new(TernaryState.Value, default);
+
+    static readonly Type BaseType = typeof(<#= Type #>);
+    /// <summary>Get base type.</summary>
+    public static Type GetBaseType() => BaseType;
+
+    /// <summary>Is base type nullable?</summary>
+    public static bool IsNullable { get; } 
+        = !BaseType.IsValueType  // 値型でない -> Nullable
+        || Nullable.GetUnderlyingType(BaseType) != null;  // 非Null許容型が取得できる -> Null許容演算子が指定されている -> Nullable
+
+
+    //
+    // static method
+    //
 
     /// <summary>Determines if either value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>UnitOfState.Undef</b> – if either value is undefined.<br/>
-    /// <b>UnitOfState.Null</b> – if either value is null.<br/>
-    /// <b>UnitOfState.Value</b> – if either value is set.
+    /// <b>TernaryState.Undef</b> – if either value is undefined.<br/>
+    /// <b>TernaryState.Null</b> – if either value is null.<br/>
+    /// <b>TernaryState.Value</b> – if either value is set.
     /// </returns>
-    public static UnitOfState CheckState(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
+    public static TernaryState CheckState(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
     {
         var (state, outVal) = (x, y) switch
         {
-            { x.IsUndef: true } => (UnitOfState.Undef, <#= Name #>.UndefValue),
-            { y.IsUndef: true } => (UnitOfState.Undef, <#= Name #>.UndefValue),
-            { x.IsNull: true } => (UnitOfState.Null, <#= Name #>.NullValue),
-            { y.IsNull: true } => (UnitOfState.Null, <#= Name #>.NullValue),
-            _ => (UnitOfState.Value, <#= Name #>.DefaultValue),
+            { x.IsUndef: true } => (TernaryState.Undef, <#= Name #>.UndefValue),
+            { y.IsUndef: true } => (TernaryState.Undef, <#= Name #>.UndefValue),
+            { x.IsNull: true } => (TernaryState.Null, <#= Name #>.NullValue),
+            { y.IsNull: true } => (TernaryState.Null, <#= Name #>.NullValue),
+            _ => (TernaryState.Value, <#= Name #>.ValueStateDefaultValue),
         };
         result = outVal;
         return state;
@@ -135,17 +160,17 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     /// <summary>Determine if a value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>UnitOfState.Undef</b> – if value is undefined.<br/>
-    /// <b>UnitOfState.Null</b> – if value is null.<br/>
-    /// <b>UnitOfState.Value</b> – if value is set.
+    /// <b>TernaryState.Undef</b> – if value is undefined.<br/>
+    /// <b>TernaryState.Null</b> – if value is null.<br/>
+    /// <b>TernaryState.Value</b> – if value is set.
     /// </returns>
-    public static UnitOfState CheckState(in <#= Name #> x, out <#= Name #> result)
+    public static TernaryState CheckState(in <#= Name #> x, out <#= Name #> result)
     {
         var (state, outVal) = x switch
         {
-            { IsUndef: true } => (UnitOfState.Undef, <#= Name #>.UndefValue),
-            { IsNull: true } => (UnitOfState.Null, <#= Name #>.NullValue),
-            _ => (UnitOfState.Value, <#= Name #>.DefaultValue),
+            { IsUndef: true } => (TernaryState.Undef, <#= Name #>.UndefValue),
+            { IsNull: true } => (TernaryState.Null, <#= Name #>.NullValue),
+            _ => (TernaryState.Value, <#= Name #>.ValueStateDefaultValue),
         };
         result = outVal;
         return state;
@@ -153,19 +178,11 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
 
     //
-    // const
-    //
-
-    public const string DISPLAY_STRING_AS_UNDEF = "~undef~";
-    public const string DISPLAY_STRING_AS_NULL = "~null~";
-
-
-    //
     // backing field
     //
 
     internal readonly <#= Type #> m_value = default;
-    internal readonly UnitOfState m_state = UnitOfState.Undef;
+    internal readonly TernaryState m_state = TernaryState.Undef;
 
 
     //
@@ -175,31 +192,30 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if undefined</returns>
     public bool IsUndef
-        => m_state == UnitOfState.Undef;
+        => m_state == TernaryState.Undef;
 
     /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if null</returns>
     public bool IsNull
-        => m_state == UnitOfState.Null;
+        => m_state == TernaryState.Null;
 
     /// <summary><see langword="true"/> if undefined or null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if null or undefined</returns>
     public bool IsUndefOrNull
-        => m_state != UnitOfState.Value;
-
-    /// <summary><see langword="true"/> if default; otherwise, <see langword="false"/>.</summary>
-    /// <returns><b><see langword="true"/></b> : if default</returns>
-    public bool IsDefault
-        => m_state == UnitOfState.Value && m_value == default;
+        => m_state != TernaryState.Value;
 
     /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
     public bool HasValue
-        => m_state == UnitOfState.Value;
+        => m_state == TernaryState.Value;
 
     /// <summary>return value state.</summary>
-    /// <returns><b>UnitOfState.Undef</b><br/><b>UnitOfState.Null</b><br/><b>UnitOfState.Value</b></returns>
-    public UnitOfState State
+    /// <returns>
+    /// <b>Undef</b><br/>
+    /// <b>Null</b><br/>
+    /// <b>Value</b>
+    /// </returns>
+    public TernaryState State
         => m_state;
 
 
@@ -208,50 +224,69 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     //
 
     /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException()</summary>
-    /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("~undef~")</b> : undefined<br/><b>throw InvalidOperationException("~null~")</b> : null</returns>
+    /// <returns>
+    /// <b>value</b> : if HasValue is true<br/>
+    /// <b>throw InvalidOperationException("Value is Null.")</b> : if IsNull is true<br/>
+    /// <b>throw InvalidOperationException("Value is Undef.")</b> : if IsUndef is true
+    /// </returns>
     public <#= Type #> Value
-        => HasValue ? m_value : throw new InvalidOperationException(IsNull ? DISPLAY_STRING_AS_NULL : DISPLAY_STRING_AS_UNDEF);
+        => GetOrThrow();
 
     /// <inheritdoc cref="Value" />
     public <#= Type #> AsPrimitive()
         => Value;
 
-    /// <summary>return inner value</summary>
-    /// <returns>inner value</returns>
+    /// <summary>return raw value</summary>
+    /// <returns>inner raw value</returns>
     public <#= Type #>  GetRawValue()
         => m_value;
 
-    /// <inheritdoc cref="Value" />
-    public <#= Type #>  GetOrThrow()
-        => Value;
-
-    /// <summary>return value if HasValue is true; otherwise, <see langword="default"/></summary>
-    /// <returns><b>value</b> : if assigned and not null<br/><b><see langword="default"/></b> : otherwise</returns>
-    public <#= Type #> GetOrDefault(bool treatUndefAsNull = false)
-        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? default : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
+    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>defaultValue</b> : otherwise
+    /// </returns>
+    public <#= Type #> GetOr(in <#= Type #> defaultValue)
+        => HasValue ? m_value : defaultValue;
 
 <# if (IsValueType) { #>
-    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
-    /// <returns><b>value</b> : if assigned and not null<br/><b>defaultValue</b> : otherwise</returns>
-    public <#= TypeNullable #> GetOr(<#= TypeNullable #> defaultValue, bool treatUndefAsNull = false)
-        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? defaultValue : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
+    /// <inheritdoc cref="GetOr" />
+    public <#= TypeNullable #> GetOr(in <#= TypeNullable #> defaultValue)
+        => HasValue ? m_value : defaultValue;
 <# } #>
 
-    /// <inheritdoc cref="GetOr" />
-    public <#= Type #> GetOr(<#= Type #> defaultValue, bool treatUndefAsNull = false)
-        => HasValue ? m_value : ((IsNull || treatUndefAsNull) ? defaultValue : throw new InvalidOperationException(DISPLAY_STRING_AS_UNDEF));
+    /// <summary>return value if HasValue is true; otherwise, <see langword="default"/></summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b><see langword="default"/></b> : otherwise
+    /// </returns>
+    public <#= Type #> GetOrDefault()
+        => GetOr(default);
 
-    /// <summary>return value if HasValue is true; otherwise, null</summary>
-    /// <returns><b>value</b> : if HasValue is true<br/><b><see langword="null"/></b> : otherwise</returns>
+    /// <summary>return value if HasValue is true; otherwise, <see langword="null"/></summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b><see langword="null"/></b> : otherwise
+    /// </returns>
     public <#= TypeNullable #> GetOrNull()
-        => HasValue ? m_value : null;
+        => GetOr(null);
+
+    /// <inheritdoc cref="Value" />
+    public <#= Type #> GetOrThrow()
+        => (m_state, m_value) switch
+        {
+            (TernaryState.Value, _) => m_value,
+            (TernaryState.Null, _) => throw new InvalidOperationException($"Value is {TernaryState.Null}."),
+            _ => throw new InvalidOperationException($"Value is {TernaryState.Undef}."),
+        };
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name="value">value</param>
+    /// <param name="defaultValue">defaultValue</param>
     /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
-    public bool TryGet(out <#= Type #> value)
+    public bool TryGet(out <#= Type #> value, in <#= Type #> defaultValue = default)
     {
-        value = m_value;
+        value = HasValue ? m_value : defaultValue;
         return HasValue;
     }
 
@@ -270,11 +305,11 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     // GetHashCode
     //
 
-    /// <summary>Returns the hash code for this instance.</summary>
-    /// <returns>A 32-bit signed integer hash code.</returns>
+    /// <inheritdoc/>
     public override int GetHashCode()
         => (m_state, m_value).GetHashCode();
 
+    /// <inheritdoc/>
     public int GetHashCode(<#= Name #> obj)
         => (obj.m_state, obj.m_value).GetHashCode();
 
@@ -287,43 +322,62 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     /// <returns>The current string.</returns>
     public override string ToString()
 <# if (ToStringFormat == null) { #>
-        => HasValue ? m_value.ToString() : $"{(IsUndef ? DISPLAY_STRING_AS_UNDEF : DISPLAY_STRING_AS_NULL)}";
+        => ValueString;
 <# } else { #>
-        => string.Format("<#= ToStringFormat #>", m_value);
+        => HasValue ? string.Format("<#= ToStringFormat #>", m_value) : (IsNull ? sNull : sUndef);
 <# } #>
+
+    /// <summary>return value string.</summary>
+    /// <returns>
+    /// <b>ValueString</b> : if HasValue is true<br/>
+    /// <b>"~Null~"</b> : if IsNull is true<br/>
+    /// <b>"~Undef~"</b> : if IsUndefined is true
+    /// </returns>
+    string ValueString
+        => HasValue ? $"{m_value}" : (IsNull ? sNull : sUndef);
 
 
     //
     // implicit, explicit operator
     //
 
-    ///// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
-    ///// <returns><#= TypeNullable #> value.</returns>
-    //public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= TypeNullable #>(<#= Name #> value)
-    //    => (<#= TypeNullable #>)value.GetOrNull();
+    /// <summary>explicit(明示的) operator</summary>
+    public static explicit operator <#= Type #>(in <#= Name #> value)
+        => (<#= Type #>)value.GetOrThrow();
 
-    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator</summary>
+    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)" #> operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static <#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit" : "explicit" #> operator <#= Name #>(<#= TypeNullable #> value)
-        => new <#= Name #>(value);
+    public static implicit operator <#= Name #>(in <#= Type #> value)
+        => new(value);
 
+<# if (IsValueType) { #>
+    /// <summary>explicit(明示的) operator</summary>
+    /// <returns><#= TypeNullable #> value.</returns>
+    public static explicit operator <#= TypeNullable #>(in <#= Name #> value)
+        => (<#= TypeNullable #>)value.GetOrNull();
+
+    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)" #> operator</summary>
+    /// <returns><#= Name #> value.</returns>
+    public static implicit operator <#= Name #>(in <#= TypeNullable #> value)
+        => new(value);
+
+<# } #>
 
     //
     // Equals, IEquatable<<#= Name #>>
     //
 
-    /// <summary>Returns a value indicating whether this instance is same value to a specified <#= Name #> value.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
+    /// <inheritdoc/>
     public bool Equals(<#= Name #> other)
         => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
-
-    /// <summary>Returns a value indicating whether this instance is same value to a specified object.</summary>
-    /// <returns>true if obj is an instance of <#= Type #> or <#= Name #> and equals the value of this instance; otherwise, false.</returns>
-    public override bool Equals(object? obj)
-        => obj is <#= Name #> ts ? Equals(ts) : base.Equals(obj);
         
+    /// <inheritdoc/>
     public bool Equals(<#= Name #> x, <#= Name #> y)
-        => x.Equals(y.m_state) && x.Equals(y.m_value);
+        => x.Equals(y);
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+        => obj is <#= Name #> ts && Equals(ts);
 
 
     //
@@ -338,17 +392,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     /// <summary>Returns a value indicates whether two instances are different values.</summary>
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
     public static bool operator !=(in <#= Name #> x, in <#= Name #> y)
-        => !x.Equals(y);
-
-    /// <summary>Returns a value indicating whether two instances are same value.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator ==(in <#= Name #> x, in <#= Type #> y)
-        => x.Equals(y);
-
-    /// <summary>Returns a value indicates whether two instances are different values.</summary>
-    /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator !=(in <#= Name #> x, in <#= Type #> y)
-        => !x.Equals(y);
+        => !(x == y);
 
 <# if (HasFlag(UnitGenerateOptions.Comparable)) { #>
 
@@ -365,9 +409,9 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     /// <b>Greater than zero</b> – This instance is greater than value.
     /// </returns>
     public int CompareTo(<#= Name #> other)
-        => CheckState(this, other, out _) == UnitOfState.Value
-            ? m_value.CompareTo(other.m_value)
-            : 0;
+        => CheckState(this, other, out _) == TernaryState.Value
+           ? m_value.CompareTo(other.m_value)
+           : 0;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.Comparable) && !HasFlag(UnitGenerateOptions.WithoutComparisonOperator)) { #>
@@ -378,25 +422,25 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator &gt;</summary>
     public static bool operator >(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == UnitOfState.Value
+        => CheckState(x, y, out _) == TernaryState.Value
             ? x.m_value > y.m_value
             : false;
 
     /// <summary>operator &lt;</summary>
     public static bool operator <(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == UnitOfState.Value
+        => CheckState(x, y, out _) == TernaryState.Value
             ? x.m_value < y.m_value
             : false;
 
     /// <summary>operator &gt;=</summary>
     public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == UnitOfState.Value
+        => CheckState(x, y, out _) == TernaryState.Value
             ? x.m_value >= y.m_value
             : false;
 
     /// <summary>operator &lt;=</summary>
     public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == UnitOfState.Value
+        => CheckState(x, y, out _) == TernaryState.Value
             ? x.m_value <= y.m_value
             : false;
 
@@ -505,13 +549,13 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>Min</summary>
     public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
             : result;
 
     /// <summary>Max</summary>
     public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
             : result;
 
@@ -524,19 +568,19 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator true</summary>
     public static <#= Type #> operator true(<#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? x.m_value
             : result;
 
     /// <summary>operator false</summary>
     public static <#= Type #> operator false(<#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? !x.m_value
             : result;
 
     /// <summary>operator !</summary>
     public static <#= Type #> operator !(<#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? !x.m_value
             : result;
 
@@ -549,31 +593,31 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator +</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)))
             : result;
 
     /// <summary>operator -</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)))
             : result;
 
     /// <summary>operator *</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)))
             : result;
 
     /// <summary>operator /</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)))
             : result;
 
     /// <summary>operator %</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)))
             : result;
 
@@ -586,43 +630,43 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator ++</summary>
     public static <#= Name #> operator ++(in <#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)))
             : result;
 
     /// <summary>operator --</summary>
     public static <#= Name #> operator --(in <#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)))
             : result;
 
     /// <summary>operator +</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)))
             : result;
 
     /// <summary>operator -</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)))
             : result;
 
     /// <summary>operator *</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)))
             : result;
 
     /// <summary>operator /</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)))
             : result;
 
     /// <summary>operator %</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == UnitOfState.Value
+        => CheckState(x, out <#= Name #> result) == TernaryState.Value
             ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)))
             : result;
 

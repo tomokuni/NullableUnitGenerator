@@ -10,7 +10,7 @@ namespace NullableUnitGenerator;
 /// 値の状態
 /// </summary>
 [Flags]
-public enum UnitOfState
+public enum TernaryState
 {
     /// <summary>Undefined State</summary>
     Undef = 0,
@@ -20,5 +20,6 @@ public enum UnitOfState
 
     /// <summary>Value State</summary>
     Value = 3,
+
 }
 

@@ -15,25 +15,8 @@ namespace Estable.TernaryType;
 /// <summary>
 /// 3状態を表現するジェネリック版インターフェイス ITernaryStateValue&lt;T&gt; (Undef, Null, Value)
 /// </summary>
-public interface ITernaryType<T> where T : IEquatable<T>
+public interface ITernaryType<T>
 {
-    //
-    // static property
-    //
-
-    /// <summary>default value instance.</summary>
-    public static Type GetBaseType()
-        => typeof(T);
-
-
-    //
-    // const
-    //
-
-    public const string DISPLAY_STRING_AS_UNDEF = "~undef~";
-    public const string DISPLAY_STRING_AS_NULL = "~null~";
-
-
     //
     // get state
     //
@@ -59,7 +42,11 @@ public interface ITernaryType<T> where T : IEquatable<T>
     public bool HasValue { get; }
 
     /// <summary>return value state.</summary>
-    /// <returns><b>TernaryState.Undef</b><br/><b>TernaryState.Null</b><br/><b>TernaryState.Value</b></returns>
+    /// <returns>
+    /// <b>Undef</b><br/>
+    /// <b>Null</b><br/>
+    /// <b>Value</b>
+    /// </returns>
     public TernaryState State { get; }
 
 
@@ -67,19 +54,53 @@ public interface ITernaryType<T> where T : IEquatable<T>
     // get value
     //
 
-    /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException("NoValue")</summary>
-    /// <returns><b>value</b> : if HasValue is true<br/><b>throw InvalidOperationException("NoValue")</b> : otherwise</returns>
+    /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException()</summary>
+    /// <returns>
+    /// <b>value</b> : if HasValue is true<br/>
+    /// <b>throw InvalidOperationException("IsNull")</b> : if IsNull is true<br/>
+    /// <b>throw InvalidOperationException("IsUndef")</b> : if IsUndef is true
+    /// </returns>
     public T Value { get; }
 
-    /// <inheritdoc cref="Value" />
+    /// <summary>return raw value</summary>
+    /// <returns>raw value</returns>
+    [return: MaybeNull] 
     public T GetRawValue();
 
-    //
-    // Equals
-    //
+    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>defaultValue</b> : otherwise
+    /// </returns>
+    [return: MaybeNull]
+    public T? GetOr([AllowNull] T? defaultValue = default);
 
-    public bool Equals(ITernaryType<T>? other);
+    /// <summary>return value if HasValue is true; otherwise, <see langword="default(T)"/></summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b><see langword="default(T)"/></b> : otherwise
+    /// </returns>
+    [return: MaybeNull]
+    public T? GetOrDefault();
 
-    public bool Equals(ITernaryType<T>? x, ITernaryType<T>? y);
+    /// <summary>return value if HasValue is true; otherwise, <see langword="null"/></summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b><see langword="null"/></b> : otherwise
+    /// </returns>
+    [return: MaybeNull]
+    public T? GetOrNull();
+
+    /// <inheritdoc cref="Value" />
+    [return: NotNull]
+    public T GetOrThrow();
+
+    /// <summary>
+    /// return true and out parameter value if HasValue is true; otherwise, false.
+    /// </summary>
+    /// <param name="value">value</param>
+    /// <param name="defaultValue">defaultValue</param>
+    /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
+    public bool TryGet(out T value, [AllowNull] T defaultValue = default);
 
 }

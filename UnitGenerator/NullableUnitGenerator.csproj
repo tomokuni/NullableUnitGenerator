@@ -17,8 +17,8 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>0.0.1.9</VersionPrefix>
-        <VersionSuffix>beta-20230219</VersionSuffix>
+        <VersionPrefix>0.0.2.1</VersionPrefix>
+        <VersionSuffix>beta-20230227</VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -64,7 +64,7 @@
         <EmbeddedResource Include="Template\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
         <EmbeddedResource Include="Template\UnitOfHelper.cs" LogicalName="UnitOfHelper.cs" />
         <EmbeddedResource Include="Template\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
-        <EmbeddedResource Include="Template\UnitOfState.cs" LogicalName="UnitOfState.cs" />
+        <EmbeddedResource Include="Template\TernaryState.cs" LogicalName="UnitOfState.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -89,7 +89,7 @@
         <Compile Include="Template\UnitOfAttribute.cs" />
         <Compile Include="Template\UnitOfHelper.cs" />
         <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
-        <Compile Include="Template\UnitOfState.cs" />
+        <Compile Include="Template\TernaryState.cs" />
     </ItemGroup>
 
     <ItemGroup>

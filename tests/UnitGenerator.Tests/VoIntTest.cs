@@ -25,7 +25,7 @@ public class VoIntTest
         //
         Assert.Equal(a, VoInt.UndefValue);
         Assert.Equal(b, VoInt.NullValue);
-        Assert.Equal(c, VoInt.DefaultValue);
+        Assert.Equal(c, VoInt.ValueStateDefaultValue);
 
         //
         // Equals, ==, !=
