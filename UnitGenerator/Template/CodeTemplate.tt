@@ -409,7 +409,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     /// <b>Greater than zero</b> – This instance is greater than value.
     /// </returns>
     public int CompareTo(<#= Name #> other)
-        => CheckState(this, other, out _) == TernaryState.Value
+        => HasValue && other.HasValue
            ? m_value.CompareTo(other.m_value)
            : 0;
 
@@ -422,27 +422,27 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator &gt;</summary>
     public static bool operator >(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == TernaryState.Value
-            ? x.m_value > y.m_value
-            : false;
+        => x.HasValue && y.HasValue
+           ? x.m_value > y.m_value
+           : false;
 
     /// <summary>operator &lt;</summary>
     public static bool operator <(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == TernaryState.Value
-            ? x.m_value < y.m_value
-            : false;
+        => x.HasValue && y.HasValue
+           ? x.m_value < y.m_value
+           : false;
 
     /// <summary>operator &gt;=</summary>
     public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == TernaryState.Value
-            ? x.m_value >= y.m_value
-            : false;
+        => x.HasValue && y.HasValue
+           ? x.m_value >= y.m_value
+           : false;
 
     /// <summary>operator &lt;=</summary>
     public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out _) == TernaryState.Value
-            ? x.m_value <= y.m_value
-            : false;
+        => x.HasValue && y.HasValue
+           ? x.m_value <= y.m_value
+           : false;
 
 <# } #>
 <# if (Type == "Guid" || Type == "System.Guid") { #>
@@ -505,11 +505,10 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     public static <#= Name #> Parse(string s)
 <# if (Type == "string") { #>
         => new <#= Name #>(s);
-
 <# } else { #>
         => new <#= Name #>(<#= Type #>.Parse(s));
-
 <# } #>
+
     /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
     /// <returns>true if s was converted successfully; otherwise, false.</returns>
     public static bool TryParse(string s, out <#= Name #> result)
@@ -549,15 +548,15 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>Min</summary>
     public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>Max</summary>
     public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(Math.Max(x.m_value, y.m_value))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
 <# } #>
 <# if (Type == "bool") { #>
@@ -568,21 +567,21 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator true</summary>
     public static <#= Type #> operator true(<#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? x.m_value
-            : result;
+        => x.HasValue
+           ? x.m_value
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator false</summary>
     public static <#= Type #> operator false(<#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? !x.m_value
-            : result;
+        => x.HasValue
+           ? !x.m_value
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator !</summary>
     public static <#= Type #> operator !(<#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? !x.m_value
-            : result;
+        => x.HasValue
+           ? !x.m_value
+           : x.IsUndef ? UndefValue : NullValue;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { #>
@@ -593,33 +592,33 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator +</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator -</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator *</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator /</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator %</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
-        => CheckState(x, y, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)))
-            : result;
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { #>
@@ -630,45 +629,45 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 
     /// <summary>operator ++</summary>
     public static <#= Name #> operator ++(in <#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)))
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator --</summary>
     public static <#= Name #> operator --(in <#= Name #> x)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)))
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator +</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)))
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator -</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)))
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator *</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)))
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator /</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)))
+           : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator %</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Type #> y)
-        => CheckState(x, out <#= Name #> result) == TernaryState.Value
-            ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)))
-            : result;
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)))
+           : x.IsUndef ? UndefValue : NullValue;
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
@@ -754,7 +753,7 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
 <# } else if (IsUlid()) { #>
             return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
 <# } else if(Type == "string")  { #>
-                return new <#= Name #>(reader.GetString());
+            return new <#= Name #>(reader.GetString());
 <# } else { #>
             return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
 <# } #>

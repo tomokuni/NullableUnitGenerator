@@ -15,7 +15,7 @@ namespace Estable.TernaryType;
 /// <summary>
 /// 3状態を表現するジェネリック構造体 TernaryState&lt;T&gt;  (Undef, Null, Value)
 /// </summary>
-public readonly struct TernaryTypeS<T> : IEquatable<TernaryTypeS<T>>, IEqualityComparer<TernaryTypeS<T>>  where T : struct, IEquatable<T>
+public readonly struct TernaryTypeS<T> : IEquatable<TernaryTypeS<T>>, IEqualityComparer<TernaryTypeS<T>> where T : struct, IEquatable<T>
 {
     //
     // Constructor
@@ -81,7 +81,7 @@ public readonly struct TernaryTypeS<T> : IEquatable<TernaryTypeS<T>>, IEqualityC
     public static Type GetBaseType() => BaseType;
 
     /// <summary>Is base type nullable?</summary>
-    public static bool IsNullable { get; } 
+    public static bool IsNullable { get; }
         = !BaseType.IsValueType  // 値型でない -> Nullable
         || Nullable.GetUnderlyingType(BaseType) != null;  // 非Null許容型が取得できる -> Null許容演算子が指定されている -> Nullable
 

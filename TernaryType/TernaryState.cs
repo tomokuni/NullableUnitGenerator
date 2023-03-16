@@ -19,6 +19,6 @@ public enum TernaryState
     Null = 1,
 
     /// <summary>Value State</summary>
-    Value = 3,
+    Value = 2,
 }
 
