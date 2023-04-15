@@ -17,14 +17,14 @@
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
 
-        <VersionPrefix>2023.04.15</VersionPrefix>
-        <VersionSuffix>beta</VersionSuffix>
+        <VersionPrefix>0.0.2.9</VersionPrefix>
+        <VersionSuffix></VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
         <Description>C# Source Generator to create nullable value-object. Forked from UnitGenerator.</Description>
         <PackageReleaseNotes>beta</PackageReleaseNotes>
-
+ 
         <PackageVersion>$(Version)</PackageVersion>
         <Company>Estable</Company>
         <Authors>SEKIYA.T</Authors>
@@ -36,7 +36,7 @@
         <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <AssemblyVersion>$(Version)</AssemblyVersion>
