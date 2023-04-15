@@ -34,7 +34,7 @@ jobs:
 
   build:
     name: Build
-    if: startsWith(${{ env.TAG_NAME }}, 'refs/tags/')
+    if: startsWith(github.ref_name, 'refs/tags/')
     needs: [test]
     runs-on: ubuntu-latest
     steps:
