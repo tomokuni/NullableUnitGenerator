@@ -12,7 +12,7 @@ env:
   DOTNET_VERSION: 6.0.x
   # DOTNET_TFM: net6.0
   TAG_VERSION: $(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
-  REPOSITORY: ${{ (echo ${{ github.repository }} | sed -e "s#.*/##") }}
+  REPOSITORY: $(echo ${{ github.repository }} | sed -e "s#.*/##")
   
 jobs:
   test:
