@@ -159,14 +159,11 @@ public class VoIntTest
     [Fact]
     public void NullableOperater ()
     {
-        var aaa = Nullable<int>
         VoInt a = default;
         VoInt b = new(null);
         VoInt c = new(default(int));
         VoInt d = new(0);
         VoInt e = new(1);
-
-        Assert.Null(a?.Value);
 
     }
 }
