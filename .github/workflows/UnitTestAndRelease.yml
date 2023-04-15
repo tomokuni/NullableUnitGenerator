@@ -11,13 +11,16 @@ env:
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
   DOTNET_VERSION: 6.0.x
   DOTNET_TFM: netstandard2.0
-  TAG_VERSION: ${{ github.ref_name#//-/_}}
+  TAG_NAME: ${{ github.ref_name }}
   
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    steps:      
+    steps:
+    - name: TAG_VERSION
+      run: |
+        echo ${${{ env.TAG_NAME }}#*v}
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
@@ -31,7 +34,7 @@ jobs:
 
   build:
     name: Build
-    if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(${{ env.TAG_NAME }}, 'refs/tags/')
     needs: [test]
     runs-on: ubuntu-latest
     steps:
@@ -52,8 +55,8 @@ jobs:
       - name: Release Build & Pack
         # run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1} -p:TargetFrameworks=${{ env.DOTNET_TFM }}
         run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${{ env.TAG_VERSION }}
-        # env:
-        #   TAG_VERSION: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
+        env:
+          TAG_VERSION: ${${{ env.TAG_NAME }}#*v}
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
         with:
