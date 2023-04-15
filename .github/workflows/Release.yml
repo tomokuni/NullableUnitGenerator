@@ -1,84 +1,39 @@
 name: Release
+# tagがつけられたら、Releaseを作成する
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "tag: git tag you want create. (sample 1.0.0)"
-        required: true
-      dry-run:
-        description: "dry-run: true will never create release/nuget."
-        required: true
-        default: false
-        type: boolean
+  workflow_run:
+    workflows: ["add-tag"]
+    types: ["completed"]
 
 jobs:
-  build-dotnet:
+  publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
-    # pack nuget
+        dotnet-version: |
+          5.0.x
+          6.0.x
+          7.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c Release -p:Version=${{ env.GIT_TAG }}
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Pack
-      run: dotnet pack -c Release --no-build -p:Version=${{ env.GIT_TAG }} -o ./publish
-    - uses: actions/upload-artifact@v2
-      with:
-        name: nuget
-        path: ./publish
-    - uses: actions/upload-artifact@v2
-      with:
-        name: NullableUnitGenerator
-        path: UnitGenerator/bin/Release/netstandard2.0/NullableUnitGenerator.dll
+      run: dotnet build --configuration Release -p:Version=${{github.ref_name}}
+    
+    - name: UnitTest
+      run: dotnet test --configuration Release --no-build --verbosity normal
 
-  create-release:
-    if: github.event.inputs.dry-run == 'false'
-    needs: build-dotnet
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 6.0.x
-      # tag
-      - name: tag
-        run: git tag ${{ env.GIT_TAG }}
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          tags: true
-      # Create Releases
-      - uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.GIT_TAG }}
-          release_name: Ver.${{ env.GIT_TAG }}
-          draft: true
-          prerelease: false
-      # Download (All) Artifacts to current directory
-      - uses: actions/download-artifact@v2
-      # Upload to NuGet
-      - run: dotnet nuget push "./nuget/*.nupkg" -s https://www.nuget.org/api/v2/package -k ${{ secrets.NUGET_KEY }}
+    - name: Release that shit
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npm ci && npx semantic-release
 
-      # Upload to Releases
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./NullableUnitGenerator/NullableUnitGenerator.dll
-          asset_name: NullableUnitGenerator.dll
-          asset_content_type: application/octet-strea
+    - name: Create nuget packages
+      run: dotnet pack --configuration Release -p:Version=${{github.ref_name}} --no-restore --no-build
+
+    - name: Publish nuget packages
+      run: dotnet nuget push **/*.nupkg -s "https://nuget.pkg.github.com/YOUR_ORG/index.json"
+
