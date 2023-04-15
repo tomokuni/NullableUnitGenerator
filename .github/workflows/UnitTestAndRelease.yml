@@ -11,7 +11,7 @@ env:
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
   DOTNET_VERSION: 6.0.x
   # DOTNET_TFM: net6.0
-  TAG_VERSION: ${TAG_REF_NAME##*/v} # v0.0.0-abc
+  TAG_VERSION: ${{TAG_REF_NAME##*/v}} # v0.0.0-abc
 
 
 jobs:
