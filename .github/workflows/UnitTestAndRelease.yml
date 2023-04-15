@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: TAG_VERSION
       run: |
-        echo ${${{ env.TAG_NAME }}#*v}
+        echo ${${{ env.TAG_NAME }}#*m}
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
