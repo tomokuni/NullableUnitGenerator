@@ -19,6 +19,14 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
+    - name: Set version
+      id: version
+      run: echo "REPOSITORY=$ENV_1" >> $GITHUB_ENV
+        REPOSITORY=$(echo ${{ github.repository }} | sed -e "s#.*/##")
+        TAG_VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
+        echo "REPOSITORY=$REPOSITORY" >> $GITHUB_ENV
+        echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+        echo ${{ env.TAG_VERSION }}
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
