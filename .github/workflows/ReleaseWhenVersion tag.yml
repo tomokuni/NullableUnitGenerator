@@ -1,5 +1,10 @@
+# tagがつけられたら、Releaseを作成する
+
 name: Release when version tag.
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["add-tag"]
+    types: ["completed"]
 
 jobs:
   test:
@@ -54,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rid: [win-x64, linux-x64, osx-x64]
+        dotnet-version: ['6.0.x']
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
@@ -65,14 +70,14 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: release_url
-    - name: Setup .NET 6.0 (current)
+    - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ matrix.dotnet-version }}
     - name: Build
       run: |
-        dotnet publish ./UnitGenerator/NullableUnitGenerator.csproj  -c Release -r ${{ matrix.rid }} /p\:PublishSingleFile=true /p\:PublishTrimmed=true -o ./${{ matrix.rid }}
-        zip -r ${{ matrix.rid }} ./${{ matrix.rid }}
+        dotnet publish ./UnitGenerator/NullableUnitGenerator.csproj  -c Release /p\:PublishSingleFile=true /p\:PublishTrimmed=true
+        zip -r ./$
     - name: Get Release File Name & Upload URL
       id: get_release_info
       run: |
@@ -89,6 +94,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./${{ matrix.rid }}.zip
-        asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.rid }}.zip
+        asset_path: ./$.zip
+        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
         asset_content_type: application/zip
