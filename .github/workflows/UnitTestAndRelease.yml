@@ -54,9 +54,9 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Release Build & Pack
         # run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1} -p:TargetFrameworks=${{ env.DOTNET_TFM }}
-        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${{ env.TAG_VERSION }}
+        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION
         env:
-          TAG_VERSION: ${${{ env.TAG_NAME }}#*v}
+          TAG_VERSION: ${TAG_NAME#*v}
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -78,7 +78,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           # tag_name: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
-          tag_name: ${{ env.TAG_VERSION }}
+          tag_name: ${TAG_NAME#*v}
           files: nupkgs/*.nupkg
 
   publish-gpr:
