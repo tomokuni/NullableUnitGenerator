@@ -35,7 +35,7 @@
         <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <AssemblyVersion>$(Version)</AssemblyVersion>
@@ -43,6 +43,7 @@
         <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <SignAssembly>False</SignAssembly>
     </PropertyGroup>
 
     <ItemGroup>
