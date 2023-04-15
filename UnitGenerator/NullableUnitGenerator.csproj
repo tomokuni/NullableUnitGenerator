@@ -11,14 +11,13 @@
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
 
+        <Version>0.0.2.16</Version>
+
         <!-- does not need runtime self -->
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <IncludeSymbols>false</IncludeSymbols>
         <DevelopmentDependency>true</DevelopmentDependency>
-
-        <VersionPrefix>0.0.2.9</VersionPrefix>
-        <VersionSuffix></VersionSuffix>
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
@@ -36,7 +35,7 @@
         <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
-        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <AssemblyVersion>$(Version)</AssemblyVersion>

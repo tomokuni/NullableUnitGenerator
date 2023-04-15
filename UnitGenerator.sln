@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitGenerator.Tests", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NullableUnitGenerator", "UnitGenerator\NullableUnitGenerator.csproj", "{EF2A8B93-1F5F-45F8-AF62-BA04A04314C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Estable.TernaryType", "TernaryType\Estable.TernaryType.csproj", "{D0D27ADF-1FC7-4E3E-BCE7-8FBB05A7B956}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Estable.TernaryType", "TernaryType\Estable.TernaryType.csproj", "{D0D27ADF-1FC7-4E3E-BCE7-8FBB05A7B956}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +65,7 @@ Global
 		{F8353A7A-290E-41D7-A6F8-8D8DBDD44433} = {34EB4113-923D-4855-979C-A0467461B75C}
 		{25224A24-5FD5-410D-B4BC-31DAA5098673} = {34EB4113-923D-4855-979C-A0467461B75C}
 		{5DA06D43-A023-4464-B856-8BB42E8E4A05} = {187FBF64-D2AA-444D-AFB1-CE999BC6AD34}
+		{D0D27ADF-1FC7-4E3E-BCE7-8FBB05A7B956} = {34EB4113-923D-4855-979C-A0467461B75C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A64DF779-7829-414F-9E6E-3AF349486508}
