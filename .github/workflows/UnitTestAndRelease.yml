@@ -1,10 +1,8 @@
-# tagがつけられたら、Releaseを作成する
+# push されたら UnitTest.
+# v で始まる Tag が付けられたら Relese.
 
 name: Release when version tag.
-on:
-  workflow_run:
-    workflows: ["add-tag"]
-    types: ["completed"]
+on: [push, pull_request]
 
 jobs:
   test:
