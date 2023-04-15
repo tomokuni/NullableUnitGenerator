@@ -11,9 +11,9 @@ env:
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
   DOTNET_VERSION: 6.0.x
   # DOTNET_TFM: net6.0
-  TAG_VERSION: ${{TAG_REF_NAME##*/v}} # v0.0.0-abc
-
-
+  TAG_VERSION: $(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
+  REPOSITORY: $(echo ${{ github.repository }} | sed -e "s#.*/##")
+  
 jobs:
   test:
     name: Test
@@ -49,7 +49,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Release Build & Pack
-        run: dotnet pack --configuration Release --no-restore --output nupkgs -p:Version=${env.TAG_VERSION:1}
+        run: dotnet pack --configuration Release --no-restore --output nupkgs -p:Version=${{ env.TAG_VERSION }}
 
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
@@ -71,7 +71,7 @@ jobs:
       - name: Upload Assets
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${env.TAG_VERSION:1}
+          tag_name: ${{ env.TAG_VERSION }}
           files: nupkgs/*.nupkg
 
   publish-gpr:
