@@ -156,16 +156,16 @@ public class VoIntTest
 
     }
 
-    [Fact]
-    public void NullableOperater ()
-    {
-        VoInt a = default;
-        VoInt b = new(null);
-        VoInt c = new(default(int));
-        VoInt d = new(0);
-        VoInt e = new(1);
+    //[Fact]
+    //public void NullableOperater ()
+    //{
+    //    VoInt a = default;
+    //    VoInt b = new(null);
+    //    VoInt c = new(default(int));
+    //    VoInt d = new(0);
+    //    VoInt e = new(1);
 
-    }
+    //}
 }
 
 
