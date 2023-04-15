@@ -1,0 +1,96 @@
+name: Release when version tag.
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Debug Build & Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        dotnet-version: ['6.0.x', '7.0.x']
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - name: Restore Tool
+      run: dotnet tool restore
+    - name: Build
+      run: dotnet build -c Debug
+    - name: Test
+      run: dotnet test -c Debug --no-build
+
+  release:
+    name: Create Github Release
+    if: contains(github.ref, 'tags/v')
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Output Release URL File
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+    - name: Save Release URL File for publish
+      uses: actions/upload-artifact@v3
+      with:
+        name: release_url
+        path: release_url.txt
+
+  publish:
+    if: contains(github.ref, 'tags/v')
+    needs: [test, release]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rid: [win-x64, linux-x64, osx-x64]
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_XMLDOC_MODE: skip
+    steps:
+    - uses: actions/checkout@v3
+    - name: Load Release URL File from release job
+      uses: actions/download-artifact@v3
+      with:
+        name: release_url
+    - name: Setup .NET 6.0 (current)
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Build
+      run: |
+        dotnet publish ./UnitGenerator/NullableUnitGenerator.csproj  -c Release -r ${{ matrix.rid }} /p\:PublishSingleFile=true /p\:PublishTrimmed=true -o ./${{ matrix.rid }}
+        zip -r ${{ matrix.rid }} ./${{ matrix.rid }}
+    - name: Get Release File Name & Upload URL
+      id: get_release_info
+      run: |
+        echo ::set-output name=file_name::${REPOSITORY_NAME##*/}-${TAG_REF_NAME##*/v}
+        value=`cat release_url/release_url.txt`
+        echo ::set-output name=upload_url::$value
+      env:
+        TAG_REF_NAME: ${{ github.ref }}
+        REPOSITORY_NAME: ${{ github.repository }}
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+        asset_path: ./${{ matrix.rid }}.zip
+        asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.rid }}.zip
+        asset_content_type: application/zip
