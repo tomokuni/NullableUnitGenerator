@@ -24,7 +24,7 @@ jobs:
       run: |
         REPOSITORY=$(echo ${{ github.repository }} | sed -e "s#.*/##")
         echo "REPOSITORY=$REPOSITORY" >> $GITHUB_ENV
-        if [[ "$github.ref" =~ "tags/v" ]]; then
+        if [[ "${{ github.ref }}" =~ "tags/v" ]]; then
           TAG_VERSION=$(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
         fi
