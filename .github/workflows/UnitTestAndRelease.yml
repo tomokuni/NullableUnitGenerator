@@ -74,7 +74,7 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
     - name: Build
       run: |
-        dotnet publish ./UnitGenerator/NullableUnitGenerator.csproj  -c Release /p\:PublishSingleFile=true /p\:PublishTrimmed=true
+        dotnet publish ./UnitGenerator/NullableUnitGenerator.csproj  -c Release
         zip -r ./$
     - name: Get Release File Name & Upload URL
       id: get_release_info
