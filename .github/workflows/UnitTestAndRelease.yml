@@ -17,7 +17,8 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       NUGET_XMLDOC_MODE: skip
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
     - name: Setup .NET ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v3.0.3
       with:
@@ -50,10 +51,7 @@ jobs:
         echo ::set-output name=filename::$REPOSITORY-$VERSION
         echo "Version $VERSION"
     - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        submodules: true
+      uses: actions/checkout@v3
     - name: Archive
       run: |
         zip -r ${{ steps.version.outputs.filename }}.zip ./ -x "*.git*"
