@@ -57,7 +57,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Release Build & Pack
-        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj -f ${{ env.DOTNET_TFM }} --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION
+        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION -p:TargetFrameworks=${{ env.DOTNET_TFM }}
 
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
