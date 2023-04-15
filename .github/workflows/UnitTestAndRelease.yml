@@ -35,7 +35,7 @@ jobs:
 
   build:
     name: Build
-    if: startsWith($TAG_NAME, 'v')
+    if: startsWith(github.ref_name, 'refs/tags/v')
     needs: [test]
     runs-on: ubuntu-latest
     steps:
