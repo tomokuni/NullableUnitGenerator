@@ -11,7 +11,7 @@ env:
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
   DOTNET_VERSION: 6.0.x
   DOTNET_TFM: netstandard2.0
-  TAG_VERSION: ${{ github.ref_name }}
+  TAG_VERSION: ${github.ref_name//-/_}
   
 jobs:
   test:
