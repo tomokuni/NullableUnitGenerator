@@ -16,7 +16,7 @@ env:
 jobs:
   test:
     name: Test
-    runs-on: ${{ env.OS }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
