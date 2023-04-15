@@ -21,6 +21,7 @@ jobs:
     - name: TAG_VERSION
       run: |
         echo ${TAG_NAME#*m}
+        echo ${TAG_NAME#*v}
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
@@ -34,7 +35,7 @@ jobs:
 
   build:
     name: Build
-    if: startsWith(github.ref_name, 'refs/tags/')
+    if: startsWith($TAG_NAME, 'v')
     needs: [test]
     runs-on: ubuntu-latest
     steps:
