@@ -51,7 +51,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Release Build & Pack
-        run: dotnet pack --configuration Release --no-restore --output nupkgs -p:Version=${{ env.TAG_VERSION }}
+        run: dotnet pack --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION
 
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
@@ -73,7 +73,7 @@ jobs:
       - name: Upload Assets
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG_VERSION }}
+          tag_name: $TAG_VERSION
           files: nupkgs/*.nupkg
 
   publish-gpr:
