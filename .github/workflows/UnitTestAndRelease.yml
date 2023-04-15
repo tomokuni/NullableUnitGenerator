@@ -20,11 +20,9 @@ jobs:
     - name: Set TAG_VERSION
       id: version
       run: 
-        echo $(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
-        # TAG_VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
-        # echo ::set-output name=TAG_VERSION::$TAG_VERSION
-        # echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT
-        
+        TAG_VERSION=echo $(echo ${{ github.ref }} | sed -e "s#refs/tags/v##g")
+        echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT
+
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
