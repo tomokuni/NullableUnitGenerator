@@ -11,7 +11,7 @@ env:
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
   DOTNET_VERSION: 6.0.x
   DOTNET_TFM: netstandard2.0
-  TAG_NAME: ${{ github.ref_name }}
+  REF_NAME: ${{ github.ref_name }}
   
 jobs:
   test:
@@ -20,8 +20,8 @@ jobs:
     steps:
     - name: TAG_VERSION
       run: |
-        echo ${TAG_NAME#*m}
-        echo ${TAG_NAME#*v}
+        echo ${REF_NAME#*m}
+        echo ${REF_NAME#*v}
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
@@ -55,9 +55,9 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Release Build & Pack
         # run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1} -p:TargetFrameworks=${{ env.DOTNET_TFM }}
-        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION
+        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=$VERSION
         env:
-          TAG_VERSION: ${TAG_NAME#*v}
+          VERSION: ${REF_NAME#*v}
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -79,7 +79,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           # tag_name: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
-          tag_name: ${TAG_NAME#*v}
+          tag_name: ${REF_NAME#*v}
           files: nupkgs/*.nupkg
 
   publish-gpr:
