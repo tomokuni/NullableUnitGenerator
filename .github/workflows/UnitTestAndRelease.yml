@@ -56,6 +56,8 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Restore
+        run: dotnet restore --locked-mode
       - name: Release Build & Pack
         run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION -p:TargetFrameworks=${{ env.DOTNET_TFM }}
 
