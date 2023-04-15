@@ -10,7 +10,7 @@ env:
   NUGET_XMLDOC_MODE: skip
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
   DOTNET_VERSION: 6.0.x
-  # DOTNET_TFM: net6.0
+  DOTNET_TFM: net6.0
   
 jobs:
   test:
@@ -57,7 +57,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Release Build & Pack
-        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION
+        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj -f ${{ env.DOTNET_TFM }} --configuration Release --no-restore --output nupkgs -p:Version=$TAG_VERSION
 
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
