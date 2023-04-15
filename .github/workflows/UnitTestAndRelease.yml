@@ -17,17 +17,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    steps:
-#    - name: Set VERSION
-#      id: version
-#      run: |
-#        REPOSITORY=$(echo ${{ github.repository }} | sed -e "s#.*/##")
-#        echo "REPOSITORY=$REPOSITORY" >> $GITHUB_ENV
-#        if [[ "${{ github.ref }}" =~ "tags/v" ]]; then
-#          TAG_VERSION=$(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
-#          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
-#        fi
-        
+    steps:      
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
@@ -61,9 +51,9 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Release Build & Pack
         # run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1} -p:TargetFrameworks=${{ env.DOTNET_TFM }}
-        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=0.0.2.27
-        env:
-          TAG_VERSION: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
+        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${{ env.TAG_VERSION }}
+        # env:
+        #   TAG_VERSION: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
       - name: Upload Build Assets
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -85,7 +75,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           # tag_name: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
-          tag_name: 0.0.2.27
+          tag_name: ${{ env.TAG_VERSION }}
           files: nupkgs/*.nupkg
 
   publish-gpr:
