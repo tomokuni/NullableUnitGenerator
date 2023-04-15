@@ -4,74 +4,111 @@
 name: Release when version tag.
 on: [push, pull_request]
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  NUGET_XMLDOC_MODE: skip
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  DOTNET_VERSION: 6.0.x
+  DOTNET_TFM: net6.0
+  OS: ubuntu-latest
+
 jobs:
   test:
-    name: Debug Build & Test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        dotnet-version: ['6.0.x']
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      NUGET_XMLDOC_MODE: skip
+    name: Test
+    runs-on: ${{ env.OS }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Setup .NET ${{ matrix.dotnet-version }}
+    - uses: actions/checkout@v3.5.0
+    - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: ${{ matrix.dotnet-version }}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Build
-      run: dotnet build -c Debug
+      run: dotnet build -f ${{ env.DOTNET_TFM }} -c Release
     - name: Test
-      run: dotnet test -c Debug --no-build
+      run: dotnet test -c Release --no-build
 
-  release:
-    name: Release
+  build:
+    name: Build
     if: contains(github.ref, 'tags/v')
     needs: [test]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        dotnet-version: ['6.0.x']
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      NUGET_XMLDOC_MODE: skip
+    runs-on: ${{ env.OS }}
     steps:
-    - name: Set version
-      id: version
-      run: |
-        REPOSITORY=$(echo ${{ github.repository }} | sed -e "s#.*/##")
-        VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
-        echo ::set-output name=version::$VERSION
-        echo ::set-output name=filename::$REPOSITORY-$VERSION
-        echo "Version $VERSION"
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Archive
-      run: |
-        zip -r ${{ steps.version.outputs.filename }}.zip ./ -x "*.git*"
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ steps.version.outputs.filename }}.zip
-        asset_name: ${{ steps.version.outputs.filename }}.zip
-        asset_content_type: application/zip
+      - uses: actions/checkout@v3.5.0
+      - uses: actions/cache@v3.3.1
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3.0.3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore --locked-mode
+      - name: Release Build & Pack
+        run: dotnet pack --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1}
+        env:
+          TAG_VERSION: ${{ github.event.release.tag_name }} # v0.0.0-abc
+
+      - name: Upload Build Assets
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: packages
+          path: nupkgs/
+
+  upload:
+    name: Upload to GitHub Releases
+    needs: [build]
+    runs-on: ${{ env.OS }}
+    steps:
+      - name: Download Build Assets
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: packages
+          path: nupkgs/
+
+      - name: Upload Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: nupkgs/*.nupkg
+
+  publish-gpr:
+    name: Publish to GitHub Packages
+    needs: [build]
+    runs-on: ${{ env.OS }}
+    steps:
+      - name: Setup .NET SDK # detected from global.json
+        uses: actions/setup-dotnet@v3.0.3
+
+      - name: Download Build Assets
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: packages
+          path: nupkgs/
+
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "nupkgs/*.nupkg" --skip-duplicate --source ${GPR_URL} --api-key ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GPR_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+  publish-nuget:
+    name: Publish to NuGet
+    needs: [build]
+    if: false
+    runs-on: ${{ env.OS }}
+    steps:
+      - name: Setup .NET SDK # detected from global.json
+        uses: actions/setup-dotnet@v3.0.3
+
+      - name: Download Build Assets
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: packages
+          path: nupkgs/
+
+      - name: Publish to NuGet
+        run: dotnet nuget push "nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
