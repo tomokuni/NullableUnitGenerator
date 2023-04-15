@@ -19,7 +19,7 @@ jobs:
 
     env:
       Solution_Name: UnitGenerator.sln
-      Test_Project_Path: \tests\UnitGenerator.Tests\UnitGenerator.Tests.csproj
+      Test_Project_Path: tests\UnitGenerator.Tests\UnitGenerator.Tests.csproj
 
     steps:
     - name: Checkout
