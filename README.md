@@ -1,6 +1,6 @@
 NullableUnitGenerator
 ===
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tomokuni/NullableUnitGenerator/build.yml?label=build%20.NET6%20C%23)]https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tomokuni/NullableUnitGenerator/build.yml?label=build%20.NET6%20C%23)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator?label=github%20release)](https://github.com/tomokuni/NullableUnitGenerator/releases)
 [![Nuget](https://img.shields.io/nuget/v/NullableUnitGenerator?label=nuget%20release)](https://www.nuget.org/packages/NullableUnitGenerator/)
 
