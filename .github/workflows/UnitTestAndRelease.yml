@@ -86,7 +86,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         # tag_name: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
-        tag_name: ${REF_NAME#*v}
+        tag_name: ${{ REF_NAME }}
         files: nupkgs/*.nupkg
 
   publish-gpr:
