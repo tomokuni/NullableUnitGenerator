@@ -21,7 +21,7 @@
 
         <!-- NuGet -->
         <PackageId>NullableUnitGenerator</PackageId>
-        <Description>C# Source Generator to create nullable value-object. Forked from UnitGenerator.</Description>
+        <Description>C# source generator that creates value objects that support null and empty values. Forked from UnitGenerator.</Description>
         <PackageReleaseNotes>beta</PackageReleaseNotes>
  
         <PackageVersion>$(Version)</PackageVersion>
