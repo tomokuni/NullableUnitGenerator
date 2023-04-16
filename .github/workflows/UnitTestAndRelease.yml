@@ -12,16 +12,19 @@ env:
   DOTNET_VERSION: 6.0.x
   DOTNET_TFM: netstandard2.0
   REF_NAME: ${{ github.ref_name }}
+  VERSION: ""
   
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
-    - name: TAG_VERSION
+    - name: VERSION
       run: |
         echo ${REF_NAME#*m}
         echo ${REF_NAME#*v}
+        echo "VERSION=${REF_NAME#*v}" >> $GITHUB_ENV
+        
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3.0.3
@@ -39,67 +42,71 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.0
-      - uses: actions/cache@v3.3.1
-        with:
-          path: ${{ env.NUGET_PACKAGES }}
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3.0.3
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: VERSION
+      run: |
+        echo ${VERSION}
+        
+    - uses: actions/checkout@v3.5.0
+    - uses: actions/cache@v3.3.1
+      with:
+        path: ${{ env.NUGET_PACKAGES }}
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Restore
-        run: dotnet restore --locked-mode
-      - name: Release Build & Pack
-        # run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1} -p:TargetFrameworks=${{ env.DOTNET_TFM }}
-        run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${REF_NAME#*v}
-        # env:
-        #   VERSION: ${REF_NAME#*v}
-      - name: Upload Build Assets
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: packages
-          path: nupkgs/
-
+    - name: Restore
+      run: dotnet restore --locked-mode
+    - name: Release Build & Pack
+      # run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${TAG_VERSION:1} -p:TargetFrameworks=${{ env.DOTNET_TFM }}
+      run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${REF_NAME#*v}
+      # env:
+      #   VERSION: ${REF_NAME#*v}
+    - name: Upload Build Assets
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: packages
+        path: nupkgs/
+  
   upload:
     name: Upload to GitHub Releases
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Build Assets
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: packages
-          path: nupkgs/
+    - name: Download Build Assets
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: packages
+        path: nupkgs/
 
-      - name: Upload Assets
-        uses: softprops/action-gh-release@v1
-        with:
-          # tag_name: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
-          tag_name: ${REF_NAME#*v}
-          files: nupkgs/*.nupkg
+    - name: Upload Assets
+      uses: softprops/action-gh-release@v1
+      with:
+        # tag_name: $(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')
+        tag_name: ${REF_NAME#*v}
+        files: nupkgs/*.nupkg
 
   publish-gpr:
     name: Publish to GitHub Packages
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Setup .NET SDK # detected from global.json
-        uses: actions/setup-dotnet@v3.0.3
+    - name: Setup .NET SDK # detected from global.json
+      uses: actions/setup-dotnet@v3.0.3
 
-      - name: Download Build Assets
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: packages
-          path: nupkgs/
+    - name: Download Build Assets
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: packages
+        path: nupkgs/
 
-      - name: Publish to GitHub Packages
-        run: dotnet nuget push "nupkgs/*.nupkg" --skip-duplicate --source ${GPR_URL} --api-key ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GPR_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+    - name: Publish to GitHub Packages
+      run: dotnet nuget push "nupkgs/*.nupkg" --skip-duplicate --source ${GPR_URL} --api-key ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GPR_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
 
   publish-nuget:
     name: Publish to NuGet
@@ -107,14 +114,14 @@ jobs:
     # if: false
     runs-on: ubuntu-latest
     steps:
-      - name: Setup .NET SDK # detected from global.json
-        uses: actions/setup-dotnet@v3.0.3
+    - name: Setup .NET SDK # detected from global.json
+      uses: actions/setup-dotnet@v3.0.3
 
-      - name: Download Build Assets
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: packages
-          path: nupkgs/
+    - name: Download Build Assets
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: packages
+        path: nupkgs/
 
-      - name: Publish to NuGet
-        run: dotnet nuget push "nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+    - name: Publish to NuGet
+      run: dotnet nuget push "nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
