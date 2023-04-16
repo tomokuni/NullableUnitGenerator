@@ -49,6 +49,7 @@
     <ItemGroup>
         <!-- Create nuget package as analyzer -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\LICENSE" Link="LICENSE" />
         <None Include="..\README.md">
           <Pack>True</Pack>
           <PackagePath>\</PackagePath>
