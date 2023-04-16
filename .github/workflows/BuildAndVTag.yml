@@ -1,7 +1,7 @@
 # push されたら UnitTest.
 # v で始まる Tag が付けられたら Relese.
 
-name: Release when version tag.
+name: build
 on: [push, pull_request]
 
 env:
