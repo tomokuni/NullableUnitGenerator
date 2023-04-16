@@ -3,20 +3,19 @@ NullableUnitGenerator
 [![build](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml/badge.svg)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator)](https://github.com/tomokuni/NullableUnitGenerator/releases)
 
-Thanks and reason for forking: 
-NullableUnitGenerator forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Empty values.  Thanks to the author of [UnitGenerator](https://github.com/Cysharp/UnitGenerator).
-
-謝辞と分岐理由:
-NullableUnitGeneratorは Null値 と Empty 値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  [UnitGenerator](https://github.com/Cysharp/UnitGenerator) の作者様に感謝します。
-
+Thanks and reason for forking  (謝辞と分岐理由): 
 ---
+NullableUnitGenerator forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Empty values.  Thanks to the author of [UnitGenerator](https://github.com/Cysharp/UnitGenerator).  
+NullableUnitGeneratorは Null値 と Empty 値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  [UnitGenerator](https://github.com/Cysharp/UnitGenerator) の作者様に感謝します。  
 
-C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Empty value.
 
-算術演算子、シリアル化、および Null値とEmpty値をサポートする [Value object](https://en.wikipedia.org/wiki/Value_object) パターンを作成する C# ソースジェネレーターです。
+About NullableUnitGenerator  (NullableUnitGenerator について)
+---
+C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Empty value.  
+算術演算子、シリアル化、および Null値とEmpty値をサポートする [Value object](https://en.wikipedia.org/wiki/Value_object) パターンを作成する C# ソースジェネレーターです。  
 
 NuGet: [NullableUnitGenerator](https://www.nuget.org/packages/NullableUnitGenerator/)
-
+---
 ```
 Install-Package NullableUnitGenerator
 ```
