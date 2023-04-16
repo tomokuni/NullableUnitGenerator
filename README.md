@@ -8,7 +8,8 @@ NullableUnitGenerator forked from [UnitGenerator](https://github.com/Cysharp/Uni
 
 謝辞と分岐理由:
 NullableUnitGeneratorは Null値 と Empty 値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  [UnitGenerator](https://github.com/Cysharp/UnitGenerator) の作者様に感謝します。
-___
+
+---
 
 C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Empty value.
 
