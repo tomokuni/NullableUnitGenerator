@@ -15,6 +15,8 @@ forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support
 
 Null値 と Empty 値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  UnitGenerator の作者様に感謝します。  
 
+GitHub: [NullableUnitGenerator](https://github.com/tomokuni/NullableUnitGenerator/)
+---
 
 NuGet: [NullableUnitGenerator](https://www.nuget.org/packages/NullableUnitGenerator/)
 ---
