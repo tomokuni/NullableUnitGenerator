@@ -1,6 +1,6 @@
 UnitGenerator
 ===
-[![build](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/BuildAndVTag.yml/badge.svg)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/BuildAndVTag.yml)
+[![build](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml/badge.svg)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator)](https://github.com/tomokuni/NullableUnitGenerator/releases)
 
 C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern, also inspired by [units of measure](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/units-of-measure) to support all arithmetic operators and serialization.
