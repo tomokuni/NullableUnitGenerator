@@ -12,18 +12,18 @@ env:
   DOTNET_VERSION: 6.0.x
   DOTNET_TFM: netstandard2.0
   REF_NAME: ${{ github.ref_name }}
-  VERSION: ""
+  REF_VERSION: ""
   
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
-    - name: VERSION
+    - name: REF_VERSION
       run: |
         echo ${REF_NAME#*m}
         echo ${REF_NAME#*v}
-        echo "VERSION=${REF_NAME#*v}" >> $GITHUB_ENV
+        echo "REF_VERSION=${REF_NAME#*v}" >> $GITHUB_ENV
         
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
@@ -42,9 +42,9 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
-    - name: VERSION
+    - name: REF_VERSION
       run: |
-        echo ${VERSION}
+        echo ${REF_VERSION}
         
     - uses: actions/checkout@v3.5.0
     - uses: actions/cache@v3.3.1
