@@ -9,11 +9,12 @@ C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value
 算術演算子、シリアル化、および Null値とEmpty値をサポートする [Value object](https://en.wikipedia.org/wiki/Value_object) パターンを作成する C# ソースジェネレーターです。  
 
 
-Thanks and reason for forking  (謝辞と分岐理由): 
+Thanks 
 ---
 forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Empty values.  Thanks to the author of UnitGenerator.  
 
 Null値 と Empty 値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  UnitGenerator の作者様に感謝します。  
+
 
 GitHub: [NullableUnitGenerator](https://github.com/tomokuni/NullableUnitGenerator/)
 ---
