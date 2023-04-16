@@ -1,7 +1,9 @@
 NullableUnitGenerator
 ===
-[![build](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml/badge.svg)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tomokuni/NullableUnitGenerator/build.yml?label=.NET6%20C%23)
+[![build](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml/badge.svg?label=.NET6%20C%23)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator)](https://github.com/tomokuni/NullableUnitGenerator/releases)
+[![Nuget](https://img.shields.io/nuget/v/NullableUnitGenerator)](https://www.nuget.org/packages/NullableUnitGenerator/)
 
 Thanks and reason for forking  (é”é´Ç∆ï™äÚóùóR): 
 ---
