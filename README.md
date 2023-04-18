@@ -4,16 +4,12 @@ NullableUnitGenerator
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator?label=GitHub%20release)](https://github.com/tomokuni/NullableUnitGenerator/releases)
 [![Nuget](https://img.shields.io/nuget/v/NullableUnitGenerator?label=Nuget%20release)](https://www.nuget.org/packages/NullableUnitGenerator/)
 
+This document is a work in progress. (このドキュメントは書きかけです。)
+---
+
 C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Undefined value.  
 
 算術演算子、シリアル化、および Null値とUndefined値をサポートする [Value object](https://en.wikipedia.org/wiki/Value_object) パターンを作成する C# ソースジェネレーターです。  
-
-
-Thanks 
----
-forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Undefined values.  Thanks to the author of UnitGenerator.  
-
-Null値 と Undefined値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  UnitGenerator の作者様に感謝します。  
 
 
 GitHub: [NullableUnitGenerator](https://github.com/tomokuni/NullableUnitGenerator/)
@@ -26,8 +22,12 @@ Install-Package NullableUnitGenerator
 ```
 
 
-This document is a work in progress. (このドキュメントは書きかけです。)
+Thanks 
 ---
+forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Undefined values.  Thanks to the author of UnitGenerator.  
+
+Null値 と Undefined値 をサポートするために [UnitGenerator](https://github.com/Cysharp/UnitGenerator) から分岐しました。  UnitGenerator の作者様に感謝します。  
+
 
 MessagePackFormatter, EntityFrameworkValueConverter, and Unity are not yet supported.
 ---
