@@ -573,6 +573,10 @@ builder.HasConversion(new UserId.UserIdValueConverter());
 dotnet build UnitSourceGen.csproj
 ```
 
+
+generated file and folder
+---
+
 File will be generated under `UnitGenerator\UnitGenerator.SourceGenerator\*.Generated.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.  
 
 ファイルは `UnitGenerator.SourceGenerator*.Generated.cs` の下に生成されます。生成されたフォルダには`UnitOfAttribute`も含まれているので、まずはbuildコマンドを実行して属性を取得し、設定します。  
