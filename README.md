@@ -503,7 +503,7 @@ public static void AddTypeHandler()
 
 
 ### ~~MessagePackFormatter~~
-<details>
+<details><summary>Explanation in UnitGenerager (UnitGeneragerÇ≈ÇÃê‡ñæ)</summary>
 
 Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically. 
 
@@ -520,6 +520,7 @@ public readonly partial struct UserId
 
 
 ### ~~EntityFrameworkValueConverter~~
+<details><summary>Explanation in UnitGenerager (UnitGeneragerÇ≈ÇÃê‡ñæ)</summary>
 
 ~~Implements EntityFrameworkCore's ValueConverter by public accessibility. It is not registered automatically so you need to register manually.~~  
 
@@ -534,10 +535,12 @@ public readonly partial struct UserId
 // setup handler manually
 builder.HasConversion(new UserId.UserIdValueConverter());
 ```
+</details>
 
 
 ## ~~Use for Unity~~
 
+<details><summary>Explanation in UnitGenerager (UnitGeneragerÇ≈ÇÃê‡ñæ)</summary>
 ~~C# Source Generator feature is rely on C# 9.0. If you are using Unity 2021.2, that supports [Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html). Add the `UnitGenerator.dll` from the [releases page](https://github.com/Cysharp/UnitGenerator/releases), disable Any Platform, disable Include all platforms and set label as `RoslynAnalyzer`.~~  
 ~~It works in Unity Editor however does not work on IDE because Unity does not generate analyzer reference to `.csproj`. We provides [CsprojModifer](https://github.com/Cysharp/CsprojModifier) to analyzer support, uses `Add analyzer references to generated .csproj` supports both IDE and Unity Editor.~~  
 ~~Unity(2020) does not support C# 9.0 so can not use directly. However, C# Source Genertor supports output source as file.~~  
@@ -570,14 +573,15 @@ builder.HasConversion(new UserId.UserIdValueConverter());
 ```
 
 2. install [.NET SDK](https://dotnet.microsoft.com/download) and run this command.
-
-```
-dotnet build UnitSourceGen.csproj
-```
+</details>
 
 
 generated file and folder
 ---
+
+```
+dotnet build UnitSourceGen.csproj
+```
 
 File will be generated under `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.  
 
