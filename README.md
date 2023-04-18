@@ -502,6 +502,8 @@ public static void AddTypeHandler()
 ```
 
 
+<details><summary>~~MessagePackFormatter~~</summary>
+
 ### ~~MessagePackFormatter~~
 
 ~~Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically.~~  
@@ -515,7 +517,7 @@ public readonly partial struct UserId
     class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
 }
 ```
-
+<details>
 
 ### ~~EntityFrameworkValueConverter~~
 
