@@ -160,9 +160,9 @@ enum UnitGenerateOptions
     Comparable = 32,
     Validate = 64,
     JsonConverter = 128,
-    MessagePackFormatter = 256,
+    MessagePackFormatter = 256,  // Unsupported
     DapperTypeHandler = 512,
-    EntityFrameworkValueConverter = 1024,
+    EntityFrameworkValueConverter = 1024,  // Unsupported
     WithoutComparisonOperator = 2048,
     JsonConverterDictionaryKeySupport = 4096
 }
