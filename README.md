@@ -577,9 +577,9 @@ dotnet build UnitSourceGen.csproj
 generated file and folder
 ---
 
-File will be generated under `UnitGenerator\UnitGenerator.SourceGenerator\*.Generated.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.  
+File will be generated under `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.  
 
-ファイルは `UnitGenerator.SourceGenerator*.Generated.cs` の下に生成されます。生成されたフォルダには`UnitOfAttribute`も含まれているので、まずはbuildコマンドを実行して属性を取得し、設定します。  
+ファイルは `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs` として生成されます。生成されたフォルダには`UnitOfAttribute`も含まれているので、まずはbuildコマンドを実行して属性を取得し、設定します。  
 
 
 License
