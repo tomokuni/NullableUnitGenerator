@@ -35,9 +35,9 @@ MessagePackFormatter, EntityFrameworkValueConverter, and Unity are supported by 
 However, NullableUnitGenerator does not yet support them.  
 They are listed in this document, but cannot be used with NullableUnitGenerator.  
 
-MessagePackFormatter、EntityFrameworkValueConverter、UnityはUnitGeneratorでサポートされています。  
-しかし、NullableUnitGeneratorはまだそれらをサポートしていない。  
-それらはこの文書にリストされているが、NullableUnitGeneratorで使用することはできない。  
+MessagePackFormatter、EntityFrameworkValueConverter、Unity は、UnitGenerator でサポートされています。  
+しかし、NullableUnitGenerator はまだそれらをサポートしていません。  
+それらはこの文書に記載しているが、NullableUnitGenerator で使用することはできません。  
 
 
 ## Introduction
@@ -169,10 +169,10 @@ enum UnitGenerateOptions
 ```
 
 UnitGenerateOptions has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.  
-Currently UnitGenerator supports [MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp), System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper) and EntityFrameworkCore.  
+Currently UnitGenerator supports System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper), ~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp) and EntityFrameworkCore~~.  
 
 UnitGenerateOptionsには、いくつかのシリアライザーサポートがあります。例えば、`Serialize(userId) => { Value = 1111 }`のような結果はひどいものです。値オブジェクトはネイティブにシリアライズされるべきで、すなわち `Serialize(useId) => 1111` となり、データベースなどに直接追加できるようにすべきです。  
-現在、UnitGeneratorは、[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp)、System.Text.Json(JsonSerializer)、[Dapper](https://github.com/StackExchange/Dapper)、EntityFrameworkCore。  
+現在、UnitGeneratorは、System.Text.Json(JsonSerializer)、[Dapper](https://github.com/StackExchange/Dapper)、~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp)、EntityFrameworkCore~~ をサポートしています。。  
 
 ```csharp
 [UnitOf(typeof(int), UnitGenerateOptions.MessagePackFormatter)]
@@ -482,21 +482,6 @@ JsonSerializer.Serialize(dict);
 ````
 
 
-### MessagePackFormatter
-
-Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically.  
-
-C#の `MessagePackFormatter` 用のMessagePackを実装しています。自動的に `MessagePackSerializer` が使用されます。  
-
-```csharp
-[MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
-public readonly partial struct UserId
-{
-    class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
-}
-```
-
-
 ### DapperTypeHandler
 
 Implements Dapper's TypeHandler by public accessibility. TypeHandler is automatically registered at the time of Module initialization.  
@@ -517,11 +502,26 @@ public static void AddTypeHandler()
 ```
 
 
-### EntityFrameworkValueConverter
+### ~~MessagePackFormatter~~
 
-Implements EntityFrameworkCore's ValueConverter by public accessibility. It is not registered automatically so you need to register manually.  
+~~Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically.~~  
 
-EntityFrameworkCoreのValueConverterをパブリックアクセシビリティで実装します。自動的には登録されないので、手動で登録する必要がある。   
+~~C#の `MessagePackFormatter` 用のMessagePackを実装しています。自動的に `MessagePackSerializer` が使用されます。~~  
+
+```csharp
+[MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
+public readonly partial struct UserId
+{
+    class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
+}
+```
+
+
+### ~~EntityFrameworkValueConverter~~
+
+~~Implements EntityFrameworkCore's ValueConverter by public accessibility. It is not registered automatically so you need to register manually.~~  
+
+~~EntityFrameworkCoreのValueConverterをパブリックアクセシビリティで実装します。自動的には登録されないので、手動で登録する必要がある。~~   
 
 ```csharp
 public readonly partial struct UserId
@@ -534,15 +534,15 @@ builder.HasConversion(new UserId.UserIdValueConverter());
 ```
 
 
-## Use for Unity
+## ~~Use for Unity~~
 
-C# Source Generator feature is rely on C# 9.0. If you are using Unity 2021.2, that supports [Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html). Add the `UnitGenerator.dll` from the [releases page](https://github.com/Cysharp/UnitGenerator/releases), disable Any Platform, disable Include all platforms and set label as `RoslynAnalyzer`.  
-It works in Unity Editor however does not work on IDE because Unity does not generate analyzer reference to `.csproj`. We provides [CsprojModifer](https://github.com/Cysharp/CsprojModifier) to analyzer support, uses `Add analyzer references to generated .csproj` supports both IDE and Unity Editor.  
-Unity(2020) does not support C# 9.0 so can not use directly. However, C# Source Genertor supports output source as file.  
+~~C# Source Generator feature is rely on C# 9.0. If you are using Unity 2021.2, that supports [Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html). Add the `UnitGenerator.dll` from the [releases page](https://github.com/Cysharp/UnitGenerator/releases), disable Any Platform, disable Include all platforms and set label as `RoslynAnalyzer`.~~  
+~~It works in Unity Editor however does not work on IDE because Unity does not generate analyzer reference to `.csproj`. We provides [CsprojModifer](https://github.com/Cysharp/CsprojModifier) to analyzer support, uses `Add analyzer references to generated .csproj` supports both IDE and Unity Editor.~~  
+~~Unity(2020) does not support C# 9.0 so can not use directly. However, C# Source Genertor supports output source as file.~~  
 
-C#ソースジェネレータ機能は、C#9.0に依存しています。Unity 2021.2を使用している場合、[Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html)をサポートしています。リリースページ](https://github.com/Cysharp/UnitGenerator/releases)から`UnitGenerator.dll`を追加し、Any Platformを無効にし、Include all platformsを無効にし、ラベルを`RoslynAnalyzer`と設定します。  
-Unity Editorでは動作しますが、IDEではUnityがアナライザー参照を生成しないため、動作しません。CsprojModifer](https://github.com/Cysharp/CsprojModifier)を提供し、生成された.csprojにアナライザ参照を追加することで、IDEとUnity Editorの両方をサポートします。  
-Unity(2020)はC# 9.0をサポートしていないため、直接使用することはできません。ただし、C# Source Genertorはソースをファイルとして出力することが可能です。  
+~~C#ソースジェネレータ機能は、C#9.0に依存しています。Unity 2021.2を使用している場合、[Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html)をサポートしています。リリースページ](https://github.com/Cysharp/UnitGenerator/releases)から`UnitGenerator.dll`を追加し、Any Platformを無効にし、Include all platformsを無効にし、ラベルを`RoslynAnalyzer`と設定します。~~  
+~~Unity Editorでは動作しますが、IDEではUnityがアナライザー参照を生成しないため、動作しません。CsprojModifer](https://github.com/Cysharp/CsprojModifier)を提供し、生成された.csprojにアナライザ参照を追加することで、IDEとUnity Editorの両方をサポートします。~~  
+~~Unity(2020)はC# 9.0をサポートしていないため、直接使用することはできません。ただし、C# Source Genertorはソースをファイルとして出力することが可能です。~~  
 
 
 1. Create `UnitSourceGen.csproj`.
@@ -575,7 +575,7 @@ dotnet build UnitSourceGen.csproj
 
 File will be generated under `UnitGenerator\UnitGenerator.SourceGenerator\*.Generated.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.  
 
-ファイルは `UnitGenerator.SourceGenerator*.Generated.cs` の下に生成されます。生成されたフォルダには`UnitOfAttribute`も含まれているので、まずはbuildコマンドを実行して属性を取得し、設定する。  
+ファイルは `UnitGenerator.SourceGenerator*.Generated.cs` の下に生成されます。生成されたフォルダには`UnitOfAttribute`も含まれているので、まずはbuildコマンドを実行して属性を取得し、設定します。  
 
 
 License
