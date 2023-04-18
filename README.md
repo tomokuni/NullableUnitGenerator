@@ -502,9 +502,8 @@ public static void AddTypeHandler()
 ```
 
 
-<details><summary>### MessagePackFormatter</summary>
-
 ### ~~MessagePackFormatter~~
+<details>
 
 Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically. 
 
