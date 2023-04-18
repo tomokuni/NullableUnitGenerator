@@ -215,8 +215,8 @@ public readonly partial struct UserId
   - [JsonConverter](#jsonconverter)
   - [JsonConverterDictionaryKeySupport](#jsonconverterdictionarykeysupport)
   - [DapperTypeHandler](#dappertypehandler)
-  ~~- [MessagePackFormatter](#messagepackformatter)~~
-  ~~- [EntityFrameworkValueConverter](#entityframeworkvalueconverter)~~
+  - ~~[MessagePackFormatter](#messagepackformatter)~~
+  - ~~[EntityFrameworkValueConverter](#entityframeworkvalueconverter)~~
 - [Use for Unity](#use-for-unity)
 - [License](#license)
 
