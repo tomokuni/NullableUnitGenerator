@@ -1,11 +1,11 @@
+This document is a work in progress. (このドキュメントは書きかけです。)
+---
+
 NullableUnitGenerator
 ===
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tomokuni/NullableUnitGenerator/build.yml?label=UnitTest%20.NET6%20C%23)](https://github.com/tomokuni/NullableUnitGenerator/actions/workflows/build.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator?label=GitHub%20release)](https://github.com/tomokuni/NullableUnitGenerator/releases)
 [![Nuget](https://img.shields.io/nuget/v/NullableUnitGenerator?label=Nuget%20release)](https://www.nuget.org/packages/NullableUnitGenerator/)
-
-This document is a work in progress. (このドキュメントは書きかけです。)
----
 
 C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Undefined value.  
 
