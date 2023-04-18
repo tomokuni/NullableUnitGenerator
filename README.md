@@ -72,7 +72,7 @@ public readonly partial struct UserId : IEquatable<UserId>
     public static explicit operator int(UserId value) => value.value;
     public static explicit operator UserId(int value) => new UserId(value);
     public bool Equals(UserId other) => value.Equals(other.value);
-    public override bool Equals(object? obj) => // snip...
+    public override bool Equals(object? obj) => /* snip... */
     public override int GetHashCode() => value.GetHashCode();
     public override string ToString() => value.ToString();
     public static bool operator ==(in UserId x, in UserId y) => x.value.Equals(y.value);
