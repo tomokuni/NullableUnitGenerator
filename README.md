@@ -214,9 +214,9 @@ public readonly partial struct UserId
   - [Validate](#validate)
   - [JsonConverter](#jsonconverter)
   - [JsonConverterDictionaryKeySupport](#jsonconverterdictionarykeysupport)
-  - [MessagePackFormatter](#messagepackformatter)
   - [DapperTypeHandler](#dappertypehandler)
-  - [EntityFrameworkValueConverter](#entityframeworkvalueconverter)
+  ~~- [MessagePackFormatter](#messagepackformatter)~~
+  ~~- [EntityFrameworkValueConverter](#entityframeworkvalueconverter)~~
 - [Use for Unity](#use-for-unity)
 - [License](#license)
 
@@ -545,7 +545,7 @@ builder.HasConversion(new UserId.UserIdValueConverter());
 ~~Unity(2020)はC# 9.0をサポートしていないため、直接使用することはできません。ただし、C# Source Genertorはソースをファイルとして出力することが可能です。~~  
 
 
-1. Create `UnitSourceGen.csproj`.
+~~1. Create `UnitSourceGen.csproj`.~~
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
