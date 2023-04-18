@@ -9,6 +9,8 @@ C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value
 算術演算子、シリアル化、および Null値とUndefined値をサポートする [Value object](https://en.wikipedia.org/wiki/Value_object) パターンを作成する C# ソースジェネレーターです。  
 
 
+**このドキュメントは書きかけです。
+
 Thanks 
 ---
 forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Undefined values.  Thanks to the author of UnitGenerator.  
@@ -38,7 +40,9 @@ using NullableUnitGenerator;
 public readonly partial struct UserId { }
 ```
 
-will generates
+will generates  
+
+以下のようなコードが自動生成されます。  
 
 ```csharp
 [System.ComponentModel.TypeConverter(typeof(UserIdTypeConverter))]
@@ -68,7 +72,9 @@ public readonly partial struct UserId : IEquatable<UserId>
 }
 ```
 
-However, Hp in games, should not be allowed to be assigned to other types, but should support arithmetic operations with int. For example double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
+However, Hp in games, should not be allowed to be assigned to other types, but should support arithmetic operations with int. For example double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.  
+
+しかし、ゲームにおける Hp は、他の型に代入することは許されず、intを使った算術演算をサポートする必要があります。例えば、double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
 
 ```csharp
 [UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.MinMaxMethod)]
@@ -124,7 +130,9 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
 }
 ```
 
-You can configure with `UnitGenerateOptions`, which method to implement.
+You can configure with `UnitGenerateOptions`, which method to implement.  
+
+どのメソッドを実装するかは `UnitGenerateOptions` で設定することができます。  
 
 ```csharp
 [Flags]
@@ -147,9 +155,11 @@ enum UnitGenerateOptions
 }
 ```
 
-UnitGenerateOptions has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.
+UnitGenerateOptions has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.  
+Currently UnitGenerator supports [MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp), System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper) and EntityFrameworkCore.  
 
-Currently UnitGenerator supports [MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp), System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper) and EntityFrameworkCore.
+UnitGenerateOptionsには、いくつかのシリアライザーサポートがあります。例えば、`Serialize(userId) => { Value = 1111 }`のような結果はひどいものです。値オブジェクトはネイティブにシリアライズされるべきで、すなわち `Serialize(useId) => 1111` となり、データベースなどに直接追加できるようにすべきです。  
+現在、UnitGeneratorは、[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp)、System.Text.Json(JsonSerializer)、[Dapper](https://github.com/StackExchange/Dapper)、EntityFrameworkCore。  
 
 ```csharp
 [UnitOf(typeof(int), UnitGenerateOptions.MessagePackFormatter)]
