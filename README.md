@@ -502,13 +502,13 @@ public static void AddTypeHandler()
 ```
 
 
-<details><summary>~~MessagePackFormatter~~</summary>
+<details><summary>### MessagePackFormatter</summary>
 
 ### ~~MessagePackFormatter~~
 
-~~Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically.~~  
+Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically. 
 
-~~C#の `MessagePackFormatter` 用のMessagePackを実装しています。自動的に `MessagePackSerializer` が使用されます。~~  
+C#の `MessagePackFormatter` 用のMessagePackを実装しています。自動的に `MessagePackSerializer` が使用されます。 
 
 ```csharp
 [MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
@@ -517,7 +517,8 @@ public readonly partial struct UserId
     class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
 }
 ```
-<details>
+</details>
+
 
 ### ~~EntityFrameworkValueConverter~~
 
