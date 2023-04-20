@@ -120,10 +120,12 @@ However, Hp in games, should not be allowed to be assigned to other types, but s
 しかし、ゲームにおける Hp は、他の型に代入することは許されず、intを使った算術演算をサポートする必要があります。例えば、double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
 
 ```csharp
-[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator
+[UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator
+                   | UnitGenerateOptions.ParseMethod
+                   | UnitGenerateOptions.MinMaxMethod
+                   | UnitGenerateOptions.ArithmeticOperator
                    | UnitGenerateOptions.ValueArithmeticOperator
-                   | UnitGenerateOptions.Comparable
-                   | UnitGenerateOptions.MinMaxMethod)]
+                   | UnitGenerateOptions.Comparable)]
 public readonly partial struct Hp { }
 
 // -- generates

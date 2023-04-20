@@ -14,5 +14,10 @@ namespace ForReadme;
 public readonly partial struct UserId { }
 
 
-[UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable)]
+[UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator
+                   | UnitGenerateOptions.ParseMethod
+                   | UnitGenerateOptions.MinMaxMethod
+                   | UnitGenerateOptions.ArithmeticOperator
+                   | UnitGenerateOptions.ValueArithmeticOperator
+                   | UnitGenerateOptions.Comparable)]
 public readonly partial struct Hp { }
