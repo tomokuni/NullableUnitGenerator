@@ -67,9 +67,9 @@ public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<Us
     
     // Constructor
     public UserId(in UserId value) { (m_state, m_value) = (value.m_state, value.m_value); }
-    public UserId(in TernaryState state, in int value = default) { ... }
+    public UserId(in TernaryState state, in int value = default) => ...;
     public UserId(in int value) { (m_state, m_value) = (TernaryState.Value, value); }
-    public UserId(in int? value) { ... }
+    public UserId(in int? value) => ...;
 
     // get state
     public bool IsUndef       => m_state == TernaryState.Undef;
@@ -101,7 +101,7 @@ public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<Us
     public static explicit operator UserId(in int? value) => new(value);
 
     // Equals, IEquatable<UserId>
-    public bool Equals(UserId other)         => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
+    public bool Equals(UserId other)         => ...;
     public bool Equals(UserId x, UserId y)   => x.Equals(y);
     public override bool Equals(object? obj) => obj is UserId ts && Equals(ts);
 
@@ -120,7 +120,10 @@ However, Hp in games, should not be allowed to be assigned to other types, but s
 しかし、ゲームにおける Hp は、他の型に代入することは許されず、intを使った算術演算をサポートする必要があります。例えば、double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
 
 ```csharp
-[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.MinMaxMethod)]
+[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator
+                   | UnitGenerateOptions.ValueArithmeticOperator
+                   | UnitGenerateOptions.Comparable
+                   | UnitGenerateOptions.MinMaxMethod)]
 public readonly partial struct Hp { }
 
 // -- generates
@@ -133,84 +136,85 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     readonly TernaryState m_state = TernaryState.Undef;
 
     // Constructor
-    public Hp(in Hp value) { ... }
-    public Hp(in TernaryState state, in int value = default) { ... }
-    public Hp(in int value) { ... }
-    public Hp(in int? value) { ... }
+    public Hp(in Hp value)   => ...;
+    public Hp(in TernaryState state, in int value = default)  => ...;
+    public Hp(in int value)  => ...;
+    public Hp(in int? value) => ...;
     
     // get state
-    public bool IsUndef { get => ...; }
-    public bool IsNull { get => ...; }
-    public bool IsUndefOrNull { get => ...; }
-    public bool HasValue { get => ...; }
-    public TernaryState State { get => ...; }
+    public bool IsUndef       => ...;
+    public bool IsNull        => ...;
+    public bool IsUndefOrNull => ...;
+    public bool HasValue      => ...;
+    public TernaryState State => ...;
     
     // get value
-    public int Value { get => ...; }
-    public int AsPrimitive() { ... }
-    public int  GetRawValue() { ... }
-    public int GetOr(in int defaultValue) { ... }
-    public int? GetOr(in int? defaultValue) { ... }
-    public int GetOrDefault() { ... }
-    public int? GetOrNull() { ... }
-    public int GetOrThrow() { ... }
-    public bool TryGet(out int value, in int defaultValue = default) { ... }
+    public int Value          => ...;
+    public int AsPrimitive()  => ...;
+    public int  GetRawValue() => ...;
+    public int GetOr(in int defaultValue) => ...;
+    public int? GetOr(in int? defaultValue) => ...;
+    public int GetOrDefault() => ...;
+    public int? GetOrNull()   => ...;
+    public int GetOrThrow()   => ...;
+    public bool TryGet(out int value, in int defaultValue = default) => ...;
     
     // GetHashCode, ToString
-    public override int GetHashCode() { ... }
-    public int GetHashCode(Hp obj) { ... }
-    public override string ToString() { ... }
+    public override int GetHashCode() => ...;
+    public int GetHashCode(Hp obj)    => ...;
+    public override string ToString() => ...;
 
     // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator
-    public static implicit operator int(in Hp value) { ... }
-    public static implicit operator Hp(in int value) { ... }
-    public static implicit operator int?(in Hp value) { ... }
-    public static implicit operator Hp(in int? value) { ... }
+    public static implicit operator int(in Hp value)  => ...;
+    public static implicit operator Hp(in int value)  => ...;
+    public static implicit operator int?(in Hp value) => ...;
+    public static implicit operator Hp(in int? value) => ...;
 
     // Equals, IEquatable<Hp>
-    public bool Equals(Hp other) { ... }
-    public bool Equals(Hp x, Hp y) { ... }
-    public override bool Equals(object? obj)
+    public bool Equals(Hp other)             => ...;
+    public bool Equals(Hp x, Hp y)           => ...;
+    public override bool Equals(object? obj) => ...;
 
     // ==, != operator
-    public static bool operator ==(in Hp x, in Hp y) { ... }
-    public static bool operator !=(in Hp x, in Hp y) { ... }
+    public static bool operator ==(in Hp x, in Hp y) => ...;
+    public static bool operator !=(in Hp x, in Hp y) => ...;
     
     // CompareTo, IComparable<Hp>    // UnitGenerateOptions.Comparable
-    public int CompareTo(Hp other) { ... }
+    public int CompareTo(Hp other) => ...;
     
     // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
-    public static bool operator >(in Hp x, in Hp y) { ... }
-    public static bool operator <(in Hp x, in Hp y) { ... }
-    public static bool operator >=(in Hp x, in Hp y) { ... }
-    public static bool operator <=(in Hp x, in Hp y) { ... }
+    public static bool operator >(in Hp x, in Hp y)  => ...;
+    public static bool operator <(in Hp x, in Hp y)  => ...;
+    public static bool operator >=(in Hp x, in Hp y) => ...;
+    public static bool operator <=(in Hp x, in Hp y) => ...;
 
     // Parse, TryParse    // UnitGenerateOptions.ParseMethod
-    public static Hp Parse(string s) { ... }
-    public static bool TryParse(string s, out Hp result) { ... }
+    public static Hp Parse(string s)                     => ...;
+    public static bool TryParse(string s, out Hp result) => ...;
 
     // Min, Max    // UnitGenerateOptions.MinMaxMethod
-    public static Hp Min(Hp x, Hp y) { ... }
-    public static Hp Max(Hp x, Hp y) { ... }
+    public static Hp Min(Hp x, Hp y) => ...;
+    public static Hp Max(Hp x, Hp y) => ...;
     
     // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
-    public static Hp operator +(in Hp x, in Hp y) { ... }
-    public static Hp operator -(in Hp x, in Hp y) { ... }
-    public static Hp operator *(in Hp x, in Hp y) { ... }
-    public static Hp operator /(in Hp x, in Hp y) { ... }
-    public static Hp operator %(in Hp x, in Hp y) { ... }
+    public static Hp operator +(in Hp x, in Hp y) => ...;
+    public static Hp operator -(in Hp x, in Hp y) => ...;
+    public static Hp operator *(in Hp x, in Hp y) => ...;
+    public static Hp operator /(in Hp x, in Hp y) => ...;
+    public static Hp operator %(in Hp x, in Hp y) => ...;
     
     // ++, --, +, -, *, /, % operator    // UnitGenerateOptions.ValueArithmeticOperator
-    public static Hp operator ++(in Hp x) { ... }
-    public static Hp operator --(in Hp x) { ... }
-    public static Hp operator +(in Hp x, in int y) { ... }
-    public static Hp operator -(in Hp x, in int y) { ... }
-    public static Hp operator *(in Hp x, in int y) { ... }
-    public static Hp operator /(in Hp x, in int y) { ... }
-    public static Hp operator %(in Hp x, in int y) { ... }
+    public static Hp operator ++(in Hp x)          => ...;
+    public static Hp operator --(in Hp x)          => ...;
+    public static Hp operator +(in Hp x, in int y) => ...;
+    public static Hp operator -(in Hp x, in int y) => ...;
+    public static Hp operator *(in Hp x, in int y) => ...;
+    public static Hp operator /(in Hp x, in int y) => ...;
+    public static Hp operator %(in Hp x, in int y) => ...;
 
     // TypeConverter
     private class HpTypeConverter : System.ComponentModel.TypeConverter
+    { ... }
 }
 ```
 
