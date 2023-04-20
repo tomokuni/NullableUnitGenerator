@@ -152,7 +152,7 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     public int Value          => ...;
     public int AsPrimitive()  => ...;
     public int  GetRawValue() => ...;
-    public int GetOr(in int defaultValue) => ...;
+    public int GetOr(in int defaultValue)   => ...;
     public int? GetOr(in int? defaultValue) => ...;
     public int GetOrDefault() => ...;
     public int? GetOrNull()   => ...;
