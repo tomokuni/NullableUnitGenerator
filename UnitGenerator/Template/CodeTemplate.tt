@@ -41,7 +41,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
 {
     //
     // Constructor
@@ -181,8 +181,8 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     // backing field
     //
 
-    internal readonly <#= Type #> m_value = default;
-    internal readonly TernaryState m_state = TernaryState.Undef;
+    readonly <#= Type #> m_value = default;
+    readonly TernaryState m_state = TernaryState.Undef;
 
 
     //
@@ -341,13 +341,35 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     // implicit, explicit operator
     //
 
+<# if (HasFlag(UnitGenerateOptions.ImplicitOperator)) { #>
+    /// <summary>implicit(暗黙的) operator</summary>
+    public static implicit operator <#= Type #>(in <#= Name #> value)
+        => (<#= Type #>)value.GetOrThrow();
+
+    /// <summary>implicit(暗黙的) operator</summary>
+    /// <returns><#= Name #> value.</returns>
+    public static implicit operator <#= Name #>(in <#= Type #> value)
+        => new(value);
+
+<# if (IsValueType) { #>
+    /// <summary>implicit(暗黙的) operator</summary>
+    /// <returns><#= TypeNullable #> value.</returns>
+    public static implicit operator <#= TypeNullable #>(in <#= Name #> value)
+        => (<#= TypeNullable #>)value.GetOrNull();
+
+    /// <summary>implicit(暗黙的) operator</summary>
+    /// <returns><#= Name #> value.</returns>
+    public static implicit operator <#= Name #>(in <#= TypeNullable #> value)
+        => new(value);
+<# } #>
+<# } else { #>
     /// <summary>explicit(明示的) operator</summary>
     public static explicit operator <#= Type #>(in <#= Name #> value)
         => (<#= Type #>)value.GetOrThrow();
 
-    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)" #> operator</summary>
+    /// <summary>explicit(明示的) operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static implicit operator <#= Name #>(in <#= Type #> value)
+    public static explicit operator <#= Name #>(in <#= Type #> value)
         => new(value);
 
 <# if (IsValueType) { #>
@@ -356,12 +378,13 @@ readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer
     public static explicit operator <#= TypeNullable #>(in <#= Name #> value)
         => (<#= TypeNullable #>)value.GetOrNull();
 
-    /// <summary><#= HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)" #> operator</summary>
+    /// <summary>explicit(明示的) operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static implicit operator <#= Name #>(in <#= TypeNullable #> value)
+    public static explicit operator <#= Name #>(in <#= TypeNullable #> value)
         => new(value);
-
 <# } #>
+<# } #>
+
 
     //
     // Equals, IEquatable<<#= Name #>>

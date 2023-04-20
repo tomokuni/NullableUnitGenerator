@@ -59,29 +59,50 @@ will generates
 
 ```csharp
 [System.ComponentModel.TypeConverter(typeof(UserIdTypeConverter))]
-public readonly partial struct UserId : IEquatable<UserId> 
+public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<UserId> 
 {
-    readonly int value;
+    readonly int m_value = default;
+    readonly TernaryState m_state = TernaryState.Undef;
     
-    public UserId(int value)
-    {
-        this.value = value;
-    }
+    public UserId(in UserId value) { (m_state, m_value) = (value.m_state, value.m_value); }
+    public UserId(in TernaryState state, in int value = default) { ... }
+    public UserId(in int value) { (m_state, m_value) = (TernaryState.Value, value); }
+    public UserId(in int? value) { ... }
 
-    public readonly int AsPrimitive() => value;
-    public static explicit operator int(UserId value) => value.value;
-    public static explicit operator UserId(int value) => new UserId(value);
-    public bool Equals(UserId other) => value.Equals(other.value);
-    public override bool Equals(object? obj) => snip...;
-    public override int GetHashCode() => value.GetHashCode();
-    public override string ToString() => value.ToString();
-    public static bool operator ==(in UserId x, in UserId y) => x.value.Equals(y.value);
-    public static bool operator !=(in UserId x, in UserId y) => !x.value.Equals(y.value);
+    public bool IsUndef       => m_state == TernaryState.Undef;
+    public bool IsNull        => m_state == TernaryState.Null;
+    public bool IsUndefOrNull => m_state != TernaryState.Value;
+    public bool HasValue      => m_state == TernaryState.Value;
+    public TernaryState State => m_state;
+
+    public int  Value         => GetOrThrow();
+    public int  AsPrimitive() => Value;
+    public int  GetRawValue() => m_value;
+    public int  GetOr(in int defaultValue)  => HasValue ? m_value : defaultValue;
+    public int? GetOr(in int? defaultValue) => HasValue ? m_value : defaultValue;
+    public int  GetOrDefault() => GetOr(default);
+    public int? GetOrNull()    => GetOr(null);
+    public int  GetOrThrow()   => ...;
+    public bool TryGet(out int value, in int defaultValue = default) => ...;
+
+    public override int GetHashCode()  => (m_state, m_value).GetHashCode();
+    public int GetHashCode(UserId obj) => (obj.m_state, obj.m_value).GetHashCode();
+    public override string ToString()  => ValueString;
+
+    public static explicit operator int(in UserId value)  => (int)value.GetOrThrow();
+    public static explicit operator UserId(in int value)  => new(value);
+    public static explicit operator int?(in UserId value) => (int?)value.GetOrNull();
+    public static explicit operator UserId(in int? value) => new(value);
+
+    public bool Equals(UserId other)         => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
+    public bool Equals(UserId x, UserId y)   => x.Equals(y);
+    public override bool Equals(object? obj) => obj is UserId ts && Equals(ts);
+
+    public static bool operator ==(in UserId x, in UserId y) => x.Equals(y);
+    public static bool operator !=(in UserId x, in UserId y) => !(x == y);
 
     private class UserIdTypeConverter : System.ComponentModel.TypeConverter
-    {
-        // snip...
-    }
+    { ... }
 }
 ```
 

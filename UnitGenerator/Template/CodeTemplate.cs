@@ -66,7 +66,7 @@ using System.Diagnostics.CodeAnalysis;
  } 
             this.Write("[System.ComponentModel.TypeConverter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("TypeConverter))]\r\nreadonly partial struct ");
+            this.Write("TypeConverter))]\r\npublic readonly partial struct ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" : IEquatable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -209,32 +209,31 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(".NullValue),\r\n            _ => (TernaryState.Value, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(".ValueStateDefaultValue),\r\n        };\r\n        result = outVal;\r\n        return s" +
-                    "tate;\r\n    }\r\n\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    internal readonly " +
-                    "");
+                    "tate;\r\n    }\r\n\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" m_value = default;\r\n    internal readonly TernaryState m_state = TernaryState.Un" +
-                    "def;\r\n\r\n\r\n    //\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see langword=\"tr" +
-                    "ue\"/> if undefined; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <retu" +
-                    "rns><b><see langword=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUn" +
-                    "def\r\n        => m_state == TernaryState.Undef;\r\n\r\n    /// <summary><see langword" +
-                    "=\"true\"/> if null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <retur" +
-                    "ns><b><see langword=\"true\"/></b> : if null</returns>\r\n    public bool IsNull\r\n  " +
-                    "      => m_state == TernaryState.Null;\r\n\r\n    /// <summary><see langword=\"true\"/" +
-                    "> if undefined or null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <" +
-                    "returns><b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n    publ" +
-                    "ic bool IsUndefOrNull\r\n        => m_state != TernaryState.Value;\r\n\r\n    /// <sum" +
-                    "mary><see langword=\"true\"/> if not undefined and not null; otherwise, <see langw" +
-                    "ord=\"false\"/>.</summary>\r\n    /// <returns><b><see langword=\"true\"/></b> : if no" +
-                    "t undefined and not null</returns>\r\n    public bool HasValue\r\n        => m_state" +
-                    " == TernaryState.Value;\r\n\r\n    /// <summary>return value state.</summary>\r\n    /" +
-                    "// <returns>\r\n    /// <b>Undef</b><br/>\r\n    /// <b>Null</b><br/>\r\n    /// <b>Va" +
-                    "lue</b>\r\n    /// </returns>\r\n    public TernaryState State\r\n        => m_state;\r" +
-                    "\n\r\n\r\n    //\r\n    // get value\r\n    //\r\n\r\n    /// <summary>return value if HasVal" +
-                    "ue is true; otherwise, throw InvalidOperationException()</summary>\r\n    /// <ret" +
-                    "urns>\r\n    /// <b>value</b> : if HasValue is true<br/>\r\n    /// <b>throw Invalid" +
-                    "OperationException(\"Value is Null.\")</b> : if IsNull is true<br/>\r\n    /// <b>th" +
-                    "row InvalidOperationException(\"Value is Undef.\")</b> : if IsUndef is true\r\n    /" +
-                    "// </returns>\r\n    public ");
+            this.Write(" m_value = default;\r\n    readonly TernaryState m_state = TernaryState.Undef;\r\n\r\n\r" +
+                    "\n    //\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see langword=\"true\"/> if " +
+                    "undefined; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><s" +
+                    "ee langword=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUndef\r\n    " +
+                    "    => m_state == TernaryState.Undef;\r\n\r\n    /// <summary><see langword=\"true\"/>" +
+                    " if null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><se" +
+                    "e langword=\"true\"/></b> : if null</returns>\r\n    public bool IsNull\r\n        => " +
+                    "m_state == TernaryState.Null;\r\n\r\n    /// <summary><see langword=\"true\"/> if unde" +
+                    "fined or null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><" +
+                    "b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n    public bool I" +
+                    "sUndefOrNull\r\n        => m_state != TernaryState.Value;\r\n\r\n    /// <summary><see" +
+                    " langword=\"true\"/> if not undefined and not null; otherwise, <see langword=\"fals" +
+                    "e\"/>.</summary>\r\n    /// <returns><b><see langword=\"true\"/></b> : if not undefin" +
+                    "ed and not null</returns>\r\n    public bool HasValue\r\n        => m_state == Terna" +
+                    "ryState.Value;\r\n\r\n    /// <summary>return value state.</summary>\r\n    /// <retur" +
+                    "ns>\r\n    /// <b>Undef</b><br/>\r\n    /// <b>Null</b><br/>\r\n    /// <b>Value</b>\r\n" +
+                    "    /// </returns>\r\n    public TernaryState State\r\n        => m_state;\r\n\r\n\r\n    " +
+                    "//\r\n    // get value\r\n    //\r\n\r\n    /// <summary>return value if HasValue is tru" +
+                    "e; otherwise, throw InvalidOperationException()</summary>\r\n    /// <returns>\r\n  " +
+                    "  /// <b>value</b> : if HasValue is true<br/>\r\n    /// <b>throw InvalidOperation" +
+                    "Exception(\"Value is Null.\")</b> : if IsNull is true<br/>\r\n    /// <b>throw Inval" +
+                    "idOperationException(\"Value is Undef.\")</b> : if IsUndef is true\r\n    /// </retu" +
+                    "rns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    publ" +
                     "ic ");
@@ -343,18 +342,53 @@ using System.Diagnostics.CodeAnalysis;
     // implicit, explicit operator
     //
 
-    /// <summary>explicit(明示的) operator</summary>
-    public static explicit operator ");
+");
+ if (HasFlag(UnitGenerateOptions.ImplicitOperator)) { 
+            this.Write("    /// <summary>implicit(暗黙的) operator</summary>\r\n    public static implicit ope" +
+                    "rator ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value)\r\n        => (");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(")value.GetOrThrow();\r\n\r\n    /// <summary>");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)"));
-            this.Write(" operator</summary>\r\n    /// <returns>");
+            this.Write(")value.GetOrThrow();\r\n\r\n    /// <summary>implicit(暗黙的) operator</summary>\r\n    //" +
+                    "/ <returns>");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value.</returns>\r\n    public static implicit operator ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(" value)\r\n        => new(value);\r\n\r\n");
+ if (IsValueType) { 
+            this.Write("    /// <summary>implicit(暗黙的) operator</summary>\r\n    /// <returns>");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(" value.</returns>\r\n    public static implicit operator ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write("(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" value)\r\n        => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(")value.GetOrNull();\r\n\r\n    /// <summary>implicit(暗黙的) operator</summary>\r\n    ///" +
+                    " <returns>");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" value.</returns>\r\n    public static implicit operator ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
+            this.Write(" value)\r\n        => new(value);\r\n");
+ } 
+ } else { 
+            this.Write("    /// <summary>explicit(明示的) operator</summary>\r\n    public static explicit ope" +
+                    "rator ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write("(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" value)\r\n        => (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Type));
+            this.Write(")value.GetOrThrow();\r\n\r\n    /// <summary>explicit(明示的) operator</summary>\r\n    //" +
+                    "/ <returns>");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" value.</returns>\r\n    public static explicit operator ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
@@ -368,17 +402,17 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value)\r\n        => (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(")value.GetOrNull();\r\n\r\n    /// <summary>");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.ImplicitOperator) ? "implicit(暗黙的)" : "explicit(明示的)"));
-            this.Write(" operator</summary>\r\n    /// <returns>");
+            this.Write(")value.GetOrNull();\r\n\r\n    /// <summary>explicit(明示的) operator</summary>\r\n    ///" +
+                    " <returns>");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value.</returns>\r\n    public static implicit operator ");
+            this.Write(" value.</returns>\r\n    public static explicit operator ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
-            this.Write(" value)\r\n        => new(value);\r\n\r\n");
+            this.Write(" value)\r\n        => new(value);\r\n");
  } 
-            this.Write("\r\n    //\r\n    // Equals, IEquatable<");
+ } 
+            this.Write("\r\n\r\n    //\r\n    // Equals, IEquatable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
