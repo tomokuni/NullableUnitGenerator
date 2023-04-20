@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 using NullableUnitGenerator;
 
-namespace ConsoleApp;
+namespace ForReadme;
 
 
 [UnitOf(typeof(int))]
 public readonly partial struct UserId { }
+
+
+[UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable)]
+public readonly partial struct Hp { }

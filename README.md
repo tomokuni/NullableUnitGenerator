@@ -61,20 +61,24 @@ will generates
 [System.ComponentModel.TypeConverter(typeof(UserIdTypeConverter))]
 public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<UserId> 
 {
+    // backing field
     readonly int m_value = default;
     readonly TernaryState m_state = TernaryState.Undef;
     
+    // Constructor
     public UserId(in UserId value) { (m_state, m_value) = (value.m_state, value.m_value); }
     public UserId(in TernaryState state, in int value = default) { ... }
     public UserId(in int value) { (m_state, m_value) = (TernaryState.Value, value); }
     public UserId(in int? value) { ... }
 
+    // get state
     public bool IsUndef       => m_state == TernaryState.Undef;
     public bool IsNull        => m_state == TernaryState.Null;
     public bool IsUndefOrNull => m_state != TernaryState.Value;
     public bool HasValue      => m_state == TernaryState.Value;
     public TernaryState State => m_state;
 
+    // get value
     public int  Value         => GetOrThrow();
     public int  AsPrimitive() => Value;
     public int  GetRawValue() => m_value;
@@ -85,22 +89,27 @@ public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<Us
     public int  GetOrThrow()   => ...;
     public bool TryGet(out int value, in int defaultValue = default) => ...;
 
+    // GetHashCode, ToString
     public override int GetHashCode()  => (m_state, m_value).GetHashCode();
     public int GetHashCode(UserId obj) => (obj.m_state, obj.m_value).GetHashCode();
     public override string ToString()  => ValueString;
 
+    // implicit, explicit operator
     public static explicit operator int(in UserId value)  => (int)value.GetOrThrow();
     public static explicit operator UserId(in int value)  => new(value);
     public static explicit operator int?(in UserId value) => (int?)value.GetOrNull();
     public static explicit operator UserId(in int? value) => new(value);
 
+    // Equals, IEquatable<UserId>
     public bool Equals(UserId other)         => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
     public bool Equals(UserId x, UserId y)   => x.Equals(y);
     public override bool Equals(object? obj) => obj is UserId ts && Equals(ts);
 
+    // ==, != operator
     public static bool operator ==(in UserId x, in UserId y) => x.Equals(y);
     public static bool operator !=(in UserId x, in UserId y) => !(x == y);
 
+    // TypeConverter
     private class UserIdTypeConverter : System.ComponentModel.TypeConverter
     { ... }
 }
@@ -119,48 +128,89 @@ public readonly partial struct Hp { }
 [System.ComponentModel.TypeConverter(typeof(HpTypeConverter))]
 public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
 {
-    readonly int value;
+    // backing field
+    readonly int m_value = default;
+    readonly TernaryState m_state = TernaryState.Undef;
 
-    public Hp(int value)
-    {
-        this.value = value;
-    }
+    // Constructor
+    public Hp(in Hp value) { ... }
+    public Hp(in TernaryState state, in int value = default) { ... }
+    public Hp(in int value) { ... }
+    public Hp(in int? value) { ... }
+    
+    // get state
+    public bool IsUndef { get => ...; }
+    public bool IsNull { get => ...; }
+    public bool IsUndefOrNull { get => ...; }
+    public bool HasValue { get => ...; }
+    public TernaryState State { get => ...; }
+    
+    // get value
+    public int Value { get => ...; }
+    public int AsPrimitive() { ... }
+    public int  GetRawValue() { ... }
+    public int GetOr(in int defaultValue) { ... }
+    public int? GetOr(in int? defaultValue) { ... }
+    public int GetOrDefault() { ... }
+    public int? GetOrNull() { ... }
+    public int GetOrThrow() { ... }
+    public bool TryGet(out int value, in int defaultValue = default) { ... }
+    
+    // GetHashCode, ToString
+    public override int GetHashCode() { ... }
+    public int GetHashCode(Hp obj) { ... }
+    public override string ToString() { ... }
 
-    public int AsPrimitive() => value;
-    public static explicit operator int(Hp value) => value.value;
-    public static explicit operator Hp(int value) => new Hp(value);
-    public bool Equals(Hp other) => value.Equals(other.value);
-    public override bool Equals(object? obj) => snip...;
-    public override int GetHashCode() => value.GetHashCode();
-    public override string ToString() => value.ToString();
-    public static bool operator ==(in Hp x, in Hp y) => x.value.Equals(y.value);
-    public static bool operator !=(in Hp x, in Hp y) => !x.value.Equals(y.value);
-    private class HpTypeConverter : System.ComponentModel.TypeConverter { /* snip... */ }
+    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator
+    public static implicit operator int(in Hp value) { ... }
+    public static implicit operator Hp(in int value) { ... }
+    public static implicit operator int?(in Hp value) { ... }
+    public static implicit operator Hp(in int? value) { ... }
 
-    // UnitGenerateOptions.ArithmeticOperator
-    public static Hp operator +(in Hp x, in Hp y) => new Hp(checked((int)(x.value + y.value)));
-    public static Hp operator -(in Hp x, in Hp y) => new Hp(checked((int)(x.value - y.value)));
-    public static Hp operator *(in Hp x, in Hp y) => new Hp(checked((int)(x.value * y.value)));
-    public static Hp operator /(in Hp x, in Hp y) => new Hp(checked((int)(x.value / y.value)));
+    // Equals, IEquatable<Hp>
+    public bool Equals(Hp other) { ... }
+    public bool Equals(Hp x, Hp y) { ... }
+    public override bool Equals(object? obj)
 
-    // UnitGenerateOptions.ValueArithmeticOperator
-    public static Hp operator ++(in Hp x) => new Hp(checked((int)(x.value + 1)));
-    public static Hp operator --(in Hp x) => new Hp(checked((int)(x.value - 1)));
-    public static Hp operator +(in Hp x, in int y) => new Hp(checked((int)(x.value + y)));
-    public static Hp operator -(in Hp x, in int y) => new Hp(checked((int)(x.value - y)));
-    public static Hp operator *(in Hp x, in int y) => new Hp(checked((int)(x.value * y)));
-    public static Hp operator /(in Hp x, in int y) => new Hp(checked((int)(x.value / y)));
+    // ==, != operator
+    public static bool operator ==(in Hp x, in Hp y) { ... }
+    public static bool operator !=(in Hp x, in Hp y) { ... }
+    
+    // CompareTo, IComparable<Hp>    // UnitGenerateOptions.Comparable
+    public int CompareTo(Hp other) { ... }
+    
+    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
+    public static bool operator >(in Hp x, in Hp y) { ... }
+    public static bool operator <(in Hp x, in Hp y) { ... }
+    public static bool operator >=(in Hp x, in Hp y) { ... }
+    public static bool operator <=(in Hp x, in Hp y) { ... }
 
-    // UnitGenerateOptions.Comparable
-    public int CompareTo(Hp other) => value.CompareTo(other.value);
-    public static bool operator >(in Hp x, in Hp y) => x.value > y.value;
-    public static bool operator <(in Hp x, in Hp y) => x.value < y.value;
-    public static bool operator >=(in Hp x, in Hp y) => x.value >= y.value;
-    public static bool operator <=(in Hp x, in Hp y) => x.value <= y.value;
+    // Parse, TryParse    // UnitGenerateOptions.ParseMethod
+    public static Hp Parse(string s) { ... }
+    public static bool TryParse(string s, out Hp result) { ... }
 
-    // UnitGenerateOptions.MinMaxMethod
-    public static Hp Min(Hp x, Hp y) => new Hp(Math.Min(x.value, y.value));
-    public static Hp Max(Hp x, Hp y) => new Hp(Math.Max(x.value, y.value));
+    // Min, Max    // UnitGenerateOptions.MinMaxMethod
+    public static Hp Min(Hp x, Hp y) { ... }
+    public static Hp Max(Hp x, Hp y) { ... }
+    
+    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
+    public static Hp operator +(in Hp x, in Hp y) { ... }
+    public static Hp operator -(in Hp x, in Hp y) { ... }
+    public static Hp operator *(in Hp x, in Hp y) { ... }
+    public static Hp operator /(in Hp x, in Hp y) { ... }
+    public static Hp operator %(in Hp x, in Hp y) { ... }
+    
+    // ++, --, +, -, *, /, % operator    // UnitGenerateOptions.ValueArithmeticOperator
+    public static Hp operator ++(in Hp x) { ... }
+    public static Hp operator --(in Hp x) { ... }
+    public static Hp operator +(in Hp x, in int y) { ... }
+    public static Hp operator -(in Hp x, in int y) { ... }
+    public static Hp operator *(in Hp x, in int y) { ... }
+    public static Hp operator /(in Hp x, in int y) { ... }
+    public static Hp operator %(in Hp x, in int y) { ... }
+
+    // TypeConverter
+    private class HpTypeConverter : System.ComponentModel.TypeConverter
 }
 ```
 

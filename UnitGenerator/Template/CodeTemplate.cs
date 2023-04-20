@@ -339,8 +339,8 @@ using System.Diagnostics.CodeAnalysis;
 
 
     //
-    // implicit, explicit operator
-    //
+    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator or Unspecified 
+    // 
 
 ");
  if (HasFlag(UnitGenerateOptions.ImplicitOperator)) { 
@@ -583,8 +583,8 @@ if (IsIntegralNumericType()) {
  } 
             this.Write("\r\n");
  if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { 
-            this.Write("\r\n    //\r\n    // UnitGenerateOptions.MinMaxMethod\r\n    //\r\n\r\n    /// <summary>Min" +
-                    "</summary>\r\n    public static ");
+            this.Write("\r\n    //\r\n    // Min, Max     // UnitGenerateOptions.MinMaxMethod\r\n    //\r\n\r\n    " +
+                    "/// <summary>Min</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" Min(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));

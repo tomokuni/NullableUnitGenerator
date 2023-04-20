@@ -338,8 +338,8 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 
 
     //
-    // implicit, explicit operator
-    //
+    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator or Unspecified 
+    // 
 
 <# if (HasFlag(UnitGenerateOptions.ImplicitOperator)) { #>
     /// <summary>implicit(暗黙的) operator</summary>
@@ -566,7 +566,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 <# if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { #>
 
     //
-    // UnitGenerateOptions.MinMaxMethod
+    // Min, Max     // UnitGenerateOptions.MinMaxMethod
     //
 
     /// <summary>Min</summary>
