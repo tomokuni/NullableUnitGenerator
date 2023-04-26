@@ -11,7 +11,7 @@
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
 
-        <Version>0.0.2.39</Version>
+        <Version>0.0.2.42</Version>
 
         <!-- does not need runtime self -->
         <IncludeBuildOutput>false</IncludeBuildOutput>
