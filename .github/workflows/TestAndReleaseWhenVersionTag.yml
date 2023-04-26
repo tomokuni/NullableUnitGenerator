@@ -29,8 +29,9 @@ jobs:
       run: dotnet test -c Release --no-build
 
   build:
-    name: Build
+    name: BuildPackage
     needs: [test]
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.0
@@ -57,7 +58,6 @@ jobs:
   
   upload:
     name: Upload to GitHub Releases
-    if: startsWith(github.ref, 'refs/tags/v')
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -73,9 +73,8 @@ jobs:
         tag_name: ${{ env.REF_NAME }}
         files: nupkgs/*.nupkg
 
-  publish-gpr:
-    name: Publish to GitHub Packages
-    if: startsWith(github.ref, 'refs/tags/v')
+  publish:
+    name: Publish to GitHub Package
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -92,22 +91,6 @@ jobs:
       run: dotnet nuget push "nupkgs/*.nupkg" --skip-duplicate --source ${GPR_URL} --api-key ${{ secrets.GITHUB_TOKEN }}
       env:
         GPR_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-
-  publish-nuget:
-    name: Publish to NuGet
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build]
-    # if: false
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup .NET SDK # detected from global.json
-      uses: actions/setup-dotnet@v3.0.3
-
-    - name: Download Build Assets
-      uses: actions/download-artifact@v3.0.2
-      with:
-        name: packages
-        path: nupkgs/
 
     - name: Publish to NuGet
       run: dotnet nuget push "nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
