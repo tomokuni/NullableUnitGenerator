@@ -1,6 +1,6 @@
-# v で始まる v.0.0.0.0 形式の Tag が付けられたら UnitTest と Relese.
+# v で始まる v.0.0.0.0 形式の Tag が付けられたら Relese.
 
-name: Release when version tag.
+name: Build, Test And Release when version tag.
 on: [push, pull_request]
 
 env:
