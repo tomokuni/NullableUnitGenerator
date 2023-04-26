@@ -1,4 +1,4 @@
-This document is a work in progress. (‚±‚ÌƒhƒLƒ…ƒƒ“ƒg‚Í‘‚«‚©‚¯‚Å‚·B)
+This document is a work in progress. (ã“ã®ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã¯æ›¸ãã‹ã‘ã§ã™ã€‚)
 ---
 
 NullableUnitGenerator
@@ -7,9 +7,9 @@ NullableUnitGenerator
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/tomokuni/NullableUnitGenerator?label=GitHub%20release)](https://github.com/tomokuni/NullableUnitGenerator/releases)
 [![Nuget](https://img.shields.io/nuget/v/NullableUnitGenerator?label=Nuget%20release)](https://www.nuget.org/packages/NullableUnitGenerator/)
 
-C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Undefined value.  
+C# Source Generator to create [Value object](https://en.wikipedia.org/wiki/Value_object) pattern to support arithmetic operators and serialization and Null and Undefined value.
 
-Zp‰‰ZqAƒVƒŠƒAƒ‹‰»A‚¨‚æ‚Ñ Null’l‚ÆUndefined’l‚ğƒTƒ|[ƒg‚·‚é [Value object](https://en.wikipedia.org/wiki/Value_object) ƒpƒ^[ƒ“‚ğì¬‚·‚é C# ƒ\[ƒXƒWƒFƒlƒŒ[ƒ^[‚Å‚·B  
+ç®—è¡“æ¼”ç®—å­ã€ã‚·ãƒªã‚¢ãƒ«åŒ–ã€ãŠã‚ˆã³ Nullå€¤ã¨Undefinedå€¤ã‚’ã‚µãƒãƒ¼ãƒˆã™ã‚‹ [Value object](https://en.wikipedia.org/wiki/Value_object) ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä½œæˆã™ã‚‹ C# ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãƒ¼ã§ã™ã€‚
 
 
 GitHub: [NullableUnitGenerator](https://github.com/tomokuni/NullableUnitGenerator/)
@@ -22,29 +22,29 @@ Install-Package NullableUnitGenerator
 ```
 
 
-Thanks 
+Thanks
 ---
-forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Undefined values.  Thanks to the author of UnitGenerator.  
+forked from [UnitGenerator](https://github.com/Cysharp/UnitGenerator) to support Null and Undefined values.  Thanks to the author of UnitGenerator.
 
-Null’l ‚Æ Undefined’l ‚ğƒTƒ|[ƒg‚·‚é‚½‚ß‚É [UnitGenerator](https://github.com/Cysharp/UnitGenerator) ‚©‚ç•ªŠò‚µ‚Ü‚µ‚½B  UnitGenerator ‚ÌìÒ—l‚ÉŠ´Ó‚µ‚Ü‚·B  
+Nullå€¤ ã¨ Undefinedå€¤ ã‚’ã‚µãƒãƒ¼ãƒˆã™ã‚‹ãŸã‚ã« [UnitGenerator](https://github.com/Cysharp/UnitGenerator) ã‹ã‚‰åˆ†å²ã—ã¾ã—ãŸã€‚  UnitGenerator ã®ä½œè€…æ§˜ã«æ„Ÿè¬ã—ã¾ã™ã€‚
 
 
 MessagePackFormatter, EntityFrameworkValueConverter, and Unity are not yet supported.
 ---
-MessagePackFormatter, EntityFrameworkValueConverter, and Unity are supported by UnitGenerator.  
-However, NullableUnitGenerator does not yet support them.  
-They are listed in this document, but cannot be used with NullableUnitGenerator.  
+MessagePackFormatter, EntityFrameworkValueConverter, and Unity are supported by UnitGenerator.
+However, NullableUnitGenerator does not yet support them.
+They are listed in this document, but cannot be used with NullableUnitGenerator.
 
-MessagePackFormatterAEntityFrameworkValueConverterAUnity ‚ÍAUnitGenerator ‚ÅƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚Ü‚·B  
-‚µ‚©‚µANullableUnitGenerator ‚Í‚Ü‚¾‚»‚ê‚ç‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚Ü‚¹‚ñB  
-‚»‚ê‚ç‚Í‚±‚Ì•¶‘‚É‹LÚ‚µ‚Ä‚¢‚é‚ªANullableUnitGenerator ‚Åg—p‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB  
+MessagePackFormatterã€EntityFrameworkValueConverterã€Unity ã¯ã€UnitGenerator ã§ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ã¾ã™ã€‚
+ã—ã‹ã—ã€NullableUnitGenerator ã¯ã¾ã ãã‚Œã‚‰ã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã›ã‚“ã€‚
+ãã‚Œã‚‰ã¯ã“ã®æ–‡æ›¸ã«è¨˜è¼‰ã—ã¦ã„ã‚‹ãŒã€NullableUnitGenerator ã§ä½¿ç”¨ã™ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“ã€‚
 
 
 ## Introduction
 
-For example, Identifier, UserId is comparable only to UserId, and cannot be assigned to any other type. Also, arithmetic operations are not allowed.  
+For example, Identifier, UserId is comparable only to UserId, and cannot be assigned to any other type. Also, arithmetic operations are not allowed.
 
-—á‚¦‚ÎA¯•Êq UserId ‚Í UserId ‚Æ‚Ì‚İ”äŠr‰Â”\‚Å‚ ‚èA‘¼‚Ìƒ^ƒCƒv‚ÉŠ„‚è“–‚Ä‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB ‚Ü‚½AZp‰‰Z‚Íg—p‚Å‚«‚Ü‚¹‚ñB  
+ä¾‹ãˆã°ã€è­˜åˆ¥å­ UserId ã¯ UserId ã¨ã®ã¿æ¯”è¼ƒå¯èƒ½ã§ã‚ã‚Šã€ä»–ã®ã‚¿ã‚¤ãƒ—ã«å‰²ã‚Šå½“ã¦ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“ã€‚ ã¾ãŸã€ç®—è¡“æ¼”ç®—ã¯ä½¿ç”¨ã§ãã¾ã›ã‚“ã€‚
 
 ```csharp
 using NullableUnitGenerator;
@@ -53,18 +53,18 @@ using NullableUnitGenerator;
 public readonly partial struct UserId { }
 ```
 
-will generates  
+will generates
 
-ˆÈ‰º‚Ì‚æ‚¤‚ÈƒR[ƒh‚ª©“®¶¬‚³‚ê‚Ü‚·B  
+ä»¥ä¸‹ã®ã‚ˆã†ãªã‚³ãƒ¼ãƒ‰ãŒè‡ªå‹•ç”Ÿæˆã•ã‚Œã¾ã™ã€‚
 
 ```csharp
 [System.ComponentModel.TypeConverter(typeof(UserIdTypeConverter))]
-public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<UserId> 
+public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<UserId>
 {
     // backing field
     readonly int m_value = default;
     readonly TernaryState m_state = TernaryState.Undef;
-    
+
     // Constructor
     public UserId(in UserId value) { (m_state, m_value) = (value.m_state, value.m_value); }
     public UserId(in TernaryState state, in int value = default) => ...;
@@ -115,9 +115,9 @@ public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<Us
 }
 ```
 
-However, Hp in games, should not be allowed to be assigned to other types, but should support arithmetic operations with int. For example double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.  
+However, Hp in games, should not be allowed to be assigned to other types, but should support arithmetic operations with int. For example double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
 
-‚µ‚©‚µAƒQ[ƒ€‚É‚¨‚¯‚é Hp ‚ÍA‘¼‚ÌŒ^‚É‘ã“ü‚·‚é‚±‚Æ‚Í‹–‚³‚ê‚¸Aint‚ğg‚Á‚½Zp‰‰Z‚ğƒTƒ|[ƒg‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B—á‚¦‚ÎAdouble heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
+ã—ã‹ã—ã€ã‚²ãƒ¼ãƒ ã«ãŠã‘ã‚‹ Hp ã¯ã€ä»–ã®å‹ã«ä»£å…¥ã™ã‚‹ã“ã¨ã¯è¨±ã•ã‚Œãšã€intã‚’ä½¿ã£ãŸç®—è¡“æ¼”ç®—ã‚’ã‚µãƒãƒ¼ãƒˆã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚ä¾‹ãˆã°ã€double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
 
 ```csharp
 [UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator
@@ -142,14 +142,14 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     public Hp(in TernaryState state, in int value = default)  => ...;
     public Hp(in int value)  => ...;
     public Hp(in int? value) => ...;
-    
+
     // get state
     public bool IsUndef       => ...;
     public bool IsNull        => ...;
     public bool IsUndefOrNull => ...;
     public bool HasValue      => ...;
     public TernaryState State => ...;
-    
+
     // get value
     public int Value          => ...;
     public int AsPrimitive()  => ...;
@@ -160,7 +160,7 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     public int? GetOrNull()   => ...;
     public int GetOrThrow()   => ...;
     public bool TryGet(out int value, in int defaultValue = default) => ...;
-    
+
     // GetHashCode, ToString
     public override int GetHashCode() => ...;
     public int GetHashCode(Hp obj)    => ...;
@@ -180,10 +180,10 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     // ==, != operator
     public static bool operator ==(in Hp x, in Hp y) => ...;
     public static bool operator !=(in Hp x, in Hp y) => ...;
-    
+
     // CompareTo, IComparable<Hp>    // UnitGenerateOptions.Comparable
     public int CompareTo(Hp other) => ...;
-    
+
     // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
     public static bool operator >(in Hp x, in Hp y)  => ...;
     public static bool operator <(in Hp x, in Hp y)  => ...;
@@ -197,14 +197,14 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     // Min, Max    // UnitGenerateOptions.MinMaxMethod
     public static Hp Min(Hp x, Hp y) => ...;
     public static Hp Max(Hp x, Hp y) => ...;
-    
+
     // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
     public static Hp operator +(in Hp x, in Hp y) => ...;
     public static Hp operator -(in Hp x, in Hp y) => ...;
     public static Hp operator *(in Hp x, in Hp y) => ...;
     public static Hp operator /(in Hp x, in Hp y) => ...;
     public static Hp operator %(in Hp x, in Hp y) => ...;
-    
+
     // ++, --, +, -, *, /, % operator    // UnitGenerateOptions.ValueArithmeticOperator
     public static Hp operator ++(in Hp x)          => ...;
     public static Hp operator --(in Hp x)          => ...;
@@ -220,9 +220,9 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
 }
 ```
 
-You can configure with `UnitGenerateOptions`, which method to implement.  
+You can configure with `UnitGenerateOptions`, which method to implement.
 
-‚Ç‚Ìƒƒ\ƒbƒh‚ğÀ‘•‚·‚é‚©‚Í `UnitGenerateOptions` ‚Åİ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B  
+ã©ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹ã‹ã¯ `UnitGenerateOptions` ã§è¨­å®šã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚
 
 ```csharp
 [Flags]
@@ -245,11 +245,11 @@ enum UnitGenerateOptions
 }
 ```
 
-UnitGenerateOptions has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.  
-Currently UnitGenerator supports System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper), ~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp) and EntityFrameworkCore~~.  
+UnitGenerateOptions has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.
+Currently UnitGenerator supports System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper), ~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp) and EntityFrameworkCore~~.
 
-UnitGenerateOptions‚É‚ÍA‚¢‚­‚Â‚©‚ÌƒVƒŠƒAƒ‰ƒCƒU[ƒTƒ|[ƒg‚ª‚ ‚è‚Ü‚·B—á‚¦‚ÎA`Serialize(userId) => { Value = 1111 }`‚Ì‚æ‚¤‚ÈŒ‹‰Ê‚Í‚Ğ‚Ç‚¢‚à‚Ì‚Å‚·B’lƒIƒuƒWƒFƒNƒg‚ÍƒlƒCƒeƒBƒu‚ÉƒVƒŠƒAƒ‰ƒCƒY‚³‚ê‚é‚×‚«‚ÅA‚·‚È‚í‚¿ `Serialize(useId) => 1111` ‚Æ‚È‚èAƒf[ƒ^ƒx[ƒX‚È‚Ç‚É’¼Ú’Ç‰Á‚Å‚«‚é‚æ‚¤‚É‚·‚×‚«‚Å‚·B  
-Œ»İAUnitGenerator‚ÍASystem.Text.Json(JsonSerializer)A[Dapper](https://github.com/StackExchange/Dapper)A~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp)AEntityFrameworkCore~~ ‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚Ü‚·BB  
+UnitGenerateOptionsã«ã¯ã€ã„ãã¤ã‹ã®ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚¶ãƒ¼ã‚µãƒãƒ¼ãƒˆãŒã‚ã‚Šã¾ã™ã€‚ä¾‹ãˆã°ã€`Serialize(userId) => { Value = 1111 }`ã®ã‚ˆã†ãªçµæœã¯ã²ã©ã„ã‚‚ã®ã§ã™ã€‚å€¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯ãƒã‚¤ãƒ†ã‚£ãƒ–ã«ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã•ã‚Œã‚‹ã¹ãã§ã€ã™ãªã‚ã¡ `Serialize(useId) => 1111` ã¨ãªã‚Šã€ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ãªã©ã«ç›´æ¥è¿½åŠ ã§ãã‚‹ã‚ˆã†ã«ã™ã¹ãã§ã™ã€‚
+ç¾åœ¨ã€UnitGeneratorã¯ã€System.Text.Json(JsonSerializer)ã€[Dapper](https://github.com/StackExchange/Dapper)ã€~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp)ã€EntityFrameworkCore~~ ã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã™ã€‚ã€‚
 
 ```csharp
 [UnitOf(typeof(int), UnitGenerateOptions.MessagePackFormatter)]
@@ -258,7 +258,7 @@ public readonly partial struct UserId { }
 // -- generates
 
 [MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
-public readonly partial struct UserId 
+public readonly partial struct UserId
 {
     class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
     {
@@ -301,9 +301,9 @@ public readonly partial struct UserId
 
 
 ## UnitOfAttribute
-When referring to the UnitGenerator, it generates a internal `UnitOfAttribute`.  
+When referring to the UnitGenerator, it generates a internal `UnitOfAttribute`.
 
-UnitGenerator‚ğQÆ‚·‚é‚ÆA“à•”‚Ì`UnitOfAttribute`‚ğ¶¬‚µ‚Ü‚·B  
+UnitGeneratorã‚’å‚ç…§ã™ã‚‹ã¨ã€å†…éƒ¨ã®`UnitOfAttribute`ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
 
 ```csharp
 namespace UnitGenerator
@@ -316,9 +316,9 @@ namespace UnitGenerator
 }
 ```
 
-You can attach this attribute with any specified underlying type to `readonly partial struct`.  
+You can attach this attribute with any specified underlying type to `readonly partial struct`.
 
-‚±‚Ì‘®«‚ÍA`readonly partial struct`‚Éw’è‚³‚ê‚½Šî–{Œ^‚Æˆê‚É•t‚¯‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B  
+ã“ã®å±æ€§ã¯ã€`readonly partial struct`ã«æŒ‡å®šã•ã‚ŒãŸåŸºæœ¬å‹ã¨ä¸€ç·’ã«ä»˜ã‘ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚
 
 ```csharp
 [UnitOf(typeof(Guid))]
@@ -340,41 +340,41 @@ public readonly partial struct StartDate { }
 public readonly partial struct StreetAddress { }
 ```
 
-Standard UnitOf(`UnitGenerateOptions.None`) generates value constructor, `explicit operator`, `implement IEquatable<T>`, `override GetHashCode`, `override ToString`, `==` and `!=` operator, `TypeConverter` for ASP.NET Core binding, `AsPrimitive` method.  
-If you want to retrieve primitive value, use `AsPrimitive()` instead of `.Value`. This is intended to avoid casual getting of primitive values (using the arithmetic operator option if available).  
-> When type is bool, also implements `true`, `false`, `!` operators.  
+Standard UnitOf(`UnitGenerateOptions.None`) generates value constructor, `explicit operator`, `implement IEquatable<T>`, `override GetHashCode`, `override ToString`, `==` and `!=` operator, `TypeConverter` for ASP.NET Core binding, `AsPrimitive` method.
+If you want to retrieve primitive value, use `AsPrimitive()` instead of `.Value`. This is intended to avoid casual getting of primitive values (using the arithmetic operator option if available).
+> When type is bool, also implements `true`, `false`, `!` operators.
 
-•W€‚Ì UnitOf(`UnitGenerateOptions.None`) ‚ÍA’l‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^A`explicit operator` A`implement IEquatable<T>` A`override GetHashCode` A `override ToString` A`==` ‚Æ `!=` ƒIƒyƒŒ[ƒ^A`TypeConverter` for ASP.NET Core binding A`AsPrimitive` ƒƒ\ƒbƒh‚ğ¶¬‚µ‚Ü‚·B  
-ƒvƒŠƒ~ƒeƒBƒu‚È’l‚ğæ“¾‚µ‚½‚¢ê‡‚ÍA`.Value`‚Ì‘ã‚í‚è‚É `AsPrimitive()` ‚ğg—p‚µ‚Ü‚·B‚±‚ê‚ÍAƒvƒŠƒ~ƒeƒBƒu‚È’l‚ÌƒJƒWƒ…ƒAƒ‹‚Èæ“¾‚ğ”ğ‚¯‚é‚½‚ß‚Ì‚à‚Ì‚Å‚·iZp‰‰ZqƒIƒvƒVƒ‡ƒ“‚ª‚ ‚éê‡‚Í‚»‚ê‚ğg—p‚µ‚Ü‚·jB  
-> ƒ^ƒCƒv‚ªbool‚Ìê‡A`true`, `false`, `!` ‰‰Zq‚àÀ‘•‚µ‚Ü‚·B  
+æ¨™æº–ã® UnitOf(`UnitGenerateOptions.None`) ã¯ã€å€¤ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€`explicit operator` ã€`implement IEquatable<T>` ã€`override GetHashCode` ã€ `override ToString` ã€`==` ã¨ `!=` ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã€`TypeConverter` for ASP.NET Core binding ã€`AsPrimitive` ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
+ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãªå€¤ã‚’å–å¾—ã—ãŸã„å ´åˆã¯ã€`.Value`ã®ä»£ã‚ã‚Šã« `AsPrimitive()` ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚ã“ã‚Œã¯ã€ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãªå€¤ã®ã‚«ã‚¸ãƒ¥ã‚¢ãƒ«ãªå–å¾—ã‚’é¿ã‘ã‚‹ãŸã‚ã®ã‚‚ã®ã§ã™ï¼ˆç®—è¡“æ¼”ç®—å­ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹å ´åˆã¯ãã‚Œã‚’ä½¿ç”¨ã—ã¾ã™ï¼‰ã€‚
+> ã‚¿ã‚¤ãƒ—ãŒboolã®å ´åˆã€`true`, `false`, `!` æ¼”ç®—å­ã‚‚å®Ÿè£…ã—ã¾ã™ã€‚
 
-```csharp 
+```csharp
 public static bool operator true(Foo x) => x.value;
 public static bool operator false(Foo x) => !x.value;
 public static bool operator !(Foo x) => !x.value;
 ```
 
-> When type is Guid or [Ulid](https://github.com/Cysharp/Ulid), also implements `New()` and `New***()` static operator.  
+> When type is Guid or [Ulid](https://github.com/Cysharp/Ulid), also implements `New()` and `New***()` static operator.
 
-> Œ^‚ªGuid‚Ü‚½‚Í[Ulid](https://github.com/Cysharp/Ulid)‚Ìê‡A `New()` ‚¨‚æ‚Ñ `New***()` ‚ÌÃ“I‰‰Zq‚àÀ‘•‚µ‚Ä‚¢‚Ü‚·B  
+> å‹ãŒGuidã¾ãŸã¯[Ulid](https://github.com/Cysharp/Ulid)ã®å ´åˆã€ `New()` ãŠã‚ˆã³ `New***()` ã®é™çš„æ¼”ç®—å­ã‚‚å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚
 
 ```csharp
 public static GroupId New();
 public static GroupId NewGroupId();
 ```
 
-Second parameter `UnitGenerateOptions options` can configure which method to implement, default is `None`.  
-Third parameter `strign toStringFormat` can configure `ToString` format. Default is null and output as $`{0}`.  
+Second parameter `UnitGenerateOptions options` can configure which method to implement, default is `None`.
+Third parameter `strign toStringFormat` can configure `ToString` format. Default is null and output as $`{0}`.
 
-2”Ô–Ú‚Ìƒpƒ‰ƒ[ƒ^ `UnitGenerateOptions options` ‚ÍA‚Ç‚Ìƒƒ\ƒbƒh‚ğÀ‘•‚·‚é‚©‚ğİ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚éiƒfƒtƒHƒ‹ƒg‚Í `None` jB  
-‘æ3ƒpƒ‰ƒ[ƒ^ `strign toStringFormat` ‚Í `ToString` ‚ÌƒtƒH[ƒ}ƒbƒg‚ğİ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚éBƒfƒtƒHƒ‹ƒg‚ÍNULL‚ÅA$`{0}`‚Æ‚µ‚Äo—Í‚³‚ê‚éB  
+2ç•ªç›®ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ `UnitGenerateOptions options` ã¯ã€ã©ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹ã‹ã‚’è¨­å®šã™ã‚‹ã“ã¨ãŒã§ãã‚‹ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ `None` ï¼‰ã€‚
+ç¬¬3ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ `strign toStringFormat` ã¯ `ToString` ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’è¨­å®šã™ã‚‹ã“ã¨ãŒã§ãã‚‹ã€‚ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯NULLã§ã€$`{0}`ã¨ã—ã¦å‡ºåŠ›ã•ã‚Œã‚‹ã€‚
 
 
 ## UnitGenerateOptions
 
-When referring to the UnitGenerator, it generates a internal `UnitGenerateOptions` that is bit flag of which method to implement.  
+When referring to the UnitGenerator, it generates a internal `UnitGenerateOptions` that is bit flag of which method to implement.
 
-UnitGenerator‚ğQÆ‚·‚éê‡A‚Ç‚Ìƒƒ\ƒbƒh‚ğÀ‘•‚·‚é‚©‚Ìƒrƒbƒgƒtƒ‰ƒO‚Å‚ ‚é“à•”`UnitGenerateOptions`‚ğ¶¬‚µ‚Ü‚·B  
+UnitGeneratorã‚’å‚ç…§ã™ã‚‹å ´åˆã€ã©ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹ã‹ã®ãƒ“ãƒƒãƒˆãƒ•ãƒ©ã‚°ã§ã‚ã‚‹å†…éƒ¨`UnitGenerateOptions`ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
 
 ```csharp
 [Flags]
@@ -395,9 +395,9 @@ internal enum UnitGenerateOptions
 }
 ```
 
-You can use this with `[UnitOf]`.  
+You can use this with `[UnitOf]`.
 
-`[UnitOf]` ‘®«‚Ìˆø”‚Éw’è‚Å‚«‚Ü‚·B  
+`[UnitOf]` å±æ€§ã®å¼•æ•°ã«æŒ‡å®šã§ãã¾ã™ã€‚
 
 ```csharp
 [UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.MinMaxMethod)]
@@ -410,9 +410,9 @@ public readonly partial struct EndDate { }
 public readonly partial struct AllOptionsStruct { }
 ```
 
-You can setup project default options like this.  
+You can setup project default options like this.
 
-‚±‚Ì‚æ‚¤‚ÉAƒvƒƒWƒFƒNƒg‚ÌƒfƒtƒHƒ‹ƒgƒIƒvƒVƒ‡ƒ“‚ğİ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B  
+ã“ã®ã‚ˆã†ã«ã€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’è¨­å®šã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚
 
 ```csharp
 internal static class UnitOfOptions
@@ -438,7 +438,7 @@ public static implicit operator T(U value) => new T(value);
 ```
 
 
-### ParseMethod 
+### ParseMethod
 
 ```csharp
 public static T Parse(string s)
@@ -478,9 +478,9 @@ public static T operator /(in T x, in U y) => new T(checked((U)(x.value / y)));
 
 ### Comparable
 
-Implements `IComparable<T>` and `>`, `<`, `>=`, `<=` operators. 
+Implements `IComparable<T>` and `>`, `<`, `>=`, `<=` operators.
 
-`IComparable<T>`‚Æ `>`, `<`, `>=`, `<=` ‰‰Zq‚ğÀ‘•‚µ‚Ä‚¢‚Ü‚·B 
+`IComparable<T>`ã¨ `>`, `<`, `>=`, `<=` æ¼”ç®—å­ã‚’å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚
 
 ```csharp
 public U CompareTo(T other) => value.CompareTo(other.value);
@@ -493,9 +493,9 @@ public static bool operator <=(in T x, in T y) => x.value <= y.value;
 
 ### WithoutComparisonOperator
 
-Without implements `>`, `<`, `>=`, `<=` operators. For example, useful for Guid.  
+Without implements `>`, `<`, `>=`, `<=` operators. For example, useful for Guid.
 
-—á‚¦‚ÎAGuid ‚ÍA `>`, `<`, `>=`, `<=` ‰‰Zq ‚Í ‚ğÀ‘•‚µ‚Ü‚¹‚ñB  
+ä¾‹ãˆã°ã€Guid ã¯ã€ `>`, `<`, `>=`, `<=` æ¼”ç®—å­ ã¯ ã‚’å®Ÿè£…ã—ã¾ã›ã‚“ã€‚
 
 ```csharp
 [UnitOf(typeof(Guid), UnitGenerateOptions.Comparable | UnitGenerateOptions.WithoutComparisonOperator)]
@@ -505,9 +505,9 @@ public readonly partial struct FooId { }
 
 ### Validate
 
-Implements `partial void Validate()` method that is called on constructor.  
+Implements `partial void Validate()` method that is called on constructor.
 
-ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÅŒÄ‚Ño‚³‚ê‚é `partial void Validate()` ƒƒ\ƒbƒh‚ğÀ‘•‚µ‚Ä‚¢‚Ü‚·B  
+ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§å‘¼ã³å‡ºã•ã‚Œã‚‹ `partial void Validate()` ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚
 
 ```csharp
 // You can implement this custom validate method.
@@ -527,16 +527,16 @@ public T(int value)
     this.value = value;
     this.Validate();
 }
- 
+
 private partial void Validate();
 ```
 
 
 ### JsonConverter
 
-Implements `System.Text.Json`'s `JsonConverter`. It will be used `JsonSerializer` automatically.  
+Implements `System.Text.Json`'s `JsonConverter`. It will be used `JsonSerializer` automatically.
 
-`System.Text.Json`‚Ì `JsonConverter` ‚ğÀ‘•‚µ‚Ä‚¢‚Ü‚·B©“®“I‚É `JsonSerializer` ‚ªg—p‚³‚ê‚Ü‚·B  
+`System.Text.Json`ã® `JsonConverter` ã‚’å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚è‡ªå‹•çš„ã« `JsonSerializer` ãŒä½¿ç”¨ã•ã‚Œã¾ã™ã€‚
 
 ```csharp
 [JsonConverter(typeof(UserIdJsonConverter))]
@@ -549,9 +549,9 @@ public readonly partial struct UserId
 
 ### JsonConverterDictionaryKeySupport
 
-Implements `JsonConverter`'s `WriteAsPropertyName/ReadAsPropertyName`. It supports from .NET 6, supports Dictionary's Key.  
+Implements `JsonConverter`'s `WriteAsPropertyName/ReadAsPropertyName`. It supports from .NET 6, supports Dictionary's Key.
 
-`JsonConverter` ‚Ì `WriteAsPropertyName/ReadAsPropertyName` ‚ğÀ‘•‚µ‚Ä‚¢‚Ü‚·B.NET 6‚©‚çƒTƒ|[ƒg‚³‚êADictionary‚ÌKey‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚Ü‚·B  
+`JsonConverter` ã® `WriteAsPropertyName/ReadAsPropertyName` ã‚’å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚.NET 6ã‹ã‚‰ã‚µãƒãƒ¼ãƒˆã•ã‚Œã€Dictionaryã®Keyã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã™ã€‚
 
 ```csharp
 var dict = Dictionary<UserId, int>
@@ -561,9 +561,9 @@ JsonSerializer.Serialize(dict);
 
 ### DapperTypeHandler
 
-Implements Dapper's TypeHandler by public accessibility. TypeHandler is automatically registered at the time of Module initialization.  
+Implements Dapper's TypeHandler by public accessibility. TypeHandler is automatically registered at the time of Module initialization.
 
-Dapper‚ÌTypeHandler‚ğƒpƒuƒŠƒbƒNƒAƒNƒZƒVƒrƒŠƒeƒB‚ÅÀ‘•‚µ‚Ä‚¢‚Ü‚·BTypeHandler‚ÍAModule‚Ì‰Šú‰»‚É©“®“I‚É“o˜^‚³‚ê‚Ü‚·B  
+Dapperã®TypeHandlerã‚’ãƒ‘ãƒ–ãƒªãƒƒã‚¯ã‚¢ã‚¯ã‚»ã‚·ãƒ“ãƒªãƒ†ã‚£ã§å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚TypeHandlerã¯ã€Moduleã®åˆæœŸåŒ–æ™‚ã«è‡ªå‹•çš„ã«ç™»éŒ²ã•ã‚Œã¾ã™ã€‚
 
 ```csharp
 public readonly partial struct UserId
@@ -580,11 +580,11 @@ public static void AddTypeHandler()
 
 
 ### ~~MessagePackFormatter~~
-<details><summary>Explanation in UnitGenerager (UnitGenerager‚Å‚Ìà–¾)</summary>
+<details><summary>Explanation in UnitGenerager (UnitGeneragerã§ã®èª¬æ˜)</summary>
 
-Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically. 
+Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically.
 
-C#‚Ì `MessagePackFormatter` —p‚ÌMessagePack‚ğÀ‘•‚µ‚Ä‚¢‚Ü‚·B©“®“I‚É `MessagePackSerializer` ‚ªg—p‚³‚ê‚Ü‚·B 
+C#ã® `MessagePackFormatter` ç”¨ã®MessagePackã‚’å®Ÿè£…ã—ã¦ã„ã¾ã™ã€‚è‡ªå‹•çš„ã« `MessagePackSerializer` ãŒä½¿ç”¨ã•ã‚Œã¾ã™ã€‚
 
 ```csharp
 [MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
@@ -597,11 +597,11 @@ public readonly partial struct UserId
 
 
 ### ~~EntityFrameworkValueConverter~~
-<details><summary>Explanation in UnitGenerager (UnitGenerager‚Å‚Ìà–¾)</summary>  
+<details><summary>Explanation in UnitGenerager (UnitGeneragerã§ã®èª¬æ˜)</summary>
 
-Implements EntityFrameworkCore's ValueConverter by public accessibility. It is not registered automatically so you need to register manually.  
+Implements EntityFrameworkCore's ValueConverter by public accessibility. It is not registered automatically so you need to register manually.
 
-EntityFrameworkCore‚ÌValueConverter‚ğƒpƒuƒŠƒbƒNƒAƒNƒZƒVƒrƒŠƒeƒB‚ÅÀ‘•‚µ‚Ü‚·B©“®“I‚É‚Í“o˜^‚³‚ê‚È‚¢‚Ì‚ÅAè“®‚Å“o˜^‚·‚é•K—v‚ª‚ ‚éB   
+EntityFrameworkCoreã®ValueConverterã‚’ãƒ‘ãƒ–ãƒªãƒƒã‚¯ã‚¢ã‚¯ã‚»ã‚·ãƒ“ãƒªãƒ†ã‚£ã§å®Ÿè£…ã—ã¾ã™ã€‚è‡ªå‹•çš„ã«ã¯ç™»éŒ²ã•ã‚Œãªã„ã®ã§ã€æ‰‹å‹•ã§ç™»éŒ²ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
 
 ```csharp
 public readonly partial struct UserId
@@ -616,15 +616,15 @@ builder.HasConversion(new UserId.UserIdValueConverter());
 
 
 ### ~~Use for Unity~~
-<details><summary>Explanation in UnitGenerager (UnitGenerager‚Å‚Ìà–¾)</summary>
+<details><summary>Explanation in UnitGenerager (UnitGeneragerã§ã®èª¬æ˜)</summary>
 
-C# Source Generator feature is rely on C# 9.0. If you are using Unity 2021.2, that supports [Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html). Add the `UnitGenerator.dll` from the [releases page](https://github.com/Cysharp/UnitGenerator/releases), disable Any Platform, disable Include all platforms and set label as `RoslynAnalyzer`.  
-It works in Unity Editor however does not work on IDE because Unity does not generate analyzer reference to `.csproj`. We provides [CsprojModifer](https://github.com/Cysharp/CsprojModifier) to analyzer support, uses `Add analyzer references to generated .csproj` supports both IDE and Unity Editor.  
-Unity(2020) does not support C# 9.0 so can not use directly. However, C# Source Genertor supports output source as file.  
+C# Source Generator feature is rely on C# 9.0. If you are using Unity 2021.2, that supports [Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html). Add the `UnitGenerator.dll` from the [releases page](https://github.com/Cysharp/UnitGenerator/releases), disable Any Platform, disable Include all platforms and set label as `RoslynAnalyzer`.
+It works in Unity Editor however does not work on IDE because Unity does not generate analyzer reference to `.csproj`. We provides [CsprojModifer](https://github.com/Cysharp/CsprojModifier) to analyzer support, uses `Add analyzer references to generated .csproj` supports both IDE and Unity Editor.
+Unity(2020) does not support C# 9.0 so can not use directly. However, C# Source Genertor supports output source as file.
 
-C#ƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‹@”\‚ÍAC#9.0‚ÉˆË‘¶‚µ‚Ä‚¢‚Ü‚·BUnity 2021.2‚ğg—p‚µ‚Ä‚¢‚éê‡A[Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html)‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚Ü‚·BƒŠƒŠ[ƒXƒy[ƒW](https://github.com/Cysharp/UnitGenerator/releases)‚©‚ç`UnitGenerator.dll`‚ğ’Ç‰Á‚µAAny Platform‚ğ–³Œø‚É‚µAInclude all platforms‚ğ–³Œø‚É‚µAƒ‰ƒxƒ‹‚ğ`RoslynAnalyzer`‚Æİ’è‚µ‚Ü‚·B  
-Unity Editor‚Å‚Í“®ì‚µ‚Ü‚·‚ªAIDE‚Å‚ÍUnity‚ªƒAƒiƒ‰ƒCƒU[QÆ‚ğ¶¬‚µ‚È‚¢‚½‚ßA“®ì‚µ‚Ü‚¹‚ñBCsprojModifer](https://github.com/Cysharp/CsprojModifier)‚ğ’ñ‹Ÿ‚µA¶¬‚³‚ê‚½.csproj‚ÉƒAƒiƒ‰ƒCƒUQÆ‚ğ’Ç‰Á‚·‚é‚±‚Æ‚ÅAIDE‚ÆUnity Editor‚Ì—¼•û‚ğƒTƒ|[ƒg‚µ‚Ü‚·B  
-Unity(2020)‚ÍC# 9.0‚ğƒTƒ|[ƒg‚µ‚Ä‚¢‚È‚¢‚½‚ßA’¼Úg—p‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB‚½‚¾‚µAC# Source Genertor‚Íƒ\[ƒX‚ğƒtƒ@ƒCƒ‹‚Æ‚µ‚Äo—Í‚·‚é‚±‚Æ‚ª‰Â”\‚Å‚·B  
+C#ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿æ©Ÿèƒ½ã¯ã€C#9.0ã«ä¾å­˜ã—ã¦ã„ã¾ã™ã€‚Unity 2021.2ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹å ´åˆã€[Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html)ã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã™ã€‚ãƒªãƒªãƒ¼ã‚¹ãƒšãƒ¼ã‚¸](https://github.com/Cysharp/UnitGenerator/releases)ã‹ã‚‰`UnitGenerator.dll`ã‚’è¿½åŠ ã—ã€Any Platformã‚’ç„¡åŠ¹ã«ã—ã€Include all platformsã‚’ç„¡åŠ¹ã«ã—ã€ãƒ©ãƒ™ãƒ«ã‚’`RoslynAnalyzer`ã¨è¨­å®šã—ã¾ã™ã€‚
+Unity Editorã§ã¯å‹•ä½œã—ã¾ã™ãŒã€IDEã§ã¯UnityãŒã‚¢ãƒŠãƒ©ã‚¤ã‚¶ãƒ¼å‚ç…§ã‚’ç”Ÿæˆã—ãªã„ãŸã‚ã€å‹•ä½œã—ã¾ã›ã‚“ã€‚CsprojModifer](https://github.com/Cysharp/CsprojModifier)ã‚’æä¾›ã—ã€ç”Ÿæˆã•ã‚ŒãŸ.csprojã«ã‚¢ãƒŠãƒ©ã‚¤ã‚¶å‚ç…§ã‚’è¿½åŠ ã™ã‚‹ã“ã¨ã§ã€IDEã¨Unity Editorã®ä¸¡æ–¹ã‚’ã‚µãƒãƒ¼ãƒˆã—ã¾ã™ã€‚
+Unity(2020)ã¯C# 9.0ã‚’ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ãªã„ãŸã‚ã€ç›´æ¥ä½¿ç”¨ã™ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“ã€‚ãŸã ã—ã€C# Source Genertorã¯ã‚½ãƒ¼ã‚¹ã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã¨ã—ã¦å‡ºåŠ›ã™ã‚‹ã“ã¨ãŒå¯èƒ½ã§ã™ã€‚
 
 
 1. Create `UnitSourceGen.csproj`.
@@ -660,13 +660,13 @@ generated file and folder
 dotnet build UnitSourceGen.csproj
 ```
 
-File will be generated under `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.  
+File will be generated under `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs`. `UnitOfAttribute` is also included in generated folder, so at first, run build command and get attribute to configure.
 
-ƒtƒ@ƒCƒ‹‚Í `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs` ‚Æ‚µ‚Ä¶¬‚³‚ê‚Ü‚·B¶¬‚³‚ê‚½ƒtƒHƒ‹ƒ_‚É‚Í`UnitOfAttribute`‚àŠÜ‚Ü‚ê‚Ä‚¢‚é‚Ì‚ÅA‚Ü‚¸‚ÍbuildƒRƒ}ƒ“ƒh‚ğÀs‚µ‚Ä‘®«‚ğæ“¾‚µAİ’è‚µ‚Ü‚·B  
+ãƒ•ã‚¡ã‚¤ãƒ«ã¯ `NullableUnitGenerator\NullableUnitGenerator.SourceGenerator\*.g.cs` ã¨ã—ã¦ç”Ÿæˆã•ã‚Œã¾ã™ã€‚ç”Ÿæˆã•ã‚ŒãŸãƒ•ã‚©ãƒ«ãƒ€ã«ã¯`UnitOfAttribute`ã‚‚å«ã¾ã‚Œã¦ã„ã‚‹ã®ã§ã€ã¾ãšã¯buildã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã—ã¦å±æ€§ã‚’å–å¾—ã—ã€è¨­å®šã—ã¾ã™ã€‚
 
 
 License
 ---
-This library is under the MIT License.  
+This library is under the MIT License.
 
-–{ƒ‰ƒCƒuƒ‰ƒŠ‚ÍAMITƒ‰ƒCƒZƒ“ƒX‚Ì‚à‚Æ‚Å’ñ‹Ÿ‚³‚ê‚Ä‚¢‚Ü‚·B   
+æœ¬ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã¯ã€MITãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã®ã‚‚ã¨ã§æä¾›ã•ã‚Œã¦ã„ã¾ã™ã€‚

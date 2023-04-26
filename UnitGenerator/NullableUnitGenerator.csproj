@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <OutputType>library</OutputType>
-        <LangVersion>11</LangVersion>
+        <LangVersion>10</LangVersion>
         <Nullable>enable</Nullable>
         <Deterministic>true</Deterministic>
         <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
@@ -35,7 +35,7 @@
         <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
-        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackAsTool>false</PackAsTool>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <AssemblyVersion>$(Version)</AssemblyVersion>
