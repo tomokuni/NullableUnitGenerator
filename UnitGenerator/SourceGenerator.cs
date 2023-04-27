@@ -92,23 +92,21 @@ public sealed class SourceGenerator : IIncrementalGenerator
         //context.AddSource($"IOptional.Generated.cs", text);
         //token.ThrowIfCancellationRequested();
 
-        //AddCsResource("UnitGenerateOptions.cs");
-        //token.ThrowIfCancellationRequested();
+        AddCsResource("TernaryState.cs");
+        AddCsResource("UnitGenerateOptions.cs");
+        AddCsResource("UnitOfAttribute.cs");
+        AddCsResource("UnitOfHelper.cs");
+        AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
 
-        //AddCsResource("UnitOfAttribute.cs");
-        //token.ThrowIfCancellationRequested();
+        //
+        // ローカル関数
+        //
+        void AddCsResource(string resourceName)
+        {
+            context.AddSource(hintName: $"{resourceName}", source: StringResourceRead(resourceName));
+            token.ThrowIfCancellationRequested();
+        }
 
-        //AddCsResource("UnitOfHelper.cs");
-        //token.ThrowIfCancellationRequested();
-
-        //AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
-        //token.ThrowIfCancellationRequested();
-
-        ////
-        //// ローカル関数
-        ////
-        //void AddCsResource(string resourceName)
-        //    => context.AddSource(hintName: $"UnitOf.{resourceName}", source: StringResourceRead(resourceName));
     }
 
     /// <summary>
