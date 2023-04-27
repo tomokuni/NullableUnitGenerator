@@ -3,14 +3,14 @@
 
 using System;
 
-namespace Estable.TernaryType;
+namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// TernaryState
+/// 値の状態
 /// </summary>
 [Flags]
-public enum TernaryState
+public enum UnitState
 {
     /// <summary>Undefined State</summary>
     Undef = 0,
@@ -19,6 +19,7 @@ public enum TernaryState
     Null = 1,
 
     /// <summary>Value State</summary>
-    Value = 2,
+    Value = 3,
+
 }
 

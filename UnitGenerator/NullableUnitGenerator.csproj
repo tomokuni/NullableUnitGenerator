@@ -52,6 +52,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="Resource\UnitOfAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,19 +74,17 @@
     <Compile Include="SourceGenerator.cs" />
     <Compile Include="Template\CodeTemplate.Partial.cs" />
     <Compile Include="Template\UnitGenerateOptions.cs" />
-    <Compile Include="Template\UnitOfAttribute.cs" />
-    <Compile Include="Template\UnitOfHelper.cs" />
-    <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
-    <Compile Include="Template\TernaryState.cs" />
+    <Compile Include="Template\UnitHelper.cs" />
+    <Compile Include="Template\UnitState.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" PrivateAssets="all" />
+    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
   </ItemGroup>
   
   <ItemGroup>

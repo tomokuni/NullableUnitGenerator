@@ -85,11 +85,11 @@ using System.Diagnostics.CodeAnalysis;
  } 
             this.Write("    }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(in TernaryState state, in ");
+            this.Write("(in UnitState state, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" value = default)\r\n    {\r\n        (m_state, m_value) = (state, value) switch\r\n   " +
-                    "     {\r\n            (TernaryState.Undef, _) => (state, default),\r\n            (T" +
-                    "ernaryState.Null, _) => (state, default),\r\n");
+                    "     {\r\n            (UnitState.Undef, _) => (state, default),\r\n            (Unit" +
+                    "State.Null, _) => (state, default),\r\n");
  if (!IsValueType) { 
             this.Write("            (_, null) => (state, default),\r\n");
  } 
@@ -99,7 +99,7 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (TernaryState.Value, value);\r\n\r\n");
+            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (UnitState.Value, value);\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
             this.Write("        this.Validate();\r\n");
  } 
@@ -110,7 +110,7 @@ using System.Diagnostics.CodeAnalysis;
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
             this.Write(" value)\r\n    {\r\n        (m_state, m_value) = value switch\r\n        {\r\n           " +
-                    " null => (TernaryState.Null, default),\r\n            _ => (TernaryState.Value, (");
+                    " null => (UnitState.Null, default),\r\n            _ => (UnitState.Value, (");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(")value),\r\n        };\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.Validate)) { 
@@ -124,10 +124,10 @@ using System.Diagnostics.CodeAnalysis;
     //
 
     /// <summary>Display string as Undef.</summary>
-    public static readonly string sUndef = $""~{TernaryState.Undef}~"";
+    public static readonly string sUndef = $""~{UnitState.Undef}~"";
 
     /// <summary>Display string as Null.</summary>
-    public static readonly string sNull = $""~{TernaryState.Null}~"";
+    public static readonly string sNull = $""~{UnitState.Null}~"";
 
 
     //
@@ -137,14 +137,14 @@ using System.Diagnostics.CodeAnalysis;
     /// <summary>Undefined value instance.</summary>
     public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" UndefValue { get; } = new(TernaryState.Undef, default);\r\n\r\n    /// <summary>Null" +
-                    " value instance.</summary>\r\n    public static ");
+            this.Write(" UndefValue { get; } = new(UnitState.Undef, default);\r\n\r\n    /// <summary>Null va" +
+                    "lue instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" NullValue { get; } = new(TernaryState.Null, default);\r\n\r\n    /// <summary>Value " +
-                    "state default value instance.</summary>\r\n    public static ");
+            this.Write(" NullValue { get; } = new(UnitState.Null, default);\r\n\r\n    /// <summary>Value sta" +
+                    "te default value instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" ValueStateDefaultValue { get; } = new(TernaryState.Value, default);\r\n\r\n    stati" +
-                    "c readonly Type BaseType = typeof(");
+            this.Write(" ValueStateDefaultValue { get; } = new(UnitState.Value, default);\r\n\r\n    static r" +
+                    "eadonly Type BaseType = typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(@");
     /// <summary>Get base type.</summary>
@@ -163,26 +163,26 @@ using System.Diagnostics.CodeAnalysis;
     /// <summary>Determines if either value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>TernaryState.Undef</b> – if either value is undefined.<br/>
-    /// <b>TernaryState.Null</b> – if either value is null.<br/>
-    /// <b>TernaryState.Value</b> – if either value is set.
+    /// <b>UnitState.Undef</b> – if either value is undefined.<br/>
+    /// <b>UnitState.Null</b> – if either value is null.<br/>
+    /// <b>UnitState.Value</b> – if either value is set.
     /// </returns>
-    public static TernaryState CheckState(in ");
+    public static UnitState CheckState(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" result)\r\n    {\r\n        var (state, outVal) = (x, y) switch\r\n        {\r\n        " +
-                    "    { x.IsUndef: true } => (TernaryState.Undef, ");
+                    "    { x.IsUndef: true } => (UnitState.Undef, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".UndefValue),\r\n            { y.IsUndef: true } => (TernaryState.Undef, ");
+            this.Write(".UndefValue),\r\n            { y.IsUndef: true } => (UnitState.Undef, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".UndefValue),\r\n            { x.IsNull: true } => (TernaryState.Null, ");
+            this.Write(".UndefValue),\r\n            { x.IsNull: true } => (UnitState.Null, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".NullValue),\r\n            { y.IsNull: true } => (TernaryState.Null, ");
+            this.Write(".NullValue),\r\n            { y.IsNull: true } => (UnitState.Null, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".NullValue),\r\n            _ => (TernaryState.Value, ");
+            this.Write(".NullValue),\r\n            _ => (UnitState.Value, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@".ValueStateDefaultValue),
         };
@@ -193,47 +193,46 @@ using System.Diagnostics.CodeAnalysis;
     /// <summary>Determine if a value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>TernaryState.Undef</b> – if value is undefined.<br/>
-    /// <b>TernaryState.Null</b> – if value is null.<br/>
-    /// <b>TernaryState.Value</b> – if value is set.
+    /// <b>UnitState.Undef</b> – if value is undefined.<br/>
+    /// <b>UnitState.Null</b> – if value is null.<br/>
+    /// <b>UnitState.Value</b> – if value is set.
     /// </returns>
-    public static TernaryState CheckState(in ");
+    public static UnitState CheckState(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" result)\r\n    {\r\n        var (state, outVal) = x switch\r\n        {\r\n            {" +
-                    " IsUndef: true } => (TernaryState.Undef, ");
+                    " IsUndef: true } => (UnitState.Undef, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".UndefValue),\r\n            { IsNull: true } => (TernaryState.Null, ");
+            this.Write(".UndefValue),\r\n            { IsNull: true } => (UnitState.Null, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(".NullValue),\r\n            _ => (TernaryState.Value, ");
+            this.Write(".NullValue),\r\n            _ => (UnitState.Value, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(".ValueStateDefaultValue),\r\n        };\r\n        result = outVal;\r\n        return s" +
                     "tate;\r\n    }\r\n\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
-            this.Write(" m_value = default;\r\n    readonly TernaryState m_state = TernaryState.Undef;\r\n\r\n\r" +
-                    "\n    //\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see langword=\"true\"/> if " +
-                    "undefined; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><s" +
-                    "ee langword=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUndef\r\n    " +
-                    "    => m_state == TernaryState.Undef;\r\n\r\n    /// <summary><see langword=\"true\"/>" +
-                    " if null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><se" +
-                    "e langword=\"true\"/></b> : if null</returns>\r\n    public bool IsNull\r\n        => " +
-                    "m_state == TernaryState.Null;\r\n\r\n    /// <summary><see langword=\"true\"/> if unde" +
-                    "fined or null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><" +
-                    "b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n    public bool I" +
-                    "sUndefOrNull\r\n        => m_state != TernaryState.Value;\r\n\r\n    /// <summary><see" +
-                    " langword=\"true\"/> if not undefined and not null; otherwise, <see langword=\"fals" +
-                    "e\"/>.</summary>\r\n    /// <returns><b><see langword=\"true\"/></b> : if not undefin" +
-                    "ed and not null</returns>\r\n    public bool HasValue\r\n        => m_state == Terna" +
-                    "ryState.Value;\r\n\r\n    /// <summary>return value state.</summary>\r\n    /// <retur" +
-                    "ns>\r\n    /// <b>Undef</b><br/>\r\n    /// <b>Null</b><br/>\r\n    /// <b>Value</b>\r\n" +
-                    "    /// </returns>\r\n    public TernaryState State\r\n        => m_state;\r\n\r\n\r\n    " +
-                    "//\r\n    // get value\r\n    //\r\n\r\n    /// <summary>return value if HasValue is tru" +
-                    "e; otherwise, throw InvalidOperationException()</summary>\r\n    /// <returns>\r\n  " +
-                    "  /// <b>value</b> : if HasValue is true<br/>\r\n    /// <b>throw InvalidOperation" +
-                    "Exception(\"Value is Null.\")</b> : if IsNull is true<br/>\r\n    /// <b>throw Inval" +
-                    "idOperationException(\"Value is Undef.\")</b> : if IsUndef is true\r\n    /// </retu" +
-                    "rns>\r\n    public ");
+            this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n\r\n\r\n    /" +
+                    "/\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see langword=\"true\"/> if undefi" +
+                    "ned; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><see lan" +
+                    "gword=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUndef\r\n        =>" +
+                    " m_state == UnitState.Undef;\r\n\r\n    /// <summary><see langword=\"true\"/> if null;" +
+                    " otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><see langwor" +
+                    "d=\"true\"/></b> : if null</returns>\r\n    public bool IsNull\r\n        => m_state =" +
+                    "= UnitState.Null;\r\n\r\n    /// <summary><see langword=\"true\"/> if undefined or nul" +
+                    "l; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <returns><b><see langw" +
+                    "ord=\"true\"/></b> : if null or undefined</returns>\r\n    public bool IsUndefOrNull" +
+                    "\r\n        => m_state != UnitState.Value;\r\n\r\n    /// <summary><see langword=\"true" +
+                    "\"/> if not undefined and not null; otherwise, <see langword=\"false\"/>.</summary>" +
+                    "\r\n    /// <returns><b><see langword=\"true\"/></b> : if not undefined and not null" +
+                    "</returns>\r\n    public bool HasValue\r\n        => m_state == UnitState.Value;\r\n\r\n" +
+                    "    /// <summary>return value state.</summary>\r\n    /// <returns>\r\n    /// <b>Un" +
+                    "def</b><br/>\r\n    /// <b>Null</b><br/>\r\n    /// <b>Value</b>\r\n    /// </returns>" +
+                    "\r\n    public UnitState State\r\n        => m_state;\r\n\r\n\r\n    //\r\n    // get value\r" +
+                    "\n    //\r\n\r\n    /// <summary>return value if HasValue is true; otherwise, throw I" +
+                    "nvalidOperationException()</summary>\r\n    /// <returns>\r\n    /// <b>value</b> : " +
+                    "if HasValue is true<br/>\r\n    /// <b>throw InvalidOperationException(\"Value is N" +
+                    "ull.\")</b> : if IsNull is true<br/>\r\n    /// <b>throw InvalidOperationException(" +
+                    "\"Value is Undef.\")</b> : if IsUndef is true\r\n    /// </returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    publ" +
                     "ic ");
@@ -285,9 +284,9 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(@" GetOrThrow()
         => (m_state, m_value) switch
         {
-            (TernaryState.Value, _) => m_value,
-            (TernaryState.Null, _) => throw new InvalidOperationException($""Value is {TernaryState.Null}.""),
-            _ => throw new InvalidOperationException($""Value is {TernaryState.Undef}.""),
+            (UnitState.Value, _) => m_value,
+            (UnitState.Null, _) => throw new InvalidOperationException($""Value is {UnitState.Null}.""),
+            _ => throw new InvalidOperationException($""Value is {UnitState.Undef}.""),
         };
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>

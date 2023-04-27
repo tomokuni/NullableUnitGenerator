@@ -58,12 +58,12 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     }
 
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(in TernaryState state, in <#= Type #> value = default)
+    public <#= Name #>(in UnitState state, in <#= Type #> value = default)
     {
         (m_state, m_value) = (state, value) switch
         {
-            (TernaryState.Undef, _) => (state, default),
-            (TernaryState.Null, _) => (state, default),
+            (UnitState.Undef, _) => (state, default),
+            (UnitState.Null, _) => (state, default),
 <# if (!IsValueType) { #>
             (_, null) => (state, default),
 <# } #>
@@ -75,7 +75,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(in <#= Type #> value)
     {
-        (m_state, m_value) = (TernaryState.Value, value);
+        (m_state, m_value) = (UnitState.Value, value);
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
         this.Validate();
@@ -88,8 +88,8 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     {
         (m_state, m_value) = value switch
         {
-            null => (TernaryState.Null, default),
-            _ => (TernaryState.Value, (<#= Type #>)value),
+            null => (UnitState.Null, default),
+            _ => (UnitState.Value, (<#= Type #>)value),
         };
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
@@ -103,10 +103,10 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     //
 
     /// <summary>Display string as Undef.</summary>
-    public static readonly string sUndef = $"~{TernaryState.Undef}~";
+    public static readonly string sUndef = $"~{UnitState.Undef}~";
 
     /// <summary>Display string as Null.</summary>
-    public static readonly string sNull = $"~{TernaryState.Null}~";
+    public static readonly string sNull = $"~{UnitState.Null}~";
 
 
     //
@@ -114,13 +114,13 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     //
 
     /// <summary>Undefined value instance.</summary>
-    public static <#= Name #> UndefValue { get; } = new(TernaryState.Undef, default);
+    public static <#= Name #> UndefValue { get; } = new(UnitState.Undef, default);
 
     /// <summary>Null value instance.</summary>
-    public static <#= Name #> NullValue { get; } = new(TernaryState.Null, default);
+    public static <#= Name #> NullValue { get; } = new(UnitState.Null, default);
 
     /// <summary>Value state default value instance.</summary>
-    public static <#= Name #> ValueStateDefaultValue { get; } = new(TernaryState.Value, default);
+    public static <#= Name #> ValueStateDefaultValue { get; } = new(UnitState.Value, default);
 
     static readonly Type BaseType = typeof(<#= Type #>);
     /// <summary>Get base type.</summary>
@@ -139,19 +139,19 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary>Determines if either value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>TernaryState.Undef</b> – if either value is undefined.<br/>
-    /// <b>TernaryState.Null</b> – if either value is null.<br/>
-    /// <b>TernaryState.Value</b> – if either value is set.
+    /// <b>UnitState.Undef</b> – if either value is undefined.<br/>
+    /// <b>UnitState.Null</b> – if either value is null.<br/>
+    /// <b>UnitState.Value</b> – if either value is set.
     /// </returns>
-    public static TernaryState CheckState(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
+    public static UnitState CheckState(in <#= Name #> x, in <#= Name #> y, out <#= Name #> result)
     {
         var (state, outVal) = (x, y) switch
         {
-            { x.IsUndef: true } => (TernaryState.Undef, <#= Name #>.UndefValue),
-            { y.IsUndef: true } => (TernaryState.Undef, <#= Name #>.UndefValue),
-            { x.IsNull: true } => (TernaryState.Null, <#= Name #>.NullValue),
-            { y.IsNull: true } => (TernaryState.Null, <#= Name #>.NullValue),
-            _ => (TernaryState.Value, <#= Name #>.ValueStateDefaultValue),
+            { x.IsUndef: true } => (UnitState.Undef, <#= Name #>.UndefValue),
+            { y.IsUndef: true } => (UnitState.Undef, <#= Name #>.UndefValue),
+            { x.IsNull: true } => (UnitState.Null, <#= Name #>.NullValue),
+            { y.IsNull: true } => (UnitState.Null, <#= Name #>.NullValue),
+            _ => (UnitState.Value, <#= Name #>.ValueStateDefaultValue),
         };
         result = outVal;
         return state;
@@ -160,17 +160,17 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary>Determine if a value is undefined or null.</summary>
     /// <returns>
     /// Return Value – Description<br/>
-    /// <b>TernaryState.Undef</b> – if value is undefined.<br/>
-    /// <b>TernaryState.Null</b> – if value is null.<br/>
-    /// <b>TernaryState.Value</b> – if value is set.
+    /// <b>UnitState.Undef</b> – if value is undefined.<br/>
+    /// <b>UnitState.Null</b> – if value is null.<br/>
+    /// <b>UnitState.Value</b> – if value is set.
     /// </returns>
-    public static TernaryState CheckState(in <#= Name #> x, out <#= Name #> result)
+    public static UnitState CheckState(in <#= Name #> x, out <#= Name #> result)
     {
         var (state, outVal) = x switch
         {
-            { IsUndef: true } => (TernaryState.Undef, <#= Name #>.UndefValue),
-            { IsNull: true } => (TernaryState.Null, <#= Name #>.NullValue),
-            _ => (TernaryState.Value, <#= Name #>.ValueStateDefaultValue),
+            { IsUndef: true } => (UnitState.Undef, <#= Name #>.UndefValue),
+            { IsNull: true } => (UnitState.Null, <#= Name #>.NullValue),
+            _ => (UnitState.Value, <#= Name #>.ValueStateDefaultValue),
         };
         result = outVal;
         return state;
@@ -182,7 +182,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     //
 
     readonly <#= Type #> m_value = default;
-    readonly TernaryState m_state = TernaryState.Undef;
+    readonly UnitState m_state = UnitState.Undef;
 
 
     //
@@ -192,22 +192,22 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if undefined</returns>
     public bool IsUndef
-        => m_state == TernaryState.Undef;
+        => m_state == UnitState.Undef;
 
     /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if null</returns>
     public bool IsNull
-        => m_state == TernaryState.Null;
+        => m_state == UnitState.Null;
 
     /// <summary><see langword="true"/> if undefined or null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if null or undefined</returns>
     public bool IsUndefOrNull
-        => m_state != TernaryState.Value;
+        => m_state != UnitState.Value;
 
     /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
     /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
     public bool HasValue
-        => m_state == TernaryState.Value;
+        => m_state == UnitState.Value;
 
     /// <summary>return value state.</summary>
     /// <returns>
@@ -215,7 +215,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <b>Null</b><br/>
     /// <b>Value</b>
     /// </returns>
-    public TernaryState State
+    public UnitState State
         => m_state;
 
 
@@ -275,9 +275,9 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     public <#= Type #> GetOrThrow()
         => (m_state, m_value) switch
         {
-            (TernaryState.Value, _) => m_value,
-            (TernaryState.Null, _) => throw new InvalidOperationException($"Value is {TernaryState.Null}."),
-            _ => throw new InvalidOperationException($"Value is {TernaryState.Undef}."),
+            (UnitState.Value, _) => m_value,
+            (UnitState.Null, _) => throw new InvalidOperationException($"Value is {UnitState.Null}."),
+            _ => throw new InvalidOperationException($"Value is {UnitState.Undef}."),
         };
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>

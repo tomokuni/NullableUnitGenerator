@@ -63,20 +63,20 @@ public readonly partial struct UserId : IEquatable<UserId>, IEqualityComparer<Us
 {
     // backing field
     readonly int m_value = default;
-    readonly TernaryState m_state = TernaryState.Undef;
+    readonly UnitState m_state = UnitState.Undef;
 
     // Constructor
     public UserId(in UserId value) { (m_state, m_value) = (value.m_state, value.m_value); }
-    public UserId(in TernaryState state, in int value = default) => ...;
-    public UserId(in int value) { (m_state, m_value) = (TernaryState.Value, value); }
+    public UserId(in UnitState state, in int value = default) => ...;
+    public UserId(in int value) { (m_state, m_value) = (UnitState.Value, value); }
     public UserId(in int? value) => ...;
 
     // get state
-    public bool IsUndef       => m_state == TernaryState.Undef;
-    public bool IsNull        => m_state == TernaryState.Null;
-    public bool IsUndefOrNull => m_state != TernaryState.Value;
-    public bool HasValue      => m_state == TernaryState.Value;
-    public TernaryState State => m_state;
+    public bool IsUndef       => m_state == UnitState.Undef;
+    public bool IsNull        => m_state == UnitState.Null;
+    public bool IsUndefOrNull => m_state != UnitState.Value;
+    public bool HasValue      => m_state == UnitState.Value;
+    public UnitState State => m_state;
 
     // get value
     public int  Value         => GetOrThrow();
@@ -135,11 +135,11 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
 {
     // backing field
     readonly int m_value = default;
-    readonly TernaryState m_state = TernaryState.Undef;
+    readonly UnitState m_state = UnitState.Undef;
 
     // Constructor
     public Hp(in Hp value)   => ...;
-    public Hp(in TernaryState state, in int value = default)  => ...;
+    public Hp(in UnitState state, in int value = default)  => ...;
     public Hp(in int value)  => ...;
     public Hp(in int? value) => ...;
 
@@ -148,7 +148,7 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     public bool IsNull        => ...;
     public bool IsUndefOrNull => ...;
     public bool HasValue      => ...;
-    public TernaryState State => ...;
+    public UnitState State => ...;
 
     // get value
     public int Value          => ...;

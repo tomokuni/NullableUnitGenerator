@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NullableUnitGenerator;
 
 namespace NullableUnitGenerator;
 
@@ -92,10 +93,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
         //context.AddSource($"IOptional.Generated.cs", text);
         //token.ThrowIfCancellationRequested();
 
-        AddCsResource("TernaryState.cs");
-        AddCsResource("UnitGenerateOptions.cs");
         AddCsResource("UnitOfAttribute.cs");
-        AddCsResource("UnitOfHelper.cs");
         AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
 
         //

@@ -10,7 +10,7 @@ namespace NullableUnitGenerator;
 /// <summary>
 /// UnitOf のヘルパー関数群
 /// </summary>
-public static class UnitOfHelper
+public static class UnitHelper
 {
     /// <summary>
     /// &lt;T&gt;属性が付与されたクラス型と属性情報を取得する
