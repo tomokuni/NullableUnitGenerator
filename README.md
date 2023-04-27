@@ -580,7 +580,8 @@ public static void AddTypeHandler()
 
 
 ### ~~MessagePackFormatter~~
-<details><summary>Explanation in UnitGenerager (UnitGeneragerでの説明)</summary>
+<details>
+<summary>Explanation in UnitGenerager (UnitGeneragerでの説明)</summary>
 
 Implements MessagePack for C#'s `MessagePackFormatter`. It will be used `MessagePackSerializer` automatically.
 
@@ -597,7 +598,8 @@ public readonly partial struct UserId
 
 
 ### ~~EntityFrameworkValueConverter~~
-<details><summary>Explanation in UnitGenerager (UnitGeneragerでの説明)</summary>
+<details>
+<summary>Explanation in UnitGenerager (UnitGeneragerでの説明)</summary>
 
 Implements EntityFrameworkCore's ValueConverter by public accessibility. It is not registered automatically so you need to register manually.
 
@@ -616,7 +618,8 @@ builder.HasConversion(new UserId.UserIdValueConverter());
 
 
 ### ~~Use for Unity~~
-<details><summary>Explanation in UnitGenerager (UnitGeneragerでの説明)</summary>
+<details>
+<summary>Explanation in UnitGenerager (UnitGeneragerでの説明)</summary>
 
 C# Source Generator feature is rely on C# 9.0. If you are using Unity 2021.2, that supports [Source Generators](https://docs.unity3d.com/2021.2/Documentation/Manual/roslyn-analyzers.html). Add the `UnitGenerator.dll` from the [releases page](https://github.com/Cysharp/UnitGenerator/releases), disable Any Platform, disable Include all platforms and set label as `RoslynAnalyzer`.
 It works in Unity Editor however does not work on IDE because Unity does not generate analyzer reference to `.csproj`. We provides [CsprojModifer](https://github.com/Cysharp/CsprojModifier) to analyzer support, uses `Add analyzer references to generated .csproj` supports both IDE and Unity Editor.
