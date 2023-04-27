@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.48</Version>
+    <Version>0.0.2.49</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -59,10 +59,23 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeTemplate.cs</LastGenOutput>
     </None>
+    <Compile Include="Resource\UnitGenerateOptions.cs" />
     <Compile Include="Template\CodeTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeTemplate.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="Template\UnitOfAttribute.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>UnitOfAttribute.cs</LastGenOutput>
+    </None>
+    <Compile Include="Template\UnitOfAttribute.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UnitOfAttribute.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -76,8 +89,7 @@
 
   <ItemGroup>
     <Compile Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
-    <EmbeddedResource Include="Resource\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
-    <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
+    <Compile Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitHelper.cs" />
   </ItemGroup>
 

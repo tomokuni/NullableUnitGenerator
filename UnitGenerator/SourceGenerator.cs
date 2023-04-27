@@ -92,10 +92,6 @@ public sealed class SourceGenerator : IIncrementalGenerator
         //context.AddSource($"IOptional.Generated.cs", text);
         //token.ThrowIfCancellationRequested();
 
-        AddCsResource("UnitOfAttribute.cs");
-        AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
-        AddCsResource("UnitGenerateOptions.cs");
-        AddCsResource("UnitState.cs");
         AddCsResource("UnitHelper.cs");
 
         //
