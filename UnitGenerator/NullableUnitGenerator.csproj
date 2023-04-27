@@ -59,6 +59,11 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeTemplate.cs</LastGenOutput>
     </None>
+    <Compile Include="Template\CodeTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -66,11 +71,6 @@
     <Compile Include="Helper\DiagnosticDescriptors.cs" />
     <Compile Include="Helper\Extensions.cs" />
     <Compile Include="SourceGenerator.cs" />
-    <Compile Include="Template\CodeTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CodeTemplate.tt</DependentUpon>
-    </Compile>
     <Compile Include="Template\CodeTemplate.Partial.cs" />
     <Compile Include="Template\UnitGenerateOptions.cs" />
     <Compile Include="Template\UnitOfAttribute.cs" />
