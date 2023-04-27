@@ -55,5 +55,5 @@ public enum UnitGenerateOptions
     JsonConverterDictionaryKeySupport = 4096,
 
     /// <summary>StandardPrimitive</summary>
-    IntegralFull = ParseMethod | MinMaxMethod | ArithmeticOperator | ValueArithmeticOperator | Comparable | JsonConverter | JsonConverterDictionaryKeySupport,
+    IntegralFull = ImplicitOperator | ParseMethod | MinMaxMethod | ArithmeticOperator | ValueArithmeticOperator | Comparable | JsonConverter | JsonConverterDictionaryKeySupport,
 }

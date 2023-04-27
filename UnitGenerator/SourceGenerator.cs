@@ -95,6 +95,9 @@ public sealed class SourceGenerator : IIncrementalGenerator
 
         AddCsResource("UnitOfAttribute.cs");
         AddCsResource("UnitOfOpenApiDataTypeAttribute.cs");
+        AddCsResource("UnitGenerateOptions.cs");
+        AddCsResource("UnitState.cs");
+        AddCsResource("UnitHelper.cs");
 
         //
         // ローカル関数

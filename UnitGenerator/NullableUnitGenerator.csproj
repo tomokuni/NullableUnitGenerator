@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.46</Version>
+    <Version>0.0.2.47</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -52,7 +52,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="Resource\UnitOfAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,14 +72,14 @@
     <Compile Include="Helper\Extensions.cs" />
     <Compile Include="SourceGenerator.cs" />
     <Compile Include="Template\CodeTemplate.Partial.cs" />
-    <Compile Include="Template\UnitGenerateOptions.cs" />
-    <Compile Include="Template\UnitHelper.cs" />
-    <Compile Include="Template\UnitState.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
+    <Compile Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
+    <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
+    <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
