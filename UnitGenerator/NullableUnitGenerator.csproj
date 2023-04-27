@@ -75,9 +75,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
+    <Compile Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitOfOpenApiDataTypeAttribute.cs" LogicalName="UnitOfOpenApiDataTypeAttribute.cs" />
-    <Compile Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitHelper.cs" />
   </ItemGroup>
