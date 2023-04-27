@@ -33,11 +33,11 @@ MessagePackFormatter, EntityFrameworkValueConverter, and Unity are not yet suppo
 ---
 MessagePackFormatter, EntityFrameworkValueConverter, and Unity are supported by UnitGenerator.
 However, NullableUnitGenerator does not yet support them.
-They are listed in this document, but cannot be used with NullableUnitGenerator.
+They are described in this document, but cannot be used with NullableUnitGenerator.
 
 MessagePackFormatter、EntityFrameworkValueConverter、Unity は、UnitGenerator でサポートされています。
 しかし、NullableUnitGenerator はまだそれらをサポートしていません。
-それらはこの文書に記載しているが、NullableUnitGenerator で使用することはできません。
+この文書に記述を残していますが、NullableUnitGenerator で使用することはできません。
 
 
 ## Introduction
