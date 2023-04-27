@@ -12,7 +12,7 @@ namespace NullableUnitGenerator;
 /// NullableUnitGenerator でコード自動生成するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-public class UnitOfAttribute : Attribute
+internal class UnitOfAttribute : Attribute
 {
     /// <summary>primitive type</summary>
     public Type Type { get; }

@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NullableUnitGenerator;
 
 namespace NullableUnitGenerator;
 
