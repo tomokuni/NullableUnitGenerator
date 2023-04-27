@@ -32,7 +32,6 @@
         <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
         <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageIcon>Resources/Icon.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <Title>NullableUnitGenerator</Title>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -54,10 +53,6 @@
           <Pack>True</Pack>
           <PackagePath>\</PackagePath>
         </None>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="Resources\Icon.png" Pack="true" PackagePath="/" />
     </ItemGroup>
 
     <ItemGroup>
