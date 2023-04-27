@@ -1,95 +1,95 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <Version>0.0.2.46</Version>
+  <PropertyGroup>
+    <Version>0.0.2.46</Version>
 
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <OutputType>library</OutputType>
-        <LangVersion>10</LangVersion>
-        <Nullable>enable</Nullable>
-        <Deterministic>true</Deterministic>
-        <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
-        <IsRoslynComponent>true</IsRoslynComponent>
-        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-        <NoWarn>$(NoWarn);CS1591</NoWarn>
-        
-        <!-- does not need runtime self -->
-        <IncludeBuildOutput>false</IncludeBuildOutput>
-        <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-        <IncludeSymbols>false</IncludeSymbols>
-        <DevelopmentDependency>true</DevelopmentDependency>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>library</OutputType>
+    <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
+    <Deterministic>true</Deterministic>
+    <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
 
-        <!-- NuGet -->
-        <PackageId>NullableUnitGenerator</PackageId>
-        <Description>C# Source Generator to create value-object that support null and undefined values.  Forked from UnitGenerator.</Description>
-        <PackageReleaseNotes>beta</PackageReleaseNotes> 
-        <PackageVersion>$(Version)</PackageVersion>
-        <Company>Estable</Company>
-        <Authors>SEKIYA.T</Authors>
-        <Copyright>© Estable Ltd.</Copyright>
-        <PackageTags>sourcegenerator;valueobject;nullable;undefined;empty</PackageTags>
-        <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
-        <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <IsPackable>true</IsPackable>
-        <Title>NullableUnitGenerator</Title>
-        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-        <PackAsTool>false</PackAsTool>
-        <GenerateDocumentationFile>True</GenerateDocumentationFile>
-        <AssemblyVersion>$(Version)</AssemblyVersion>
-        <FileVersion>$(Version)</FileVersion>
-        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <SignAssembly>False</SignAssembly>
-    </PropertyGroup>
+    <!-- does not need runtime self -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IncludeSymbols>false</IncludeSymbols>
+    <DevelopmentDependency>true</DevelopmentDependency>
 
-    <ItemGroup>
-        <!-- Create nuget package as analyzer -->
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="..\LICENSE" Link="LICENSE" />
-        <None Include="..\README.md">
-          <Pack>True</Pack>
-          <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+    <!-- NuGet -->
+    <PackageId>NullableUnitGenerator</PackageId>
+    <Description>C# Source Generator to create value-object that support null and undefined values.  Forked from UnitGenerator.</Description>
+    <PackageReleaseNotes>beta</PackageReleaseNotes>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Company>Estable</Company>
+    <Authors>SEKIYA.T</Authors>
+    <Copyright>© Estable Ltd.</Copyright>
+    <PackageTags>sourcegenerator;valueobject;nullable;undefined;empty</PackageTags>
+    <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <IsPackable>true</IsPackable>
+    <Title>NullableUnitGenerator</Title>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackAsTool>false</PackAsTool>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <SignAssembly>False</SignAssembly>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <None Update="Template\CodeTemplate.tt">
-            <Generator>TextTemplatingFilePreprocessor</Generator>
-            <LastGenOutput>CodeTemplate.cs</LastGenOutput>
-        </None>
-        <Compile Include="Template\CodeTemplate.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>CodeTemplate.tt</DependentUpon>
-        </Compile>
-    </ItemGroup>
+  <ItemGroup>
+    <!-- Create nuget package as analyzer -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\LICENSE" Link="LICENSE" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
-    <ItemGroup>
-        <Compile Include="Helper\CodeDomShims.cs" />
-        <Compile Include="Helper\DiagnosticDescriptors.cs" />
-        <Compile Include="Helper\Extensions.cs" />
-        <Compile Include="SourceGenerator.cs" />
-        <Compile Include="Template\CodeTemplate.Partial.cs" />
-        <Compile Include="Template\UnitGenerateOptions.cs" />
-        <Compile Include="Template\UnitOfAttribute.cs" />
-        <Compile Include="Template\UnitOfHelper.cs" />
-        <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
-        <Compile Include="Template\TernaryState.cs" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Update="Template\CodeTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CodeTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" PrivateAssets="all" />
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helper\CodeDomShims.cs" />
+    <Compile Include="Helper\DiagnosticDescriptors.cs" />
+    <Compile Include="Helper\Extensions.cs" />
+    <Compile Include="SourceGenerator.cs" />
+    <Compile Include="Template\CodeTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\CodeTemplate.Partial.cs" />
+    <Compile Include="Template\UnitGenerateOptions.cs" />
+    <Compile Include="Template\UnitOfAttribute.cs" />
+    <Compile Include="Template\UnitOfHelper.cs" />
+    <Compile Include="Template\UnitOfOpenApiDataTypeAttribute.cs" />
+    <Compile Include="Template\TernaryState.cs" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
 
 </Project>
