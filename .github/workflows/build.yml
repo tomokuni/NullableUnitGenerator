@@ -74,7 +74,7 @@ jobs:
         files: nupkgs/*.nupkg
 
   publish:
-    name: Publish to GitHub Package
+    name: Publish to GitHub Package and NuGet
     needs: [build]
     runs-on: ubuntu-latest
     steps:
