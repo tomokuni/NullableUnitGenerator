@@ -32,22 +32,21 @@ namespace NullableUnitGenerator.Template
                     "pe Type { get; }\r\n\r\n    /// <summary>UnitGenerateOptions</summary>\r\n    public U" +
                     "nitGenerateOptions Options { get; }\r\n\r\n    /// <summary>ToStringFormat</summary>" +
                     "\r\n    public string? ToStringFormat { get; }\r\n\r\n    /// <summary>For OpenApiSche" +
-                    "ma.Format</summary>\r\n    public string? OpenApiFormat { get; }\r\n\r\n    /// <summa" +
-                    "ry>For OpenApiSchema.Example</summary>\r\n    public object? OpenApiExample { get;" +
-                    " }\r\n\r\n    /// <summary>For OpenApiSchema.Pattern</summary>\r\n    public string? O" +
-                    "penApiPattern { get; }\r\n\r\n    /// <summary>For OpenApiSchema.Nullable</summary>\r" +
-                    "\n    public bool? OpenApiNullable { get; } = true;\r\n\r\n    /// <summary>\r\n    ///" +
-                    " コンストラクタ\r\n    /// </summary>\r\n    /// <param name=\"type\"></param>\r\n    /// <para" +
-                    "m name=\"options\"></param>\r\n    /// <param name=\"toStringFormat\"></param>\r\n    //" +
-                    "/ <param name=\"openApiformat\"></param>\r\n    /// <param name=\"openApiexample\"></p" +
-                    "aram>\r\n    /// <param name=\"openApipattern\"></param>\r\n    public UnitOfAttribute" +
-                    "(\r\n        Type type,\r\n        UnitGenerateOptions options = UnitGenerateOptions" +
-                    ".None,\r\n        string? toStringFormat = null,\r\n        string? openApiformat = " +
-                    "null,\r\n        object? openApiexample = null,\r\n        string? openApipattern = " +
-                    "null)\r\n    {\r\n        Type = type;\r\n        Options = options;\r\n        ToString" +
-                    "Format = toStringFormat;\r\n        OpenApiFormat = openApiformat;\r\n        OpenAp" +
-                    "iExample = openApiexample;\r\n        OpenApiPattern = openApipattern;\r\n    }\r\n}\r\n" +
-                    "");
+                    "ma.Format</summary>\r\n    public string? RestFormat { get; }\r\n\r\n    /// <summary>" +
+                    "For OpenApiSchema.Example</summary>\r\n    public object? RestExample { get; }\r\n\r\n" +
+                    "    /// <summary>For OpenApiSchema.Pattern</summary>\r\n    public string? RestPat" +
+                    "tern { get; }\r\n\r\n    /// <summary>For OpenApiSchema.Nullable</summary>\r\n    publ" +
+                    "ic bool? RestNullable { get; } = true;\r\n\r\n    /// <summary>\r\n    /// コンストラクタ\r\n  " +
+                    "  /// </summary>\r\n    /// <param name=\"type\"></param>\r\n    /// <param name=\"opti" +
+                    "ons\"></param>\r\n    /// <param name=\"toStringFormat\"></param>\r\n    /// <param nam" +
+                    "e=\"restFormat\"></param>\r\n    /// <param name=\"restExample\"></param>\r\n    /// <pa" +
+                    "ram name=\"restPattern\"></param>\r\n    public UnitOfAttribute(\r\n        Type type," +
+                    "\r\n        UnitGenerateOptions options = UnitGenerateOptions.None,\r\n        strin" +
+                    "g? toStringFormat = null,\r\n        string? restFormat = null,\r\n        object? r" +
+                    "estExample = null,\r\n        string? restPattern = null)\r\n    {\r\n        Type = t" +
+                    "ype;\r\n        Options = options;\r\n        ToStringFormat = toStringFormat;\r\n    " +
+                    "    RestFormat = restFormat;\r\n        RestExample = restExample;\r\n        RestPa" +
+                    "ttern = restPattern;\r\n    }\r\n}\r\n");
             this.Write("\r\n");
             return this.GenerationEnvironment.ToString();
         }
