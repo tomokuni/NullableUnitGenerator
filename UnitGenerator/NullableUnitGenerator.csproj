@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.49</Version>
+    <Version>0.0.2.50</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -59,18 +59,35 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeTemplate.cs</LastGenOutput>
     </None>
-    <Compile Include="Resource\UnitGenerateOptions.cs" />
     <Compile Include="Template\CodeTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Template\UnitGenerateOptions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UnitGenerateOptions.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\UnitState.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UnitState.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   
   <ItemGroup>
+    <None Update="Template\UnitGenerateOptions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UnitGenerateOptions.cs</LastGenOutput>
+    </None>
     <None Update="Template\UnitOfAttribute.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>UnitOfAttribute.cs</LastGenOutput>
+    </None>
+    <None Update="Template\UnitState.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UnitState.cs</LastGenOutput>
     </None>
     <Compile Include="Template\UnitOfAttribute.cs">
       <DesignTime>True</DesignTime>
@@ -88,8 +105,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
-    <Compile Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
+    <EmbeddedResource Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
+    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitHelper.cs" />
   </ItemGroup>
 

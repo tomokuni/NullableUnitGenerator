@@ -24,6 +24,7 @@ using MessagePack.Formatters;
 <# } #>
 
 using NullableUnitGenerator;
+using NullableUnitGenerator.Template;
 
 <# if (!string.IsNullOrEmpty(Namespace)) { #>
 namespace <#= Namespace #>;

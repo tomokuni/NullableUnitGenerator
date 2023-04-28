@@ -43,7 +43,7 @@ using System.Diagnostics.CodeAnalysis;
  if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("using MessagePack;\r\nusing MessagePack.Formatters;\r\n");
  } 
-            this.Write("\r\nusing NullableUnitGenerator;\r\n\r\n");
+            this.Write("\r\nusing NullableUnitGenerator;\r\nusing NullableUnitGenerator.Template;\r\n\r\n");
  if (!string.IsNullOrEmpty(Namespace)) { 
             this.Write("namespace ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));

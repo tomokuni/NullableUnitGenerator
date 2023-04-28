@@ -28,7 +28,7 @@ public partial class UnitOfAttribute : Attribute
     public string? OpenApiPattern { get; }
 
     /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool OpenApiNullable { get; } = true;
+    public bool? OpenApiNullable { get; } = true;
 
     /// <summary>
     /// コンストラクタ
