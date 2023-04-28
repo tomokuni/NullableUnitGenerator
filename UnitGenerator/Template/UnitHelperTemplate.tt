@@ -1,0 +1,3 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" linePragmas="false" #>
+<#@ assembly name="System.Core" #>
+<#@ include file="..\Resource\UnitHelper.cs" #>

@@ -43,7 +43,7 @@ using System.Diagnostics.CodeAnalysis;
  if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("using MessagePack;\r\nusing MessagePack.Formatters;\r\n");
  } 
-            this.Write("\r\nusing NullableUnitGenerator;\r\nusing NullableUnitGenerator.Template;\r\n\r\n");
+            this.Write("\r\nusing NullableUnitGenerator;\r\n\r\n");
  if (!string.IsNullOrEmpty(Namespace)) { 
             this.Write("namespace ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
@@ -771,8 +771,8 @@ if (IsIntegralNumericType()) {
                     "   public override void Write(Utf8JsonWriter writer, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value, JsonSerializerOptions options)\r\n        {\r\n            // undefined; valu" +
-                    "e.IsUndefined の場合は key,value ともに書き込まない\r\n            if (value.IsUndef)\r\n        " +
-                    "        return;\r\n\r\n            var converter = options.GetConverter(typeof(");
+                    "e.IsUndef の場合は null として出力\r\n\r\n            var converter = options.GetConverter(ty" +
+                    "peof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));
             this.Write(")) as JsonConverter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNullable));

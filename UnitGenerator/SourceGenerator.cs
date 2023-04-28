@@ -88,23 +88,27 @@ public sealed class SourceGenerator : IIncrementalGenerator
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
 
-        //var template = new IOptionalTemplate();
-        //var text = template.TransformText();
-        //context.AddSource($"IOptional.Generated.cs", text);
-        //token.ThrowIfCancellationRequested();
+        context.AddSource($"UnitGenerateOptions.cs", new UnitGenerateOptionsTemplate().TransformText());
+        token.ThrowIfCancellationRequested();
 
-//        AddCsResource("UnitGenerateOptions.cs");
-//        AddCsResource("UnitHelper.cs");
+        context.AddSource($"UnitOfAttribute.cs", new UnitOfAttributeTemplate().TransformText());
+        token.ThrowIfCancellationRequested();
 
-        //
-        // ローカル関数
-        //
-        void AddCsResource(string resourceName)
-        {
-            context.AddSource(hintName: $"{resourceName}", source: StringResourceRead(resourceName));
-            token.ThrowIfCancellationRequested();
-        }
+        context.AddSource($"UnitState.cs", new UnitStateTemplate().TransformText());
+        token.ThrowIfCancellationRequested();
 
+        context.AddSource($"UnitHelper.cs", new UnitHelperTemplate().TransformText());
+        token.ThrowIfCancellationRequested();
+
+        //AddCsResource("UnitHelper.cs");
+        ////
+        //// ローカル関数
+        ////
+        //void AddCsResource(string resourceName)
+        //{
+        //    context.AddSource(hintName: $"{resourceName}", source: StringResourceRead(resourceName));
+        //    token.ThrowIfCancellationRequested();
+        //}
     }
 
     /// <summary>

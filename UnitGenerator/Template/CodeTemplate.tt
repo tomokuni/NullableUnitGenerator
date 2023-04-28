@@ -24,7 +24,6 @@ using MessagePack.Formatters;
 <# } #>
 
 using NullableUnitGenerator;
-using NullableUnitGenerator.Template;
 
 <# if (!string.IsNullOrEmpty(Namespace)) { #>
 namespace <#= Namespace #>;
@@ -710,9 +709,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         /// <summary>Write</summary>
         public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
         {
-            // undefined; value.IsUndefined の場合は key,value ともに書き込まない
-            if (value.IsUndef)
-                return;
+            // undefined; value.IsUndef の場合は null として出力
 
             var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
             if (converter is not null)
