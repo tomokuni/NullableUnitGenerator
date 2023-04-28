@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.53</Version>
+    <Version>0.0.2.54</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -47,79 +47,41 @@
   <ItemGroup>
     <!-- Create nuget package as analyzer -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="..\LICENSE" Link="LICENSE" />
-    <None Include="..\README.md">
+    <None Include="..\LICENSE" Link="Resource\LICENSE" />
+    <None Include="..\README.md" Link="Resource\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
+    <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitHelper.cs" />
+    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Helper\CodeDomShims.cs" />
     <Compile Include="Helper\DiagnosticDescriptors.cs" />
     <Compile Include="Helper\Extensions.cs" />
-    <Compile Include="Resource\UnitGenerateOptions.cs" />
-    <Compile Include="Resource\UnitOfAttribute.cs" />
-    <Compile Include="Resource\UnitState.cs" />
-    <Compile Include="Resource\UnitHelper.cs" />
-    <Compile Include="SourceGenerator.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Template\CodeTemplate.Partial.cs" />
-    <Compile Include="Template\UnitHelperTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UnitHelperTemplate.tt</DependentUpon>
-    </Compile>
-    <None Update="Template\CodeTemplate.tt">
+    <Compile Include="SourceGenerator.cs" />
+    <Compile Include="Resource\UnitGenerateOptions.cs" Link="UnitGenerateOptions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="CodeTemplate.Partial.cs" />
+    <None Update="CodeTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeTemplate.cs</LastGenOutput>
     </None>
-    <Compile Include="Template\CodeTemplate.cs">
+    <Compile Include="CodeTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeTemplate.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Template\UnitGenerateOptionsTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>UnitGenerateOptionsTemplate.cs</LastGenOutput>
-    </None>
-    <Compile Include="Template\UnitGenerateOptionsTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UnitGenerateOptionsTemplate.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Template\UnitOfAttributeTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UnitOfAttributeTemplate.tt</DependentUpon>
-    </Compile>
-    <None Update="Template\UnitHelperTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>UnitHelperTemplate.cs</LastGenOutput>
-    </None>
-    <None Update="Template\UnitOfAttributeTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>UnitOfAttributeTemplate.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Template\UnitStateTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>UnitStateTemplate.cs</LastGenOutput>
-    </None>
-    <Compile Include="Template\UnitStateTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>UnitStateTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

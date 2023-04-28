@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NullableUnitGenerator.Template;
 
 namespace NullableUnitGenerator;
 
@@ -58,7 +57,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
             throw new Exception("require UnitOf attribute parameter [Type]");
         var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
 
-        var template = new Template.CodeTemplate()
+        var template = new CodeTemplate()
         {
             Name = typeSymbol.Name,
             Namespace = ns.IsGlobalNamespace ? null : ns.ToDisplayString(),
@@ -85,30 +84,19 @@ public sealed class SourceGenerator : IIncrementalGenerator
     /// <param name="context"></param>
     private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
     {
-        CancellationToken token = context.CancellationToken;
-        token.ThrowIfCancellationRequested();
+        AddCsResource("UnitGenerateOptions.cs");
+        AddCsResource("UnitHelper.cs");
+        AddCsResource("UnitOfAttribute.cs");
+        AddCsResource("UnitState.cs");
 
-        context.AddSource($"UnitGenerateOptions.cs", new UnitGenerateOptionsTemplate().TransformText());
-        token.ThrowIfCancellationRequested();
-
-        context.AddSource($"UnitOfAttribute.cs", new UnitOfAttributeTemplate().TransformText());
-        token.ThrowIfCancellationRequested();
-
-        context.AddSource($"UnitState.cs", new UnitStateTemplate().TransformText());
-        token.ThrowIfCancellationRequested();
-
-        context.AddSource($"UnitHelper.cs", new UnitHelperTemplate().TransformText());
-        token.ThrowIfCancellationRequested();
-
-        //AddCsResource("UnitHelper.cs");
-        ////
-        //// ローカル関数
-        ////
-        //void AddCsResource(string resourceName)
-        //{
-        //    context.AddSource(hintName: $"{resourceName}", source: StringResourceRead(resourceName));
-        //    token.ThrowIfCancellationRequested();
-        //}
+        //
+        // ローカル関数
+        //
+        void AddCsResource(string resourceName)
+        {
+            context.CancellationToken.ThrowIfCancellationRequested();
+            context.AddSource(hintName: $"{resourceName}", source: StringResourceRead(resourceName));
+        }
     }
 
     /// <summary>

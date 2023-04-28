@@ -219,7 +219,7 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
 
     //
-    // CompareTo, IComparable<VoInt>    // UnitGenerateOptions.Comparable
+    // CompareTo, IComparable<VoInt>    // UGO.Comparable
     //
 
     /// <summary>Compares this instance to a specified VoInt and returns an indication of their relative values.</summary>
@@ -292,7 +292,7 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
 
     //
-    // Parse, TryParse    // UnitGenerateOptions.ParseMethod
+    // Parse, TryParse    // UGO.ParseMethod
     //
 
     /// <summary>Converts the string representation of a number.</summary>
@@ -361,7 +361,7 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
 
     //
-    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
+    // >, <, >=, <= operator    // UGO.Comparable and WithoutComparisonOperator
     //
 
     /// <summary>operator &gt;</summary>
@@ -414,7 +414,7 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
 
     //
-    // UnitGenerateOptions.MinMaxMethod
+    // UGO.MinMaxMethod
     //
 
     /// <summary>Min</summary>
@@ -431,7 +431,7 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
 
     //
-    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
+    // +, -, *, /, % operator    UGO.ArithmeticOperator
     //
 
     /// <summary>operator +</summary>
@@ -466,7 +466,7 @@ public readonly partial struct VoInt : IEquatable<VoInt>, IComparable<VoInt>
 
 
     //
-    // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
+    // ++, --, +, -, *, /, % operator    UGO.ValueArithmeticOperator
     //
 
     /// <summary>operator ++</summary>

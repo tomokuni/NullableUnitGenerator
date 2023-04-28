@@ -8,10 +8,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Diagnostics;
 using NullableUnitGenerator;
+using UGO = NullableUnitGenerator.UnitGenerateOptions;
 
-//var a = UnitGenerateOptions.JsonConverterDictionaryKeySupport;
+//var a = UGO.JsonConverterDictionaryKeySupport;
 
-//var has = UnitGenerateOptions.JsonConverterDictionaryKeySupport.HasFlag(UnitGenerateOptions.Validate);
+//var has = UGO.JsonConverterDictionaryKeySupport.HasFlag(UGO.Validate);
 //Console.WriteLine(has);
 
 var json = JsonSerializer.Serialize(new Dictionary<Guid, string> { { Guid.NewGuid(), "hogemoge" } });
@@ -65,16 +66,16 @@ Console.WriteLine($"文字列化比較 : {sw.ElapsedMilliseconds}");
 //{
 //}
 
-[UnitOf(typeof(Guid), UnitGenerateOptions.Comparable | UnitGenerateOptions.WithoutComparisonOperator)]
+[UnitOf(typeof(Guid), UGO.Comparable | UGO.WithoutComparisonOperator)]
 public readonly partial struct FooId { }
 
-[UnitOf(typeof(Ulid), UnitGenerateOptions.Comparable | UnitGenerateOptions.WithoutComparisonOperator | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(Ulid), UGO.Comparable | UGO.WithoutComparisonOperator | UGO.MessagePackFormatter | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
 public readonly partial struct BarId { }
 
 namespace Sample
 {
 
-    [UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.Comparable | UGO.MinMaxMethod | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
     public readonly partial struct Hp
     {
         // public static Hp operator +(in Hp x, in Hp y) => new Hp(checked((int)(x.value + y.value)));
@@ -97,11 +98,11 @@ namespace Sample
 
     }
 
-    [UnitOf(typeof(int), UnitGenerateOptions.MessagePackFormatter)]
+    [UnitOf(typeof(int), UGO.MessagePackFormatter)]
     public readonly partial struct UserId { }
 
 
-    [UnitOf(typeof(int), UnitGenerateOptions.Validate)]
+    [UnitOf(typeof(int), UGO.Validate)]
     public readonly partial struct SampleValidate
     {
         // impl here.
@@ -111,7 +112,7 @@ namespace Sample
         }
     }
 
-    [UnitOf(typeof(int), UnitGenerateOptions.MessagePackFormatter)]
+    [UnitOf(typeof(int), UGO.MessagePackFormatter)]
     public readonly partial struct UserId2
     {
         public void Foo()
@@ -122,7 +123,7 @@ namespace Sample
         }
     }
     
-    [UnitOf(typeof(string), UnitGenerateOptions.ParseMethod)]
+    [UnitOf(typeof(string), UGO.ParseMethod)]
     public readonly partial struct StringId { }
 }
 

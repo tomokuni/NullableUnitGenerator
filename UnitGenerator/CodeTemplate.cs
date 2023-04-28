@@ -7,7 +7,7 @@
 //     コードが再生成されると失われます。
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace NullableUnitGenerator.Template
+namespace NullableUnitGenerator
 {
     using System.Linq;
     using System.Text;

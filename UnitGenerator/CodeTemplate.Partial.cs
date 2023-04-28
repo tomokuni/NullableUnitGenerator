@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Data;
-using NullableUnitGenerator;
 
-namespace NullableUnitGenerator.Template;
+namespace NullableUnitGenerator;
 
 
 public partial class CodeTemplate

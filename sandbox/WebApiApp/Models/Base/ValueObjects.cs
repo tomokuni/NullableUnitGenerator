@@ -8,7 +8,7 @@ using NullableUnitGenerator;
 
 namespace WebApiApp.Models.Base;
 
-//[UnitOf(typeof(int), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable)]
+//[UnitOf(typeof(int), UGO.ParseMethod | UGO.MinMaxMethod | UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.Comparable)]
 //[JsonConverter(typeof(VoIntJsonConverter))]
 public readonly partial struct VoInt
 { }

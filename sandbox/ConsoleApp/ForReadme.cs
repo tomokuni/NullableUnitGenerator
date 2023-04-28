@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NullableUnitGenerator;
+using UGO = NullableUnitGenerator.UnitGenerateOptions;
 
 namespace ForReadme;
 
@@ -12,10 +13,10 @@ namespace ForReadme;
 public readonly partial struct UserId { }
 
 
-[UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator
-                   | UnitGenerateOptions.ParseMethod
-                   | UnitGenerateOptions.MinMaxMethod
-                   | UnitGenerateOptions.ArithmeticOperator
-                   | UnitGenerateOptions.ValueArithmeticOperator
-                   | UnitGenerateOptions.Comparable)]
+[UnitOf(typeof(int), UGO.ImplicitOperator
+                   | UGO.ParseMethod
+                   | UGO.MinMaxMethod
+                   | UGO.ArithmeticOperator
+                   | UGO.ValueArithmeticOperator
+                   | UGO.Comparable)]
 public readonly partial struct Hp { }

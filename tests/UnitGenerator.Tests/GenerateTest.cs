@@ -19,7 +19,7 @@ using UnitGenerator;
 
 namespace MyApp
 {
-    [UnitOf(typeof(int), UnitGenerateOptions.All)]
+    [UnitOf(typeof(int), UGO.All)]
     public readonly partial struct A
     {
         private partial void Validate()
