@@ -22,16 +22,16 @@ public partial class UnitOfAttribute : Attribute
     public string? ToStringFormat { get; }
 
     /// <summary>For OpenApiSchema.Format</summary>
-    public string? OpenApiFormat { get; }
+    public string? RestFormat { get; }
 
     /// <summary>For OpenApiSchema.Example</summary>
-    public object? OpenApiExample { get; }
+    public object? RestExample { get; }
 
     /// <summary>For OpenApiSchema.Pattern</summary>
-    public string? OpenApiPattern { get; }
+    public string? RestPattern { get; }
 
     /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool? OpenApiNullable { get; } = true;
+    public bool? RestNullable { get; } = true;
 
     /// <summary>
     /// コンストラクタ
@@ -39,22 +39,22 @@ public partial class UnitOfAttribute : Attribute
     /// <param name="type"></param>
     /// <param name="options"></param>
     /// <param name="toStringFormat"></param>
-    /// <param name="openApiformat"></param>
-    /// <param name="openApiexample"></param>
-    /// <param name="openApipattern"></param>
+    /// <param name="restFormat"></param>
+    /// <param name="restExample"></param>
+    /// <param name="restPattern"></param>
     public UnitOfAttribute(
         Type type,
         UnitGenerateOptions options = UnitGenerateOptions.None,
         string? toStringFormat = null,
-        string? openApiformat = null,
-        object? openApiexample = null,
-        string? openApipattern = null)
+        string? restFormat = null,
+        object? restExample = null,
+        string? restPattern = null)
     {
         Type = type;
         Options = options;
         ToStringFormat = toStringFormat;
-        OpenApiFormat = openApiformat;
-        OpenApiExample = openApiexample;
-        OpenApiPattern = openApipattern;
+        RestFormat = restFormat;
+        RestExample = restExample;
+        RestPattern = restPattern;
     }
 }
