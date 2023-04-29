@@ -1,24 +1,38 @@
 ﻿using System;
 using System.Data;
+using Microsoft.CodeAnalysis;
 
 namespace NullableUnitGenerator;
 
 
 public partial class CodeTemplate
 {
+    public CodeTemplate(string? ns, string name, ITypeSymbol type, UnitGenerateOptions options, string? toStringFormat)
+    {
+        Namespace = ns;
+        Name = name;
+        Type = type;
+        Options = options;
+        ToStringFormat = toStringFormat;
+    }
+
     internal string? Namespace { get; set; }
-    internal string? Name { get; set; }
-    internal string? Type { get; set; }
-    internal bool IsValueType { get; set; }
-    internal string? TypeNullable { get => $"{Type}{(IsValueType ? "?" : "")}"; }
+    internal string Name { get; set; }
+    internal ITypeSymbol Type { get; set; }
     internal UnitGenerateOptions Options { get; set; }
     internal string? ToStringFormat { get; set; }
+
+    internal string? TypeName { get => Type?.ToDisplayString(); }
+    internal bool IsValueType { get => Type?.IsValueType ?? false; }
+    internal string? TypeNameNullable { get => $"{TypeName}{(IsValueType ? "?" : "")}"; }
 
     internal bool HasFlag(UnitGenerateOptions options)
         => Options.HasFlag(options);
 
+
+
     internal DbType GetDbType()
-        => Type switch
+        => TypeName switch
         {
             "short" => DbType.Int16,
             "int" => DbType.Int32,
@@ -42,7 +56,7 @@ public partial class CodeTemplate
         };
 
     internal bool IsSupportUtf8Formatter()
-        => Type switch
+        => TypeName switch
         {
             "short" => true,
             "int" => true,
@@ -63,7 +77,7 @@ public partial class CodeTemplate
         };
 
     internal bool IsIntegralNumericType()
-        => Type switch
+        => TypeName switch
         {
             "short" => true,
             "int" => true,
@@ -78,6 +92,6 @@ public partial class CodeTemplate
         };
 
     internal bool IsUlid()
-        => Type == "Ulid" || Type == "System.Ulid";
+        => TypeName == "Ulid" || TypeName == "System.Ulid";
 }
 

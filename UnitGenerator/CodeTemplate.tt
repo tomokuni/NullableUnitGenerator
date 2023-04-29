@@ -32,7 +32,7 @@ namespace <#= Namespace #>;
 
 /// <summary>
 /// <#= Name #> is TernaryType ValueObject<br/>
-/// Primitive type is <#= Type #>
+/// Primitive type is <#= TypeName #>
 /// </summary>
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
 [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
@@ -44,6 +44,14 @@ namespace <#= Namespace #>;
 public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.Comparable) ? $", IComparable<{Name}>" : "" #>
 {
     //
+    // backing field
+    //
+
+    readonly <#= TypeName #> m_value = default;
+    readonly UnitState m_state = UnitState.Undef;
+
+
+    //
     // Constructor
     //
 
@@ -53,12 +61,13 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         (m_state, m_value) = (value.m_state, value.m_value);
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+        // UnitGenerateOptions.Validate
         this.Validate();
 <# } #>
     }
 
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(in UnitState state, in <#= Type #> value = default)
+    public <#= Name #>(in UnitState state, in <#= TypeName #> value = default)
     {
         (m_state, m_value) = (state, value) switch
         {
@@ -69,30 +78,37 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 <# } #>
             _ => (state, value)
         };
+
+<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+        // UnitGenerateOptions.Validate
+        this.Validate();
+<# } #>
     }
 
 <# if (IsValueType) { #>
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(in <#= Type #> value)
+    public <#= Name #>(in <#= TypeName #> value)
     {
         (m_state, m_value) = (UnitState.Value, value);
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+        // UnitGenerateOptions.Validate
         this.Validate();
 <# } #>
     }
 <# } #>
 
     /// <summary>Complete Constructor</summary>
-    public <#= Name #>(in <#= TypeNullable #> value)
+    public <#= Name #>(in <#= TypeNameNullable #> value)
     {
         (m_state, m_value) = value switch
         {
             null => (UnitState.Null, default),
-            _ => (UnitState.Value, (<#= Type #>)value),
+            _ => (UnitState.Value, (<#= TypeName #>)value),
         };
 
 <# if (HasFlag(UnitGenerateOptions.Validate)) { #>
+        // UnitGenerateOptions.Validate
         this.Validate();
 <# } #>
     }
@@ -108,6 +124,19 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary>Display string as Null.</summary>
     public static readonly string sNull = $"~{UnitState.Null}~";
 
+<#if (IsIntegralNumericType()) { #>
+
+    //
+    // MaxValue, MinValue
+    //
+
+    /// <summary>Represents the largest possible value. This field is constant.</summary>
+    public static readonly  <#= TypeName #> MaxValue = <#= TypeName #>.MaxValue;
+
+    /// <summary>Represents the smallest possible value. This field is constant.</summary>
+    public static readonly  <#= TypeName #> MinValue = <#= TypeName #>.MinValue;
+
+<# } #>
 
     //
     // static property
@@ -122,14 +151,17 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary>Value state default value instance.</summary>
     public static <#= Name #> ValueStateDefaultValue { get; } = new(UnitState.Value, default);
 
-    static readonly Type BaseType = typeof(<#= Type #>);
+
+    /// <summary>base type.</summary>
+    static readonly Type BaseType = typeof(<#= TypeName #>);
+
     /// <summary>Get base type.</summary>
     public static Type GetBaseType() => BaseType;
 
     /// <summary>Is base type nullable?</summary>
-    public static bool IsNullable { get; } 
-        = !BaseType.IsValueType  // 値型でない -> Nullable
-        || Nullable.GetUnderlyingType(BaseType) != null;  // 非Null許容型が取得できる -> Null許容演算子が指定されている -> Nullable
+    public static bool IsNullable { get; }
+        = !BaseType.IsValueType                             // 値型でない -> Nullable
+        || Nullable.GetUnderlyingType(BaseType) != null;    // 非Null許容型が取得できる -> Null許容演算子が指定されている -> Nullable
 
 
     //
@@ -178,14 +210,6 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 
 
     //
-    // backing field
-    //
-
-    readonly <#= Type #> m_value = default;
-    readonly UnitState m_state = UnitState.Undef;
-
-
-    //
     // get state
     //
 
@@ -229,16 +253,16 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <b>throw InvalidOperationException("Value is Null.")</b> : if IsNull is true<br/>
     /// <b>throw InvalidOperationException("Value is Undef.")</b> : if IsUndef is true
     /// </returns>
-    public <#= Type #> Value
+    public <#= TypeName #> Value
         => GetOrThrow();
 
     /// <inheritdoc cref="Value" />
-    public <#= Type #> AsPrimitive()
+    public <#= TypeName #> AsPrimitive()
         => Value;
 
     /// <summary>return raw value</summary>
     /// <returns>inner raw value</returns>
-    public <#= Type #>  GetRawValue()
+    public <#= TypeName #>  GetRawValue()
         => m_value;
 
     /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
@@ -246,12 +270,12 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <b>value</b> : if assigned and not null<br/>
     /// <b>defaultValue</b> : otherwise
     /// </returns>
-    public <#= Type #> GetOr(in <#= Type #> defaultValue)
+    public <#= TypeName #> GetOr(in <#= TypeName #> defaultValue)
         => HasValue ? m_value : defaultValue;
 
 <# if (IsValueType) { #>
     /// <inheritdoc cref="GetOr" />
-    public <#= TypeNullable #> GetOr(in <#= TypeNullable #> defaultValue)
+    public <#= TypeNameNullable #> GetOr(in <#= TypeNameNullable #> defaultValue)
         => HasValue ? m_value : defaultValue;
 <# } #>
 
@@ -260,7 +284,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <b>value</b> : if assigned and not null<br/>
     /// <b><see langword="default"/></b> : otherwise
     /// </returns>
-    public <#= Type #> GetOrDefault()
+    public <#= TypeName #> GetOrDefault()
         => GetOr(default);
 
     /// <summary>return value if HasValue is true; otherwise, <see langword="null"/></summary>
@@ -268,11 +292,11 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <b>value</b> : if assigned and not null<br/>
     /// <b><see langword="null"/></b> : otherwise
     /// </returns>
-    public <#= TypeNullable #> GetOrNull()
+    public <#= TypeNameNullable #> GetOrNull()
         => GetOr(null);
 
     /// <inheritdoc cref="Value" />
-    public <#= Type #> GetOrThrow()
+    public <#= TypeName #> GetOrThrow()
         => (m_state, m_value) switch
         {
             (UnitState.Value, _) => m_value,
@@ -284,22 +308,12 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <param name="value">value</param>
     /// <param name="defaultValue">defaultValue</param>
     /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
-    public bool TryGet(out <#= Type #> value, in <#= Type #> defaultValue = default)
+    public bool TryGet(out <#= TypeName #> value, in <#= TypeName #> defaultValue = default)
     {
         value = HasValue ? m_value : defaultValue;
         return HasValue;
     }
 
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-
-    //
-    // Validate
-    //
-
-    /// <summary>Validate</summary>
-    private partial void Validate();
-
-<# } #>
 
     //
     // GetHashCode
@@ -322,65 +336,71 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <returns>The current string.</returns>
     public override string ToString()
 <# if (ToStringFormat == null) { #>
-        => ValueString;
+        => HasValue ? $"{m_value}" : (IsNull ? sNull : sUndef);
 <# } else { #>
         => HasValue ? string.Format("<#= ToStringFormat #>", m_value) : (IsNull ? sNull : sUndef);
 <# } #>
 
-    /// <summary>return value string.</summary>
-    /// <returns>
-    /// <b>ValueString</b> : if HasValue is true<br/>
-    /// <b>"~Null~"</b> : if IsNull is true<br/>
-    /// <b>"~Undef~"</b> : if IsUndefined is true
-    /// </returns>
-    string ValueString
-        => HasValue ? $"{m_value}" : (IsNull ? sNull : sUndef);
+    /// <summary>Returns this instance of System.String with the conversion specified by format.</summary>
+    /// <returns>The specified string value.</returns>
+    public string ToString(string format)
+        => HasValue ? ((dynamic)m_value).ToString(format) : (IsNull ? sNull : sUndef);
 
+<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
 
     //
-    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator or Unspecified 
-    // 
+    // Validate    // UnitGenerateOptions.Validate
+    //
+
+    /// <summary>Validate</summary>
+    private partial void Validate();
+
+<# } #>
+
+    //
+    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator or Unspecified
+    //
 
 <# if (HasFlag(UnitGenerateOptions.ImplicitOperator)) { #>
     /// <summary>implicit(暗黙的) operator</summary>
-    public static implicit operator <#= Type #>(in <#= Name #> value)
-        => (<#= Type #>)value.GetOrThrow();
+    public static implicit operator <#= TypeName #>(in <#= Name #> value)
+        => (<#= TypeName #>)value.GetOrThrow();
 
     /// <summary>implicit(暗黙的) operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static implicit operator <#= Name #>(in <#= Type #> value)
+    public static implicit operator <#= Name #>(in <#= TypeName #> value)
         => new(value);
 
 <# if (IsValueType) { #>
     /// <summary>implicit(暗黙的) operator</summary>
-    /// <returns><#= TypeNullable #> value.</returns>
-    public static implicit operator <#= TypeNullable #>(in <#= Name #> value)
-        => (<#= TypeNullable #>)value.GetOrNull();
+    /// <returns><#= TypeNameNullable #> value.</returns>
+    public static implicit operator <#= TypeNameNullable #>(in <#= Name #> value)
+        => (<#= TypeNameNullable #>)value.GetOrNull();
 
     /// <summary>implicit(暗黙的) operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static implicit operator <#= Name #>(in <#= TypeNullable #> value)
+    public static implicit operator <#= Name #>(in <#= TypeNameNullable #> value)
         => new(value);
 <# } #>
 <# } else { #>
     /// <summary>explicit(明示的) operator</summary>
-    public static explicit operator <#= Type #>(in <#= Name #> value)
-        => (<#= Type #>)value.GetOrThrow();
+    public static explicit operator <#= TypeName #>(in <#= Name #> value)
+        => (<#= TypeName #>)value.GetOrThrow();
 
     /// <summary>explicit(明示的) operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static explicit operator <#= Name #>(in <#= Type #> value)
+    public static explicit operator <#= Name #>(in <#= TypeName #> value)
         => new(value);
 
 <# if (IsValueType) { #>
     /// <summary>explicit(明示的) operator</summary>
-    /// <returns><#= TypeNullable #> value.</returns>
-    public static explicit operator <#= TypeNullable #>(in <#= Name #> value)
-        => (<#= TypeNullable #>)value.GetOrNull();
+    /// <returns><#= TypeNameNullable #> value.</returns>
+    public static explicit operator <#= TypeNameNullable #>(in <#= Name #> value)
+        => (<#= TypeNameNullable #>)value.GetOrNull();
 
     /// <summary>explicit(明示的) operator</summary>
     /// <returns><#= Name #> value.</returns>
-    public static explicit operator <#= Name #>(in <#= TypeNullable #> value)
+    public static explicit operator <#= Name #>(in <#= TypeNameNullable #> value)
         => new(value);
 <# } #>
 <# } #>
@@ -393,7 +413,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <inheritdoc/>
     public bool Equals(<#= Name #> other)
         => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
-        
+
     /// <inheritdoc/>
     public bool Equals(<#= Name #> x, <#= Name #> y)
         => x.Equals(y);
@@ -468,7 +488,118 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
            : false;
 
 <# } #>
-<# if (Type == "Guid" || Type == "System.Guid") { #>
+<# if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { #>
+
+    //
+    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
+    //
+
+    /// <summary>operator +</summary>
+    public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
+
+    /// <summary>operator -</summary>
+    public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
+
+    /// <summary>operator *</summary>
+    public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value * y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
+
+    /// <summary>operator /</summary>
+    public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value / y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
+
+    /// <summary>operator %</summary>
+    public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
+        => x.HasValue && y.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value % y.m_value)))
+           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
+
+<# } #>
+<# if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { #>
+
+    //
+    // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
+    //
+
+    /// <summary>operator ++</summary>
+    public static <#= Name #> operator ++(in <#= Name #> x)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + 1)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator --</summary>
+    public static <#= Name #> operator --(in <#= Name #> x)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - 1)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator +</summary>
+    public static <#= Name #> operator +(in <#= Name #> x, in <#= TypeName #> y)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + y)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator -</summary>
+    public static <#= Name #> operator -(in <#= Name #> x, in <#= TypeName #> y)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - y)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator *</summary>
+    public static <#= Name #> operator *(in <#= Name #> x, in <#= TypeName #> y)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value * y)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator /</summary>
+    public static <#= Name #> operator /(in <#= Name #> x, in <#= TypeName #> y)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value / y)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator %</summary>
+    public static <#= Name #> operator %(in <#= Name #> x, in <#= TypeName #> y)
+        => x.HasValue
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value % y)))
+           : x.IsUndef ? UndefValue : NullValue;
+
+<# } #>
+<# if (TypeName == "bool") { #>
+
+    //
+    // bool operator
+    //
+
+    /// <summary>operator true</summary>
+    public static <#= TypeName #> operator true(<#= Name #> x)
+        => x.HasValue
+           ? x.m_value
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator false</summary>
+    public static <#= TypeName #> operator false(<#= Name #> x)
+        => x.HasValue
+           ? !x.m_value
+           : x.IsUndef ? UndefValue : NullValue;
+
+    /// <summary>operator !</summary>
+    public static <#= TypeName #> operator !(<#= Name #> x)
+        => x.HasValue
+           ? !x.m_value
+           : x.IsUndef ? UndefValue : NullValue;
+
+<# } #>
+<# if (TypeName == "Guid" || TypeName == "System.Guid") { #>
 
     //
     // Guid
@@ -484,20 +615,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         => new <#= Name #>(Guid.NewGuid());
 
 <# } #>
-<#if (IsIntegralNumericType()) { #>
-
-    //
-    // MaxValue, MinValue
-    //
-
-    /// <summary>Represents the largest possible value. This field is constant.</summary>
-    public const <#= Type #> MaxValue = <#= Type #>.MaxValue;
-
-    /// <summary>Represents the smallest possible value. This field is constant.</summary>
-    public const <#= Type #> MinValue = <#= Type #>.MinValue;
-
-<# } #>
-<# if (Type == "Ulid" || Type == "System.Ulid") { #>
+<# if (TypeName == "Ulid" || TypeName == "System.Ulid") { #>
 
     //
     // Ulid
@@ -513,7 +631,6 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         => new <#= Name #>(Ulid.NewUlid());
 
 <# } #>
-
 <# if (HasFlag(UnitGenerateOptions.ParseMethod)) { #>
 
     //
@@ -526,17 +643,17 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <exception cref="System.FormatException" >is not in the correct format.</exception>
     /// <exception cref="System.OverflowException" >s represents a number less than MinValue or greater than MaxValue.</exception>
     public static <#= Name #> Parse(string s)
-<# if (Type == "string") { #>
+<# if (TypeName == "string") { #>
         => new <#= Name #>(s);
 <# } else { #>
-        => new <#= Name #>(<#= Type #>.Parse(s));
+        => new <#= Name #>(<#= TypeName #>.Parse(s));
 <# } #>
 
     /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
     /// <returns>true if s was converted successfully; otherwise, false.</returns>
     public static bool TryParse(string s, out <#= Name #> result)
     {
-<# if (Type == "string") { #>
+<# if (TypeName == "string") { #>
         try
         {
             result = Parse(s);
@@ -548,7 +665,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
             return false;
         }
 <# } else { #>
-        if(<#= Type #>.TryParse(s, out var r))
+        if(<#= TypeName #>.TryParse(s, out var r))
         {
             result = new <#= Name #>(r);
             return true;
@@ -582,289 +699,6 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
 <# } #>
-<# if (Type == "bool") { #>
-
-    //
-    // bool operator
-    //
-
-    /// <summary>operator true</summary>
-    public static <#= Type #> operator true(<#= Name #> x)
-        => x.HasValue
-           ? x.m_value
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator false</summary>
-    public static <#= Type #> operator false(<#= Name #> x)
-        => x.HasValue
-           ? !x.m_value
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator !</summary>
-    public static <#= Type #> operator !(<#= Name #> x)
-        => x.HasValue
-           ? !x.m_value
-           : x.IsUndef ? UndefValue : NullValue;
-
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { #>
-
-    //
-    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
-    //
-
-    /// <summary>operator +</summary>
-    public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
-        => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y.m_value)))
-           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-
-    /// <summary>operator -</summary>
-    public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
-        => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y.m_value)))
-           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-
-    /// <summary>operator *</summary>
-    public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
-        => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y.m_value)))
-           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-
-    /// <summary>operator /</summary>
-    public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
-        => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y.m_value)))
-           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-
-    /// <summary>operator %</summary>
-    public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
-        => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y.m_value)))
-           : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { #>
-
-    //
-    // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
-    //
-
-    /// <summary>operator ++</summary>
-    public static <#= Name #> operator ++(in <#= Name #> x)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + 1)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator --</summary>
-    public static <#= Name #> operator --(in <#= Name #> x)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - 1)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator +</summary>
-    public static <#= Name #> operator +(in <#= Name #> x, in <#= Type #> y)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value + y)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator -</summary>
-    public static <#= Name #> operator -(in <#= Name #> x, in <#= Type #> y)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value - y)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator *</summary>
-    public static <#= Name #> operator *(in <#= Name #> x, in <#= Type #> y)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value * y)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator /</summary>
-    public static <#= Name #> operator /(in <#= Name #> x, in <#= Type #> y)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value / y)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-    /// <summary>operator %</summary>
-    public static <#= Name #> operator %(in <#= Name #> x, in <#= Type #> y)
-        => x.HasValue
-           ? new <#= Name #>(checked ((<#= Type #>)(x.m_value % y)))
-           : x.IsUndef ? UndefValue : NullValue;
-
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
-
-    //
-    // UnitGenerateOptions.JsonConverter
-    //
-
-    /// <summary>JsonConverter</summary>
-    private class <#= Name #>JsonConverter : JsonConverter<<#= Name #>>
-    {
-        /// <summary>HandleNull</summary>
-        public override bool HandleNull
-            => true;
-
-        /// <summary>Write</summary>
-        public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
-        {
-            // undefined; value.IsUndef の場合は null として出力
-
-            var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
-            if (converter is not null)
-                converter.Write(writer, (<#= TypeNullable #>)value.GetOrNull(), options);
-            else
-                throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
-        }
-
-        /// <summary>Read</summary>
-        public override <#= Name #> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var converter = options.GetConverter(typeof(<#= TypeNullable #>)) as JsonConverter<<#= TypeNullable #>>;
-            if (converter is not null)
-            {
-                var res = (reader.TokenType) switch
-                {
-                    JsonTokenType.Null => <#= Name #>.NullValue,
-                    JsonTokenType.None => <#= Name #>.UndefValue,
-                    _ => new <#= Name #>(converter.Read(ref reader, typeToConvert, options))
-                };
-                return res;
-            }
-            else
-            {
-                throw new JsonException($"{typeof(<#= TypeNullable #>)} converter does not found.");
-            }
-        }
-
-<#if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  #>
-        /// <summary>WriteAsPropertyName</summary>
-        public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
-        {
-<#if (IsSupportUtf8Formatter()) {  #>
-            Span<byte> buffer = stackalloc byte[36];
-            if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
-            {
-                writer.WritePropertyName(buffer.Slice(0, written));
-            }
-            else
-            {
-                writer.WritePropertyName(value.m_value.ToString());
-            }
-<# } else if (IsUlid()) { #>
-            writer.WritePropertyName(value.m_value.ToString());
-<# } else { #>
-            writer.WritePropertyName(value.m_value.ToString());
-<# } #>
-        }
-
-        /// <summary>ReadAsPropertyName</summary>
-        public override <#= Name #> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-<#if (IsSupportUtf8Formatter()) {  #>
-            if (System.Buffers.Text.Utf8Parser.TryParse(reader.ValueSpan, out <#= Type #> value, out var consumed))
-            {
-                return new <#= Name #>(value);
-            }
-            else
-            {
-                return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
-            }
-<# } else if (IsUlid()) { #>
-            return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
-<# } else if(Type == "string")  { #>
-            return new <#= Name #>(reader.GetString());
-<# } else { #>
-            return new <#= Name #>(<#= Type #>.Parse(reader.GetString()));
-<# } #>
-        }
-<# } #>
-    }
-
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
-
-    //
-    // UnitGenerateOptions.MessagePackFormatter
-    //
-
-    /// <summary>IMessagePackFormatter</summary>
-    private class <#= Name #>MessagePackFormatter : IMessagePackFormatter<<#= Name #>>
-    {
-        /// <summary>Serialize</summary>
-        public void Serialize(ref MessagePackWriter writer, <#= Name #> value, MessagePackSerializerOptions options)
-        {
-            options.Resolver.GetFormatterWithVerify<<#= Type #>>().Serialize(ref writer, value.m_value, options);
-        }
-
-        /// <summary>Deserialize</summary>
-        public <#= Name #> Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
-        {
-            return new <#= Name #>(options.Resolver.GetFormatterWithVerify<<#= Type #>>().Deserialize(ref reader, options));
-        }
-    }
-
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
-
-    //
-    // UnitGenerateOptions.DapperTypeHandler
-    //
-
-    /// <summary>Dapper.SqlMapper.TypeHandler</summary>
-    public class <#= Name #>TypeHandler : Dapper.SqlMapper.TypeHandler<<#= Name #>>
-    {
-        /// <summary>Parse</summary>
-        public override <#= Name #> Parse(object value)
-        {
-            return new <#= Name #>((<#= TypeNullable #>)value);
-        }
-
-        /// <summary>SetValue</summary>
-        public override void SetValue(System.Data.IDbDataParameter parameter, <#= Name #> value)
-        {
-            parameter.DbType = System.Data.DbType.<#= GetDbType() #>;
-            parameter.Value = (<#= TypeNullable #>)value.GetOrNull();
-        }
-    }
-
-    /// <summary>Dapper.SqlMapper.AddTypeHandler</summary>
-    [ModuleInitializer]
-    public static void AddTypeHandler()
-    {
-        Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>TypeHandler());
-    }
-
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
-
-    //
-    // UnitGenerateOptions.EntityFrameworkValueConverter
-    //
-
-    /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter</summary>
-    public class <#= Name #>ValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<<#= Name #>, <#= TypeNullable #>>
-    {
-        /// <summary>ValueConverter</summary>
-        public <#= Name #>ValueConverter()
-            : base(
-                    convertToProviderExpression: x => (<#= TypeNullable #>)x.GetOrNull(),
-                    convertFromProviderExpression: x => new <#= Name #>(x))
-        {
-        }
-
-        /// <summary>ValueConverter</summary>
-        public <#= Name #>ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
-            : base(
-                    convertToProviderExpression: x => (<#= TypeNullable #>)x.GetOrNull(),
-                    convertFromProviderExpression: x => new <#= Name #>(x),
-                    mappingHints: mappingHints)
-        {
-        }
-    }
-
-<# } #>
 
     //
     // TypeConverter
@@ -874,7 +708,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     private class <#= Name #>TypeConverter : System.ComponentModel.TypeConverter
     {
         private static readonly Type WrapperType = typeof(<#= Name #>);
-        private static readonly Type ValueType = typeof(<#= Type #>);
+        private static readonly Type ValueType = typeof(<#= TypeName #>);
 
         /// <summary>CanConvertFrom</summary>
         public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, Type sourceType)
@@ -908,9 +742,9 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
                 {
                     return (<#= Name #>)value;
                 }
-                if (t == typeof(<#= Type #>))
+                if (t == typeof(<#= TypeName #>))
                 {
-                    return new <#= Name #>((<#= Type #>)value);
+                    return new <#= Name #>((<#= TypeName #>)value);
                 }
             }
             else
@@ -940,4 +774,178 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
             return base.ConvertTo(context, culture, value, destinationType);
         }
     }
+
+<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+
+    //
+    // UnitGenerateOptions.JsonConverter
+    //
+
+    /// <summary>JsonConverter</summary>
+    private class <#= Name #>JsonConverter : JsonConverter<<#= Name #>>
+    {
+        /// <summary>HandleNull</summary>
+        public override bool HandleNull
+            => true;
+
+        /// <summary>Write</summary>
+        public override void Write(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
+        {
+            // undefined; value.IsUndef の場合は null として出力
+
+            var converter = options.GetConverter(typeof(<#= TypeNameNullable #>)) as JsonConverter<<#= TypeNameNullable #>>;
+            if (converter is not null)
+                converter.Write(writer, (<#= TypeNameNullable #>)value.GetOrNull(), options);
+            else
+                throw new JsonException($"{typeof(<#= TypeNameNullable #>)} converter does not found.");
+        }
+
+        /// <summary>Read</summary>
+        public override <#= Name #> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var converter = options.GetConverter(typeof(<#= TypeNameNullable #>)) as JsonConverter<<#= TypeNameNullable #>>;
+            if (converter is not null)
+            {
+                var res = (reader.TokenType) switch
+                {
+                    JsonTokenType.Null => <#= Name #>.NullValue,
+                    JsonTokenType.None => <#= Name #>.UndefValue,
+                    _ => new <#= Name #>(converter.Read(ref reader, typeToConvert, options))
+                };
+                return res;
+            }
+            else
+            {
+                throw new JsonException($"{typeof(<#= TypeNameNullable #>)} converter does not found.");
+            }
+        }
+
+<#if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  #>
+        /// <summary>WriteAsPropertyName</summary>
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
+        {
+<#if (IsSupportUtf8Formatter()) {  #>
+            Span<byte> buffer = stackalloc byte[36];
+            if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
+            {
+                writer.WritePropertyName(buffer.Slice(0, written));
+            }
+            else
+            {
+                writer.WritePropertyName(value.m_value.ToString());
+            }
+<# } else if (IsUlid()) { #>
+            writer.WritePropertyName(value.m_value.ToString());
+<# } else { #>
+            writer.WritePropertyName(value.m_value.ToString());
+<# } #>
+        }
+
+        /// <summary>ReadAsPropertyName</summary>
+        public override <#= Name #> ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+<#if (IsSupportUtf8Formatter()) {  #>
+            if (System.Buffers.Text.Utf8Parser.TryParse(reader.ValueSpan, out <#= TypeName #> value, out var consumed))
+            {
+                return new <#= Name #>(value);
+            }
+            else
+            {
+                return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
+            }
+<# } else if (IsUlid()) { #>
+            return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
+<# } else if(TypeName == "string")  { #>
+            return new <#= Name #>(reader.GetString());
+<# } else { #>
+            return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
+<# } #>
+        }
+<# } #>
+    }
+
+<# } #>
+<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+
+    //
+    // UnitGenerateOptions.DapperTypeHandler
+    //
+
+    /// <summary>Dapper.SqlMapper.TypeHandler</summary>
+    public class <#= Name #>TypeHandler : Dapper.SqlMapper.TypeHandler<<#= Name #>>
+    {
+        /// <summary>Parse</summary>
+        public override <#= Name #> Parse(object value)
+        {
+            return new <#= Name #>((<#= TypeNameNullable #>)value);
+        }
+
+        /// <summary>SetValue</summary>
+        public override void SetValue(System.Data.IDbDataParameter parameter, <#= Name #> value)
+        {
+            parameter.DbType = System.Data.DbType.<#= GetDbType() #>;
+            parameter.Value = (<#= TypeNameNullable #>)value.GetOrNull();
+        }
+    }
+
+    /// <summary>Dapper.SqlMapper.AddTypeHandler</summary>
+    [ModuleInitializer]
+    public static void AddTypeHandler()
+    {
+        Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>TypeHandler());
+    }
+
+<# } #>
+<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
+
+    //
+    // UnitGenerateOptions.EntityFrameworkValueConverter
+    //
+
+    /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter</summary>
+    public class <#= Name #>ValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<<#= Name #>, <#= TypeNameNullable #>>
+    {
+        /// <summary>ValueConverter</summary>
+        public <#= Name #>ValueConverter()
+            : base(
+                    convertToProviderExpression: x => (<#= TypeNameNullable #>)x.GetOrNull(),
+                    convertFromProviderExpression: x => new <#= Name #>(x))
+        {
+        }
+
+        /// <summary>ValueConverter</summary>
+        public <#= Name #>ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
+            : base(
+                    convertToProviderExpression: x => (<#= TypeNameNullable #>)x.GetOrNull(),
+                    convertFromProviderExpression: x => new <#= Name #>(x),
+                    mappingHints: mappingHints)
+        {
+        }
+    }
+
+<# } #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+
+    //
+    // UnitGenerateOptions.MessagePackFormatter
+    //
+
+    /// <summary>IMessagePackFormatter</summary>
+    private class <#= Name #>MessagePackFormatter : IMessagePackFormatter<<#= Name #>>
+    {
+        /// <summary>Serialize</summary>
+        public void Serialize(ref MessagePackWriter writer, <#= Name #> value, MessagePackSerializerOptions options)
+        {
+            options.Resolver.GetFormatterWithVerify<<#= TypeName #>>().Serialize(ref writer, value.m_value, options);
+        }
+
+        /// <summary>Deserialize</summary>
+        public <#= Name #> Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+        {
+            return new <#= Name #>(options.Resolver.GetFormatterWithVerify<<#= TypeName #>>().Deserialize(ref reader, options));
+        }
+    }
+
+<# } #>
+
 }

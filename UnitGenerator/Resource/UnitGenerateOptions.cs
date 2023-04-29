@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
-#pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
-
+﻿
 using System;
 
 namespace NullableUnitGenerator;
@@ -15,6 +13,18 @@ public enum UnitGenerateOptions
     /// <summary>None</summary>
     None = 0,
 
+    /// <summary>ArithmeticOperator</summary>
+    ArithmeticOperator = 8,
+
+    /// <summary>ValueArithmeticOperator</summary>
+    ValueArithmeticOperator = 16,
+
+    /// <summary>ComparisonOperator</summary>
+    ComparisonOperator = 2048,
+
+    /// <summary>IComparable</summary>
+    IComparable = 32,
+
     /// <summary>ImplicitOperator</summary>
     ImplicitOperator = 1,
 
@@ -24,14 +34,9 @@ public enum UnitGenerateOptions
     /// <summary>MinMaxMethod</summary>
     MinMaxMethod = 4,
 
-    /// <summary>ArithmeticOperator</summary>
-    ArithmeticOperator = 8,
-
-    /// <summary>ValueArithmeticOperator</summary>
-    ValueArithmeticOperator = 16,
-
-    /// <summary>Comparable</summary>
-    Comparable = 32,
+    /// <summary>PrivitiveFull</summary>
+    /// <remarks>ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod</remarks>
+    PrivitiveFull = ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod,
 
     /// <summary>Validate</summary>
     Validate = 64,
@@ -39,8 +44,8 @@ public enum UnitGenerateOptions
     /// <summary>JsonConverter</summary>
     JsonConverter = 128,
 
-    /// <summary>MessagePackFormatter</summary>
-    MessagePackFormatter = 256,
+    /// <summary>JsonConverterDictionaryKeySupport</summary>
+    JsonConverterDictionaryKeySupport = 4096,
 
     /// <summary>DapperTypeHandler</summary>
     DapperTypeHandler = 512,
@@ -48,13 +53,6 @@ public enum UnitGenerateOptions
     /// <summary>EntityFrameworkValueConverter</summary>
     EntityFrameworkValueConverter = 1024,
 
-    /// <summary>WithoutComparisonOperator</summary>
-    WithoutComparisonOperator = 2048,
-
-    /// <summary>JsonConverterDictionaryKeySupport</summary>
-    JsonConverterDictionaryKeySupport = 4096,
-
-    /// <summary>PrivitiveFull</summary>
-    /// <remarks>ImplicitOperator | ParseMethod | MinMaxMethod | ArithmeticOperator | ValueArithmeticOperator | Comparable</remarks>
-    PrivitiveFull = ImplicitOperator | ParseMethod | MinMaxMethod | ArithmeticOperator | ValueArithmeticOperator | Comparable,
+    /// <summary>MessagePackFormatter</summary>
+    MessagePackFormatter = 256,
 }

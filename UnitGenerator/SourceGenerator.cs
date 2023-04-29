@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
-#pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
-
+﻿
 using System;
 using System.IO;
 using System.Linq;
@@ -49,7 +47,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
         // SemaintiModelが欲しい場合は source.SemanticModel
         // Compilationが欲しい場合は source.SemanticModel.Compilation から
         var typeSymbol = (INamedTypeSymbol)source.TargetSymbol;
-        var typeNode = (TypeDeclarationSyntax)source.TargetNode;
+        //var typeNode = (TypeDeclarationSyntax)source.TargetNode;
         var attrCtorArgs = source.Attributes.Single().ConstructorArguments;
 
         var ns = typeSymbol.ContainingNamespace;
@@ -57,15 +55,12 @@ public sealed class SourceGenerator : IIncrementalGenerator
             throw new Exception("require UnitOf attribute parameter [Type]");
         var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
 
-        var template = new CodeTemplate()
-        {
-            Name = typeSymbol.Name,
-            Namespace = ns.IsGlobalNamespace ? null : ns.ToDisplayString(),
-            Type = type.ToDisplayString(),
-            IsValueType = type.IsValueType,
-            Options = (UnitGenerateOptions)parsedOptions,
-            ToStringFormat = attrCtorArgs[2].Value as string
-        };
+        var template = new CodeTemplate(
+            ns: ns.IsGlobalNamespace ? null : ns.ToDisplayString(), 
+            name: typeSymbol.Name,
+            type: type,
+            options: (UnitGenerateOptions)parsedOptions,
+            toStringFormat: attrCtorArgs[2].Value as string);
         var text = template.TransformText();
 
         token.ThrowIfCancellationRequested();
@@ -107,15 +102,14 @@ public sealed class SourceGenerator : IIncrementalGenerator
     public static string StringResourceRead(string resourceName)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        //var type = typeof(SourceGenerator);
-        //var assembly = type.Assembly;
-
         using var stream = assembly.GetManifestResourceStream(resourceName);
-        if (stream == null)
-            return "";
+        if (stream != null)
+        {
+            using var sr = new StreamReader(stream);
+            return sr.ReadToEnd();
+        }
 
-        using var sr = new StreamReader(stream);
-        return sr.ReadToEnd();
+        throw new ApplicationException($"The specified resource [{resourceName}] is missing.");
     }
 
 }
