@@ -66,16 +66,16 @@ Console.WriteLine($"文字列化比較 : {sw.ElapsedMilliseconds}");
 //{
 //}
 
-[UnitOf(typeof(Guid), UGO.Comparable | UGO.WithoutComparisonOperator)]
+[UnitOf(typeof(Guid), UGO.IComparable)]
 public readonly partial struct FooId { }
 
-[UnitOf(typeof(Ulid), UGO.Comparable | UGO.WithoutComparisonOperator | UGO.MessagePackFormatter | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(Ulid), UGO.IComparable | UGO.MessagePackFormatter | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
 public readonly partial struct BarId { }
 
 namespace Sample
 {
 
-    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.Comparable | UGO.MinMaxMethod | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
+    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.IComparable | UGO.ComparisonOperator | UGO.MinMaxMethod | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
     public readonly partial struct Hp
     {
         // public static Hp operator +(in Hp x, in Hp y) => new Hp(checked((int)(x.value + y.value)));

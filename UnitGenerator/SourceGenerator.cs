@@ -46,19 +46,19 @@ public sealed class SourceGenerator : IIncrementalGenerator
         // classで引っ掛けてるのでTypeSymbol/Syntaxとして使えるように。
         // SemaintiModelが欲しい場合は source.SemanticModel
         // Compilationが欲しい場合は source.SemanticModel.Compilation から
-        var typeSymbol = (INamedTypeSymbol)source.TargetSymbol;
+        var targetSymbol = (INamedTypeSymbol)source.TargetSymbol;
         //var typeNode = (TypeDeclarationSyntax)source.TargetNode;
         var attrCtorArgs = source.Attributes.Single().ConstructorArguments;
 
-        var ns = typeSymbol.ContainingNamespace;
+        var ns = targetSymbol.ContainingNamespace;
         if (attrCtorArgs[0].Value is not ITypeSymbol type)
             throw new Exception("require UnitOf attribute parameter [Type]");
         var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
 
         var template = new CodeTemplate(
             ns: ns.IsGlobalNamespace ? null : ns.ToDisplayString(), 
-            name: typeSymbol.Name,
-            type: type,
+            name: targetSymbol.Name,
+            typeSymbol: type,
             options: (UnitGenerateOptions)parsedOptions,
             toStringFormat: attrCtorArgs[2].Value as string);
         var text = template.TransformText();

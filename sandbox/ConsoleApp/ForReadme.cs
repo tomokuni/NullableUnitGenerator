@@ -18,5 +18,6 @@ public readonly partial struct UserId { }
                    | UGO.MinMaxMethod
                    | UGO.ArithmeticOperator
                    | UGO.ValueArithmeticOperator
-                   | UGO.Comparable)]
+                   | UGO.IComparable
+                   | UGO.ComparisonOperator)]
 public readonly partial struct Hp { }

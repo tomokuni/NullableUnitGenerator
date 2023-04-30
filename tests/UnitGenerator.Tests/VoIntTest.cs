@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MessagePack;
 using Xunit;
 using NullableUnitGenerator;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace NullableUnitGenerator.Tests;
 
@@ -15,7 +17,7 @@ public class VoIntTest
     public void Equal()
     {
         VoInt a = default;
-        VoInt b = new(null);
+        VoInt b = new((int?)null);
         VoInt c = new(default(int));
         VoInt d = new(0);
         VoInt e = new(1);
@@ -88,7 +90,7 @@ public class VoIntTest
     public void Compare()
     {
         VoInt a = default;
-        VoInt b = new(null);
+        VoInt b = new((int?)null);
         VoInt c = new(default(int));
         VoInt d = new(0);
         VoInt e = new(1);
@@ -156,20 +158,32 @@ public class VoIntTest
 
     }
 
-    //[Fact]
-    //public void NullableOperater ()
-    //{
-    //    VoInt a = default;
-    //    VoInt b = new(null);
-    //    VoInt c = new(default(int));
-    //    VoInt d = new(0);
-    //    VoInt e = new(1);
+    [Fact]
+    public void ExistMethod()
+    {
+        Type t = typeof(DateTime);
+        //List<string> OverloadOperators = t.GetMethods().Where(x => x.Name.StartsWith("op_")).Select(x => x.Name).Distinct().OrderBy(x => x).ToList();
+        //List<string> Operators = t.GetMethods().Select(x => x.Name).Distinct().OrderBy(x => x).ToList();
+        //string OperatorsString = string.Join(", ", Operators);
+        List<MethodInfo> Operators = t.GetMethods().ToList();
 
-    //}
+
+        //MethodInfo? mi = t.GetMethod(
+        //    "op_Implicit",
+        //    (BindingFlags.Public | BindingFlags.Static),
+        //    null,
+        //    new Type[] { (new object()).GetType() },
+        //    new ParameterModifier[0]);
+        //Debug.WriteLine($"{mi}");
+
+        DateTime dt1 = new DateTime();
+        DateTime dt2 = new DateTime();
+        var aaa = dt1 > dt2;
+    }
 }
 
 
-[UnitOf(typeof(int), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.ComparisonOperator | UnitGenerateOptions.IComparable | UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
 public readonly partial struct VoInt
 {
     private partial void Validate()
@@ -177,3 +191,12 @@ public readonly partial struct VoInt
         _ = HasValue;
     }
 }
+
+//[UnitOf(typeof(DateTime), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+//public readonly partial struct VoDateTime
+//{
+//    private partial void Validate()
+//    {
+//        _ = HasValue;
+//    }
+//}

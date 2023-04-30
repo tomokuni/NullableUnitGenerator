@@ -7,7 +7,7 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// NullableUnitGenerator でコード自動生成するための属性、OpenApiDataType を定義する属性
+/// NullableUnitGenerator でコード自動生成するための属性 と OpenApiDataType を定義する属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
 public partial class UnitOfAttribute : Attribute
