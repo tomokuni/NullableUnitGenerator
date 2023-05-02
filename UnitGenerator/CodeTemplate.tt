@@ -46,10 +46,23 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // TypeName : <#= TypeName #>
     // TypeFullName : <#= TypeFullName #>
     // <#= TypeName #> support method : <#= OperatorsString #>
-    // IsArray : <#= IsArray #>
-    // IsValueType : <#= IsValueType #>
     // UnitGenerateOptions : <#= Options #>
     // ToStringFormat : <#= ToStringFormat ?? "(null)" #>
+    // IsValueType : <#= IsValueType #>
+    // IsArray : <#= IsArray #>
+    //
+    // ITypeSymbol Info
+    //   <#= DicTypeName[1] #>
+    //   <#= DicTypeName[2] #>
+    //   <#= DicTypeName[3] #>
+    //   <#= DicTypeName[4] #>
+    //   <#= DicTypeName[5] #>
+    //   <#= DicTypeName[6] #>
+    //   <#= DicTypeName[7] #>
+    //   <#= DicTypeName[8] #>
+    //   <#= DicTypeName[9] #>
+    //   <#= DicTypeName[10] #>
+
 
     //
     // backing field

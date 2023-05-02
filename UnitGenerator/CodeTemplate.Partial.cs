@@ -29,18 +29,22 @@ public partial class CodeTemplate
 
         TypeName = TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
         TypeFullName = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
-        //if (TypeSymbol.TypeKind == TypeKind.Array)
-        //    TypeFullName = Type.GetType($"{typeSymbol.ContainingNamespace}.{TypeName}").FullName;
 
         TypeMenberNames = TypeSymbol.GetMembers().Select(x => x.Name).Distinct().ToList();
 
-        //TypeFullName1 = ((Type)TypeSymbol).ToString();
-        //TypeFullName2 = TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat);
-        //TypeFullName3 = TypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        //TypeFullName4 = TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
-        //TypeFullName5 = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
-        ////TypeFullName = Type.GetType(typeSymbol.MetadataName + ", System").ToString();
-        ////Type = Type.GetType(typeSymbol.MetadataName);
+        DicTypeName = new()
+        {
+            { 01, $"ContainingNamespace   : {TypeSymbol.ContainingNamespace}" },
+            { 02, $"ContainingType        : {TypeSymbol.ContainingType}" },
+            { 03, $"CanBeReferencedByName : {TypeSymbol.CanBeReferencedByName}" },
+            { 04, $"MetadataName          : {TypeSymbol.MetadataName}" },
+            { 05, $"Name                  : {TypeSymbol.Name}" },
+            { 06, $"OriginalDefinition    : {TypeSymbol.OriginalDefinition}" },
+            { 07, $"ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)      : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}" },
+            { 08, $"ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat) : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}" },
+            { 09, $"ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)          : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}" },
+            { 10 ,$"ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)      : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}" },
+        };
     }
 
     /// <summary>Namespace</summary>
@@ -70,7 +74,7 @@ public partial class CodeTemplate
     /// <summary>Type display string.</summary>
     internal string TypeName { get; }
 
-    /// <summary>Type symbol name string.</summary>
+    /// <summary>Type full name string.</summary>
     internal string TypeFullName { get; }
 
     ///// <summary>type specified by the attribute.</summary>
@@ -85,8 +89,10 @@ public partial class CodeTemplate
 
     /// <summary>IsArray</summary>
     internal bool IsArray => TypeSymbol.TypeKind == TypeKind.Array;
-    //internal bool IsArray => TypeName.EndsWith("[]");
 
+
+    /// <summary>ITypeSymbol value</summary>
+    internal Dictionary<int, string> DicTypeName { get; }
 
     /// <summary>Operators string.</summary>
     internal string OperatorsString => string.Join(", ", TypeMenberNames);
