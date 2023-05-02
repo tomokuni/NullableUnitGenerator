@@ -21,7 +21,7 @@ public readonly partial struct VoString
 {
     private partial void Validate() { }
 }
-[UnitOf(typeof(byte[]), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(byte[]), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 public readonly partial struct VoByteArray
 {
     private partial void Validate() { }

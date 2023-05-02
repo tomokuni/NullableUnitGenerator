@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 
 namespace NullableUnitGenerator;
@@ -25,6 +26,21 @@ public partial class CodeTemplate
         TypeSymbol = typeSymbol;
         Options = options;
         ToStringFormat = toStringFormat;
+
+        TypeName = TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        TypeFullName = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
+        //if (TypeSymbol.TypeKind == TypeKind.Array)
+        //    TypeFullName = Type.GetType($"{typeSymbol.ContainingNamespace}.{TypeName}").FullName;
+
+        TypeMenberNames = TypeSymbol.GetMembers().Select(x => x.Name).Distinct().ToList();
+
+        //TypeFullName1 = ((Type)TypeSymbol).ToString();
+        //TypeFullName2 = TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat);
+        //TypeFullName3 = TypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        //TypeFullName4 = TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        //TypeFullName5 = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
+        ////TypeFullName = Type.GetType(typeSymbol.MetadataName + ", System").ToString();
+        ////Type = Type.GetType(typeSymbol.MetadataName);
     }
 
     /// <summary>Namespace</summary>
@@ -42,9 +58,24 @@ public partial class CodeTemplate
     /// <summary>ToStringFormat value specified by the attribute.</summary>
     internal string? ToStringFormat { get; }
 
+    /// <summary>TypeMenbersNames list.</summary>
+    private List<string> TypeMenberNames { get; }
+
+    //internal string TypeFullName1 { get; }
+    //internal string TypeFullName2 { get; }
+    //internal string TypeFullName3 { get; }
+    //internal string TypeFullName4 { get; }
+    //internal string TypeFullName5 { get; }
 
     /// <summary>Type display string.</summary>
-    internal string TypeName => TypeSymbol.ToDisplayString();
+    internal string TypeName { get; }
+
+    /// <summary>Type symbol name string.</summary>
+    internal string TypeFullName { get; }
+
+    ///// <summary>type specified by the attribute.</summary>
+    //internal Type Type { get; }
+
 
     /// <summary>Nullable type display string.</summary>
     internal string TypeNameNullable => $"{TypeName}{(IsValueType ? "?" : "")}";
@@ -53,29 +84,51 @@ public partial class CodeTemplate
     internal bool IsValueType => TypeSymbol.IsValueType;
 
     /// <summary>IsArray</summary>
-    internal bool IsArray => TypeName.EndsWith("[]");
+    internal bool IsArray => TypeSymbol.TypeKind == TypeKind.Array;
+    //internal bool IsArray => TypeName.EndsWith("[]");
 
-
-    /// <summary>Operators list.</summary>
-    private List<string> Operators = new();
-
-    internal List<string> GetOperators()
-    {
-        if (!Operators.Any())
-        {
-            Operators = TypeSymbol
-                .GetMembers()
-                .Select(x => x.Name)
-                .Distinct().ToList();
-        }
-        return Operators;
-    }
 
     /// <summary>Operators string.</summary>
-    internal string OperatorsString => string.Join(", ", GetOperators());
+    internal string OperatorsString => string.Join(", ", TypeMenberNames);
 
     /// <summary>Specified operator is included or not.</summary>
-    internal bool ContainsOperater(string operater) => GetOperators().Contains(operater);
+    internal bool ContainsOperater(string operater) => TypeMenberNames.Contains(operater);
+
+    /// <summary>Specified operator is included or not.</summary>
+    internal bool ContainsOperater1(string operater)
+    {
+        if (!TypeMenberNames.Contains(operater))
+            return false;
+
+        var m = TypeSymbol.GetMembers().Where(x => x.Name == operater).ToList();
+        foreach (var t in m.Select(x => x.GetType()))
+        {
+            var p = t.GetMethod(operater).GetParameters();
+            if (p.Count() != 1)
+                continue;
+            if (p[0].ParameterType == t)
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>Specified operator is included or not.</summary>
+    internal bool ContainsOperater2(string operater)
+    {
+        if (!TypeMenberNames.Contains(operater))
+            return false;
+
+        var m = TypeSymbol.GetMembers().Where(x => x.Name == operater).ToList();
+        foreach (var t in m.Select(x => x.GetType()))
+        {
+            var p = t.GetMethod(operater).GetParameters();
+            if (p.Count() != 2)
+                continue;
+            if (p[0].ParameterType == t && p[1].ParameterType == t)
+                return true;
+        }
+        return false;
+    }
 
 
     /// <summary>Specified UnitGenerateOptions value is included or not.</summary>
@@ -135,10 +188,10 @@ public partial class CodeTemplate
             "sbyte" => true,
             "float" => true,
             "double" => true,
-            "System.DateTime" => true,
-            "System.DateTimeOffset" => true,
-            "System.TimeSpan" => true,
-            "System.Guid" => true,
+            "DateTime" => true,
+            "DateTimeOffset" => true,
+            "TimeSpan" => true,
+            "Guid" => true,
             _ => false
         };
 

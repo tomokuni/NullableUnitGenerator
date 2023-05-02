@@ -8,6 +8,7 @@ using Xunit;
 using NullableUnitGenerator;
 using System.Reflection;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis;
 
 namespace NullableUnitGenerator.Tests;
 
@@ -167,6 +168,10 @@ public class VoIntTest
         //string OperatorsString = string.Join(", ", Operators);
         List<MethodInfo> Operators = t.GetMethods().ToList();
 
+        var a = Type.GetType("Byte", false, true);
+        var b = Type.GetType("byte", false, true);
+        var c = Type.GetType("System.Byte[]", false, true);
+        var d = Type.GetType("System.byte[]",false, true);
 
         //MethodInfo? mi = t.GetMethod(
         //    "op_Implicit",

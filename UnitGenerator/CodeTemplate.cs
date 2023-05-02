@@ -53,7 +53,9 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" is TernaryType ValueObject<br/>\r\n/// Primitive type is ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write("\r\n/// </summary>\r\n");
+            this.Write(" (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeFullName));
+            this.Write(")\r\n/// </summary>\r\n");
  if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("[MessagePackFormatter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -74,15 +76,29 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("> ");
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.IComparable) && ContainsOperater("CompareTo") ? $", IComparable<{Name}>" : ""));
-            this.Write("\r\n{\r\n    // ");
+            this.Write("\r\n{\r\n    // TypeName : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write("\r\n    // TypeFullName : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeFullName));
+            this.Write("\r\n    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" support method : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(OperatorsString));
+            this.Write("\r\n    // IsArray : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsArray));
+            this.Write("\r\n    // IsValueType : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsValueType));
+            this.Write("\r\n    // UnitGenerateOptions : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Options));
+            this.Write("\r\n    // ToStringFormat : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(ToStringFormat ?? "(null)"));
             this.Write("\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n\r\n\r\n    /" +
                     "/\r\n    // Constructor\r\n    //\r\n\r\n    /// <summary>Complete Constructor</summary>" +
                     "\r\n    public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("()\r\n    { }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1048,7 +1064,6 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")} converter does not found.\");\r\n            }\r\n        }\r\n\r\n");
  if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  
- if (!IsArray) { 
             this.Write("        /// <summary>WriteAsPropertyName</summary>\r\n        public override void " +
                     "WriteAsPropertyName(Utf8JsonWriter writer, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1103,11 +1118,6 @@ if (IsSupportUtf8Formatter()) {
             this.Write(".Parse(reader.GetString()));\r\n");
  } 
             this.Write("        }\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" is types that do not support JsonConverterDictionaryKeySupport\r\n");
- } 
  } 
             this.Write("    }\r\n\r\n");
  } 

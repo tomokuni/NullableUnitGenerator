@@ -32,7 +32,7 @@ namespace <#= Namespace #>;
 
 /// <summary>
 /// <#= Name #> is TernaryType ValueObject<br/>
-/// Primitive type is <#= TypeName #>
+/// Primitive type is <#= TypeName #> (<#= TypeFullName #>)
 /// </summary>
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
 [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
@@ -43,7 +43,13 @@ namespace <#= Namespace #>;
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
 public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && ContainsOperater("CompareTo") ? $", IComparable<{Name}>" : "" #>
 {
+    // TypeName : <#= TypeName #>
+    // TypeFullName : <#= TypeFullName #>
     // <#= TypeName #> support method : <#= OperatorsString #>
+    // IsArray : <#= IsArray #>
+    // IsValueType : <#= IsValueType #>
+    // UnitGenerateOptions : <#= Options #>
+    // ToStringFormat : <#= ToStringFormat ?? "(null)" #>
 
     //
     // backing field
@@ -56,6 +62,10 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     //
     // Constructor
     //
+
+    /// <summary>Complete Constructor</summary>
+    public <#= Name #>()
+    { }
 
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(in <#= Name #> value)
@@ -907,7 +917,6 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         }
 
 <# if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  #>
-<# if (!IsArray) { #>
         /// <summary>WriteAsPropertyName</summary>
         public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
         {
@@ -948,9 +957,6 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
             return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
 <# } #>
         }
-<# } else { #>
-    // <#= Name #> is types that do not support JsonConverterDictionaryKeySupport
-<# } #>
 <# } #>
     }
 

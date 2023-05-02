@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace NullableUnitGenerator;
@@ -51,14 +52,14 @@ public sealed class SourceGenerator : IIncrementalGenerator
         var attrCtorArgs = source.Attributes.Single().ConstructorArguments;
 
         var ns = targetSymbol.ContainingNamespace;
-        if (attrCtorArgs[0].Value is not ITypeSymbol type)
+        if (attrCtorArgs[0].Value is not ITypeSymbol typeSymbol)
             throw new Exception("require UnitOf attribute parameter [Type]");
         var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
 
         var template = new CodeTemplate(
             ns: ns.IsGlobalNamespace ? null : ns.ToDisplayString(), 
             name: targetSymbol.Name,
-            typeSymbol: type,
+            typeSymbol: typeSymbol,
             options: (UnitGenerateOptions)parsedOptions,
             toStringFormat: attrCtorArgs[2].Value as string);
         var text = template.TransformText();

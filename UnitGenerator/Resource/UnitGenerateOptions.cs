@@ -13,6 +13,10 @@ public enum UnitGenerateOptions
     /// <summary>None</summary>
     None = 0,
 
+    /// <summary>PrivitiveFull</summary>
+    /// <remarks>ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod</remarks>
+    PrivitiveFull = ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod,
+
     /// <summary>ArithmeticOperator</summary>
     ArithmeticOperator = 8,
 
@@ -33,10 +37,6 @@ public enum UnitGenerateOptions
 
     /// <summary>MinMaxMethod</summary>
     MinMaxMethod = 4,
-
-    /// <summary>PrivitiveFull</summary>
-    /// <remarks>ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod</remarks>
-    PrivitiveFull = ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod,
 
     /// <summary>Validate</summary>
     Validate = 64,
