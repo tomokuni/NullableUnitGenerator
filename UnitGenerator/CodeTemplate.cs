@@ -54,7 +54,7 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(" is TernaryType ValueObject<br/>\r\n/// Primitive type is ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" (");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeFullName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
             this.Write(")\r\n/// </summary>\r\n");
  if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("[MessagePackFormatter(typeof(");
@@ -78,8 +78,8 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.IComparable) && ContainsOperater("CompareTo") ? $", IComparable<{Name}>" : ""));
             this.Write("\r\n{\r\n    // TypeName : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write("\r\n    // TypeFullName : ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeFullName));
+            this.Write("\r\n    // TypeNameFull : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
             this.Write("\r\n    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" support method : ");
@@ -112,6 +112,22 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[9]));
             this.Write("\r\n    //   ");
             this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[10]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[11]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[12]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[13]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[14]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[15]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[16]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[17]));
+            this.Write("\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[18]));
             this.Write("\r\n\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n\r\n\r\n    /" +
@@ -934,7 +950,9 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => x.HasValue && y.HasValue\r\n           ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(Math.Max(x.m_value, y.m_value))\r\n           : (x.IsUndef || y.IsUndef) ? UndefVa" +
+            this.Write("((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(")Math.Max(x.m_value, y.m_value))\r\n           : (x.IsUndef || y.IsUndef) ? UndefVa" +
                     "lue : NullValue;\r\n");
  } else { 
             this.Write("    // ");
@@ -951,7 +969,9 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => x.HasValue && y.HasValue\r\n           ? new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("(Math.Max(x.m_value, y.m_value))\r\n           : (x.IsUndef || y.IsUndef) ? UndefVa" +
+            this.Write("((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(")Math.Max(x.m_value, y.m_value))\r\n           : (x.IsUndef || y.IsUndef) ? UndefVa" +
                     "lue : NullValue;\r\n");
  } else { 
             this.Write("    // ");

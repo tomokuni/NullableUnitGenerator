@@ -15,7 +15,9 @@ namespace ConsoleApp.Builtins;
 [UnitOf(typeof(bool), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
 public readonly partial struct VoBool
 {
-    private partial void Validate() { }
+    private partial void Validate() {
+        Console.WriteLine();
+    }
 }
 
 [UnitOf(typeof(byte), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]

@@ -27,23 +27,40 @@ public partial class CodeTemplate
         Options = options;
         ToStringFormat = toStringFormat;
 
-        TypeName = TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
-        TypeFullName = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
+        if (TypeSymbol is IArrayTypeSymbol { Rank: 1 } arrayTypeSymbol)
+        {
+            var elementType = arrayTypeSymbol.ElementType;
+            TypeName = $"{elementType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}[]";
+            TypeNameFull = $"{elementType.ContainingNamespace}.{elementType.Name}[]";
+        }
+        else
+        {
+            TypeName = $"{TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}";
+            TypeNameFull = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
+        }
 
         TypeMenberNames = TypeSymbol.GetMembers().Select(x => x.Name).Distinct().ToList();
 
         DicTypeName = new()
         {
-            { 01, $"ContainingNamespace   : {TypeSymbol.ContainingNamespace}" },
-            { 02, $"ContainingType        : {TypeSymbol.ContainingType}" },
-            { 03, $"CanBeReferencedByName : {TypeSymbol.CanBeReferencedByName}" },
-            { 04, $"MetadataName          : {TypeSymbol.MetadataName}" },
-            { 05, $"Name                  : {TypeSymbol.Name}" },
-            { 06, $"OriginalDefinition    : {TypeSymbol.OriginalDefinition}" },
-            { 07, $"ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)      : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}" },
-            { 08, $"ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat) : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}" },
-            { 09, $"ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)          : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}" },
-            { 10 ,$"ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)      : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}" },
+            { 01, $"BaseType              : {TypeSymbol.BaseType}" },
+            { 02, $"ContainingNamespace   : {TypeSymbol.ContainingNamespace}" },
+            { 03, $"ContainingSymbol      : {TypeSymbol.ContainingSymbol}" },
+            { 04, $"ContainingType        : {TypeSymbol.ContainingType}" },
+            { 05, $"CanBeReferencedByName : {TypeSymbol.CanBeReferencedByName}" },
+            { 06, $"Kind                  : {TypeSymbol.Kind}" },
+            { 07, $"MetadataName          : {TypeSymbol.MetadataName}" },
+            { 08, $"MetadataToken         : {TypeSymbol.MetadataToken}" },
+            { 09, $"Name                  : {TypeSymbol.Name}" },
+            { 10, $"NullableAnnotation    : {TypeSymbol.NullableAnnotation}" },
+            { 11, $"OriginalDefinition    : {TypeSymbol.OriginalDefinition}" },
+            { 12, $"SpecialType           : {TypeSymbol.SpecialType}" },
+            { 13, $"TypeKind              : {TypeSymbol.TypeKind}" },
+            { 14, $"ToDisplayString(CSharpErrorMessageFormat)      : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}" },
+            { 15, $"ToDisplayString(CSharpShortErrorMessageFormat) : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}" },
+            { 16, $"ToDisplayString(FullyQualifiedFormat)          : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}" },
+            { 17 ,$"ToDisplayString(MinimallyQualifiedFormat)      : {TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}" },
+            { 18, $"IArrayTypeSymbol.ElementType : {(TypeSymbol as IArrayTypeSymbol)?.ElementType}" },
         };
     }
 
@@ -65,17 +82,11 @@ public partial class CodeTemplate
     /// <summary>TypeMenbersNames list.</summary>
     private List<string> TypeMenberNames { get; }
 
-    //internal string TypeFullName1 { get; }
-    //internal string TypeFullName2 { get; }
-    //internal string TypeFullName3 { get; }
-    //internal string TypeFullName4 { get; }
-    //internal string TypeFullName5 { get; }
-
     /// <summary>Type display string.</summary>
     internal string TypeName { get; }
 
     /// <summary>Type full name string.</summary>
-    internal string TypeFullName { get; }
+    internal string TypeNameFull { get; }
 
     ///// <summary>type specified by the attribute.</summary>
     //internal Type Type { get; }
@@ -151,13 +162,13 @@ public partial class CodeTemplate
     internal bool IsIntegralType
         => TypeName switch
         {
+            "char" => true,
             "short" => true,
             "int" => true,
             "long" => true,
             "ushort" => true,
             "uint" => true,
             "ulong" => true,
-            "bool" => true,
             "byte" => true,
             "sbyte" => true,
             "nint" => true,
