@@ -5,43 +5,43 @@ using UGO = NullableUnitGenerator.UnitGenerateOptions;
 namespace ConsoleApp.Others;
 
 
-[UnitOf(typeof(Guid), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(Guid), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoGuid
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(Ulid), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(Ulid), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoUlid
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(DateTime), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(DateTime), (UGO.MaxExtent & ~UGO.ArithmeticOperator & ~UGO.ValueArithmeticOperator) | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoDatetime
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(DateOnly), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(DateOnly), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoDateonly
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(TimeOnly), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(TimeOnly), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoTimeonly
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(TimeSpan), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(TimeSpan), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoTimespan
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(byte[]), UGO.PrivitiveFull | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
+[UnitOf(typeof(byte[]), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoByteArray
 {
     private partial void Validate() { }

@@ -97,7 +97,7 @@ public class VoIntJsonConverter : JsonConverter<VoInt>, IJsonOnSerializing
         Span<byte> buffer = stackalloc byte[36];
         if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
         {
-            writer.WritePropertyName(buffer.Slice(0, written));
+            writer.WritePropertyName(buffer[..written]);
         }
         else
         {
@@ -173,7 +173,7 @@ public class VoIntJsonConverter2 : JsonConverterFactory
     }
 
     /// <summary>JsonConverter</summary>
-    public class VoIntJsonConverter : JsonConverter<VoInt>
+    public class VoIntJsonConverterSupport : JsonConverter<VoInt>
     {
         /// <summary>HandleNull</summary>
         public override bool HandleNull
@@ -236,7 +236,7 @@ public class VoIntJsonConverter2 : JsonConverterFactory
             Span<byte> buffer = stackalloc byte[36];
             if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
             {
-                writer.WritePropertyName(buffer.Slice(0, written));
+                writer.WritePropertyName(buffer[..written]);
             }
             else
             {

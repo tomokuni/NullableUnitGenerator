@@ -13,46 +13,46 @@ public enum UnitGenerateOptions
     /// <summary>None</summary>
     None = 0,
 
-    /// <summary>PrivitiveFull</summary>
-    /// <remarks>ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod</remarks>
-    PrivitiveFull = ArithmeticOperator | ValueArithmeticOperator | ComparisonOperator | IComparable | ImplicitOperator | ParseMethod | MinMaxMethod,
-
-    /// <summary>ArithmeticOperator</summary>
-    ArithmeticOperator = 8,
-
-    /// <summary>ValueArithmeticOperator</summary>
-    ValueArithmeticOperator = 16,
-
-    /// <summary>ComparisonOperator</summary>
-    ComparisonOperator = 2048,
-
-    /// <summary>IComparable</summary>
-    IComparable = 32,
+    /// <summary>MaxExtent</summary>
+    /// <remarks>ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod</remarks>
+    MaxExtent = ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod,
 
     /// <summary>ImplicitOperator</summary>
-    ImplicitOperator = 1,
+    ImplicitOperator = 0b0000_0000_0000_0001,
+
+    /// <summary>IComparable</summary>
+    IComparable = 0b0000_0000_0000_0010,
+
+    /// <summary>ComparisonOperator</summary>
+    ComparisonOperator = 0b0000_0000_0000_0100,
+
+    /// <summary>ArithmeticOperator</summary>
+    ArithmeticOperator = 0b0000_0000_0000_1000,
+
+    /// <summary>ValueArithmeticOperator</summary>
+    ValueArithmeticOperator = 0b0000_0000_0001_0000,
 
     /// <summary>ParseMethod</summary>
-    ParseMethod = 2,
+    ParseMethod = 0b0000_0000_0010_0000,
 
     /// <summary>MinMaxMethod</summary>
-    MinMaxMethod = 4,
+    MinMaxMethod = 0b0000_0000_0100_0000,
 
     /// <summary>Validate</summary>
-    Validate = 64,
+    Validate = 0b0001_0000_0000_0000,
 
-    /// <summary>JsonConverter</summary>
-    JsonConverter = 128,
+    /// <summary>JsonConverterSupport</summary>
+    JsonConverterSupport = 0b0000_0000_0001_0000_0000_0000_0000_0000,
 
     /// <summary>JsonConverterDictionaryKeySupport</summary>
-    JsonConverterDictionaryKeySupport = 4096,
+    JsonConverterDictionaryKeySupport = 0b0000_0000_0010_0000_0000_0000_0000_0000,
 
-    /// <summary>DapperTypeHandler</summary>
-    DapperTypeHandler = 512,
+    /// <summary>MessagePackFormatterSupport</summary>
+    MessagePackFormatterSupport = 0b0000_0000_1000_0000_0000_0000_0000_0000,
 
-    /// <summary>EntityFrameworkValueConverter</summary>
-    EntityFrameworkValueConverter = 1024,
+    /// <summary>DapperTypeHandlerSupport</summary>
+    DapperTypeHandlerSupport = 0b0000_0001_0000_0000_0000_0000_0000_0000,
 
-    /// <summary>MessagePackFormatter</summary>
-    MessagePackFormatter = 256,
+    /// <summary>EntityFrameworkValueConverterSupport</summary>
+    EntityFrameworkValueConverterSupport = 0b0000_0010_0000_0000_0000_0000_0000_0000,
 }

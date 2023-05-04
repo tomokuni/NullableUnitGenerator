@@ -34,13 +34,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 ");
- if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
+ if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { 
             this.Write("using System.Runtime.CompilerServices;\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
+ if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { 
             this.Write("using System.Text.Json;\r\nusing System.Text.Json.Serialization;\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
+ if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { 
             this.Write("using MessagePack;\r\nusing MessagePack.Formatters;\r\n");
  } 
             this.Write("\r\nusing NullableUnitGenerator;\r\n\r\n");
@@ -56,12 +56,12 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(" (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
             this.Write(")\r\n/// </summary>\r\n");
- if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
+ if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { 
             this.Write("[MessagePackFormatter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("MessagePackFormatter))]\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
+ if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { 
             this.Write("[JsonConverter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("JsonConverter))]\r\n");
@@ -75,23 +75,55 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(">, IEqualityComparer<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("> ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.IComparable) && ContainsOperater("CompareTo") ? $", IComparable<{Name}>" : ""));
-            this.Write("\r\n{\r\n    // TypeName : ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write("\r\n    // TypeNameFull : ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
-            this.Write("\r\n    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" support method : ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(OperatorsString));
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : ""));
+            this.Write("\r\n{\r\n    // Namespace : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Namespace ?? "(null)"));
+            this.Write("\r\n    // Name      : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("\r\n    // UnitGenerateOptions : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Options));
-            this.Write("\r\n    // ToStringFormat : ");
+            this.Write("\r\n    // ToStringFormat      : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ToStringFormat ?? "(null)"));
+            this.Write("\r\n    //\r\n    // TypeName         : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName ?? "(null)"));
+            this.Write("\r\n    // TypeNameFull     : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull ?? "(null)"));
+            this.Write("\r\n    // TypeNameNullable : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable ?? "(null)"));
             this.Write("\r\n    // IsValueType : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(IsValueType));
-            this.Write("\r\n    // IsArray : ");
+            this.Write("\r\n    // IsArray     : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(IsArray));
+            this.Write("\r\n    // IsUlid      : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsUlid));
+            this.Write("\r\n    // HasArithmeticIncDecOperator    : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasArithmeticIncDecOperator));
+            this.Write("\r\n    // HasArithmeticAddSubOperator    : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasArithmeticAddSubOperator));
+            this.Write("\r\n    // HasArithmeticMulDevModOperator : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasArithmeticMulDevModOperator));
+            this.Write("\r\n    // HasComparisonOperator          : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasComparisonOperator));
+            this.Write("\r\n    // HasParseMethod     : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasParseMethod));
+            this.Write("\r\n    // HasCompareToMethod : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasCompareToMethod));
+            this.Write("\r\n    // HasMinMaxMethod    : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(HasMinMaxMethod));
+            this.Write("\r\n    // IsBuiltinIntegralType : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsBuiltinIntegralType));
+            this.Write("\r\n    // IsBuiltinFloatingType : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsBuiltinFloatingType));
+            this.Write("\r\n    // IsBuiltinNumericType  : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsBuiltinNumericType));
+            this.Write("\r\n    // IsSupportUtf8Formatter() : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(IsSupportUtf8Formatter()));
+            this.Write("\r\n    // GetDbType() : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture("DbType." + GetDbType().ToString()));
+            this.Write("\r\n    //\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" support method\r\n    //   ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(OperatorsString ?? "(null)"));
             this.Write("\r\n    //\r\n    // ITypeSymbol Info\r\n    //   ");
             this.Write(this.ToStringHelper.ToStringWithCulture(DicTypeName[1]));
             this.Write("\r\n    //   ");
@@ -193,7 +225,7 @@ using System.Diagnostics.CodeAnalysis;
     public static readonly string sNull = $""~{UnitState.Null}~"";
 
 ");
-if (IsNumericType) { 
+if (IsBuiltinNumericType) { 
             this.Write("\r\n    //\r\n    // MaxValue, MinValue\r\n    //\r\n\r\n    /// <summary>Represents the la" +
                     "rgest possible value. This field is constant.</summary>\r\n    public static reado" +
                     "nly  ");
@@ -527,7 +559,7 @@ if (IsNumericType) {
             this.Write("\r\n    //\r\n    // CompareTo, IComparable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">    // UnitGenerateOptions.IComparable\r\n    //\r\n\r\n");
- if (ContainsOperater("CompareTo") || IsNumericType) { 
+ if (HasCompareToMethod) { 
             this.Write("    /// <summary>Compares this instance to a specified ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" and returns an indication of their relative values.</summary>
@@ -552,51 +584,27 @@ if (IsNumericType) {
  if (HasFlag(UnitGenerateOptions.ComparisonOperator)) { 
             this.Write("\r\n    //\r\n    // >, <, >=, <= operator    // UnitGenerateOptions.ComparisonOperat" +
                     "or\r\n    //\r\n\r\n");
- if (ContainsOperater("op_GreaterThan") || IsNumericType) { 
+ if (HasComparisonOperator) { 
             this.Write("    /// <summary>operator &gt; (GreaterThan)</summary>\r\n    public static bool op" +
                     "erator >(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => x.HasValue && y.HasValue\r\n           ? x.m_value > y.m_value\r\n   " +
-                    "        : false;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater > (GreaterThan)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_LessThan") || IsNumericType) { 
-            this.Write("    /// <summary>operator &lt; (LessThan)</summary>\r\n    public static bool opera" +
-                    "tor <(in ");
+                    "        : false;\r\n\r\n    /// <summary>operator &lt; (LessThan)</summary>\r\n    pub" +
+                    "lic static bool operator <(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => x.HasValue && y.HasValue\r\n           ? x.m_value < y.m_value\r\n   " +
-                    "        : false;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater < (LessThan)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_GreaterThanOrEqual") || IsNumericType) { 
-            this.Write("    /// <summary>operator &gt;= (GreaterThanOrEqual)</summary>\r\n    public static" +
-                    " bool operator >=(in ");
+                    "        : false;\r\n\r\n    /// <summary>operator &gt;= (GreaterThanOrEqual)</summar" +
+                    "y>\r\n    public static bool operator >=(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => x.HasValue && y.HasValue\r\n           ? x.m_value >= y.m_value\r\n  " +
-                    "         : false;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater >= (GreaterThanOrEqual)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_LessThanOrEqual") || IsNumericType) { 
-            this.Write("    /// <summary>operator &lt;= (LessThanOrEqual)</summary>\r\n    public static bo" +
-                    "ol operator <=(in ");
+                    "         : false;\r\n\r\n    /// <summary>operator &lt;= (LessThanOrEqual)</summary>" +
+                    "\r\n    public static bool operator <=(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -605,6 +613,12 @@ if (IsNumericType) {
  } else { 
             this.Write("    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater > (GreaterThan)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater < (LessThan)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater >= (GreaterThanOrEqual)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" is types that do not support operater <= (LessThanOrEqual)\r\n");
  } 
             this.Write("\r\n");
@@ -612,7 +626,7 @@ if (IsNumericType) {
  if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { 
             this.Write("\r\n    //\r\n    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator" +
                     "\r\n    //\r\n\r\n");
- if (ContainsOperater("op_Addition") || IsNumericType) { 
+ if (HasArithmeticAddSubOperator) { 
             this.Write("    /// <summary>operator + (Addition)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator +(in ");
@@ -624,15 +638,8 @@ if (IsNumericType) {
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(")(x.m_value + y.m_value)))\r\n           : (x.IsUndef || y.IsUndef) ? UndefValue : " +
-                    "NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater + (Addition)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Subtraction") || IsNumericType) { 
-            this.Write("    /// <summary>operator - (Subtraction)</summary>\r\n    public static ");
+                    "NullValue;\r\n\r\n    /// <summary>operator - (Subtraction)</summary>\r\n    public st" +
+                    "atic ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator -(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -647,10 +654,12 @@ if (IsNumericType) {
  } else { 
             this.Write("    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater + (Addition)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" is types that do not support operater - (Subtraction)\r\n");
  } 
             this.Write("\r\n");
- if (ContainsOperater("op_Multiply") || IsNumericType) { 
+ if (HasArithmeticMulDevModOperator) { 
             this.Write("    /// <summary>operator * (Multiply)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator *(in ");
@@ -662,15 +671,8 @@ if (IsNumericType) {
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(")(x.m_value * y.m_value)))\r\n           : (x.IsUndef || y.IsUndef) ? UndefValue : " +
-                    "NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater * (Multiply)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Division") || IsNumericType) { 
-            this.Write("    /// <summary>operator / (Division)</summary>\r\n    public static ");
+                    "NullValue;\r\n\r\n    /// <summary>operator / (Division)</summary>\r\n    public stati" +
+                    "c ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator /(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -681,15 +683,8 @@ if (IsNumericType) {
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(")(x.m_value / y.m_value)))\r\n           : (x.IsUndef || y.IsUndef) ? UndefValue : " +
-                    "NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater / (Division)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Modulus") || IsNumericType) { 
-            this.Write("    /// <summary>operator % (Modulus)</summary>\r\n    public static ");
+                    "NullValue;\r\n\r\n    /// <summary>operator % (Modulus)</summary>\r\n    public static" +
+                    " ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator %(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -704,6 +699,10 @@ if (IsNumericType) {
  } else { 
             this.Write("    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater * (Multiply)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater / (Division)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" is types that do not support operater % (Modulus)\r\n");
  } 
             this.Write("\r\n");
@@ -711,7 +710,7 @@ if (IsNumericType) {
  if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { 
             this.Write("\r\n    //\r\n    // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArith" +
                     "meticOperator\r\n    //\r\n\r\n");
- if (ContainsOperater("op_Increment") || IsNumericType) { 
+ if (HasArithmeticIncDecOperator) { 
             this.Write("    /// <summary>operator ++ (Increment)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator ++(in ");
@@ -720,15 +719,8 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(")(x.m_value + 1)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater ++ (Increment)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Decrement") || IsNumericType) { 
-            this.Write("    /// <summary>operator -- (Decrement)</summary>\r\n    public static ");
+            this.Write(")(x.m_value + 1)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n\r\n    /// <" +
+                    "summary>operator -- (Decrement)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator --(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -740,10 +732,12 @@ if (IsNumericType) {
  } else { 
             this.Write("    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater ++ (Increment)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" is types that do not support operater -- (Decrement)\r\n");
  } 
             this.Write("\r\n");
- if (ContainsOperater("op_Addition") || IsNumericType) { 
+ if (HasArithmeticAddSubOperator) { 
             this.Write("    /// <summary>operator + (Addition)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator +(in ");
@@ -754,15 +748,8 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(")(x.m_value + y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater + (Addition)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Subtraction") || IsNumericType) { 
-            this.Write("    /// <summary>operator - (Subtraction)</summary>\r\n    public static ");
+            this.Write(")(x.m_value + y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n\r\n    /// <" +
+                    "summary>operator - (Subtraction)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator -(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -776,10 +763,12 @@ if (IsNumericType) {
  } else { 
             this.Write("    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater + (Addition)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" is types that do not support operater - (Subtraction)\r\n");
  } 
             this.Write("\r\n");
- if (ContainsOperater("op_Multiply") || IsNumericType) { 
+ if (HasArithmeticMulDevModOperator) { 
             this.Write("    /// <summary>operator * (Multiply)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator *(in ");
@@ -790,15 +779,8 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(")(x.m_value * y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater * (Multiply)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Division") || IsNumericType) { 
-            this.Write("    /// <summary>operator / (Division)</summary>\r\n    public static ");
+            this.Write(")(x.m_value * y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n\r\n    /// <" +
+                    "summary>operator / (Division)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator /(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -808,15 +790,8 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(checked ((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(")(x.m_value / y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" is types that do not support operater / (Division)\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("op_Modulus") || IsNumericType) { 
-            this.Write("    /// <summary>operator % (Modulus)</summary>\r\n    public static ");
+            this.Write(")(x.m_value / y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n\r\n    /// <" +
+                    "summary>operator % (Modulus)</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" operator %(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -829,6 +804,10 @@ if (IsNumericType) {
             this.Write(")(x.m_value % y)))\r\n           : x.IsUndef ? UndefValue : NullValue;\r\n");
  } else { 
             this.Write("    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater * (Multiply)\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" is types that do not support operater / (Division)\r\n    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" is types that do not support operater % (Modulus)\r\n");
  } 
@@ -886,7 +865,7 @@ if (IsNumericType) {
  if (HasFlag(UnitGenerateOptions.ParseMethod)) { 
             this.Write("\r\n    //\r\n    // Parse, TryParse    // UnitGenerateOptions.ParseMethod\r\n    //\r\n\r" +
                     "\n");
- if (ContainsOperater("Parse") || IsNumericType) { 
+ if (HasParseMethod) { 
             this.Write(@"    /// <summary>Converts the string representation of a number.</summary>
     /// <returns>A equivalent to the number contained in s.</returns>
     /// <exception cref=""System.ArgumentNullException"" >s is null.</exception>
@@ -906,14 +885,8 @@ if (IsNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(".Parse(s));\r\n");
  } 
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" is types that do not support Method Parse\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("Parse") || IsNumericType) { 
-            this.Write(@"    /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
+            this.Write(@"
+    /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
     /// <returns>true if s was converted successfully; otherwise, false.</returns>
     public static bool TryParse(string s, out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -934,6 +907,8 @@ if (IsNumericType) {
  } else { 
             this.Write("    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" is types that do not support Method Parse\r\n    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" is types that do not support Method TryParse\r\n");
  } 
             this.Write("\r\n");
@@ -941,7 +916,7 @@ if (IsNumericType) {
             this.Write("\r\n");
  if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { 
             this.Write("\r\n    //\r\n    // Min, Max     // UnitGenerateOptions.MinMaxMethod\r\n    //\r\n\r\n");
- if (ContainsOperater("Min") || IsNumericType) { 
+ if (HasMinMaxMethod) { 
             this.Write("    /// <summary>Min</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" Min(");
@@ -953,15 +928,7 @@ if (IsNumericType) {
             this.Write("((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(")Math.Max(x.m_value, y.m_value))\r\n           : (x.IsUndef || y.IsUndef) ? UndefVa" +
-                    "lue : NullValue;\r\n");
- } else { 
-            this.Write("    // ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" is types that do not support method Min\r\n");
- } 
-            this.Write("\r\n");
- if (ContainsOperater("Max") || IsNumericType) { 
-            this.Write("    /// <summary>Max</summary>\r\n    public static ");
+                    "lue : NullValue;\r\n\r\n    /// <summary>Max</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" Max(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -975,6 +942,8 @@ if (IsNumericType) {
                     "lue : NullValue;\r\n");
  } else { 
             this.Write("    // ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" is types that do not support method Min\r\n    // ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" is types that do not support method Max\r\n");
  } 
@@ -1060,7 +1029,7 @@ if (IsNumericType) {
     }
 
 ");
- if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
+ if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.JsonConverter\r\n    //\r\n\r\n    /// <summary>Js" +
                     "onConverter</summary>\r\n    private class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1161,11 +1130,11 @@ if (IsSupportUtf8Formatter()) {
  } 
             this.Write("    }\r\n\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
+ if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.DapperTypeHandler\r\n    //\r\n\r\n    /// <summar" +
                     "y>Dapper.SqlMapper.TypeHandler</summary>\r\n    public class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("TypeHandler : Dapper.SqlMapper.TypeHandler<");
+            this.Write("DapperTypeHandler : Dapper.SqlMapper.TypeHandler<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n    {\r\n        /// <summary>Parse</summary>\r\n        public override ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1181,43 +1150,44 @@ if (IsSupportUtf8Formatter()) {
             this.Write(";\r\n            parameter.Value = (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")value.GetOrNull();\r\n        }\r\n    }\r\n\r\n    /// <summary>Dapper.SqlMapper.AddTyp" +
-                    "eHandler</summary>\r\n    [ModuleInitializer]\r\n    public static void AddTypeHandl" +
-                    "er()\r\n    {\r\n        Dapper.SqlMapper.AddTypeHandler(new ");
+                    "eHandler</summary>\r\n    [ModuleInitializer]\r\n    public static void ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("AddDapperTypeHandler()\r\n    {\r\n        Dapper.SqlMapper.AddTypeHandler(new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(".");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("TypeHandler());\r\n    }\r\n\r\n");
+            this.Write("DapperTypeHandler());\r\n    }\r\n\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { 
+ if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverterSupport)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.EntityFrameworkValueConverter\r\n    //\r\n\r\n   " +
                     " /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConvert" +
                     "er</summary>\r\n    public class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("ValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConve" +
-                    "rter<");
+            this.Write("EntityFrameworkValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConver" +
+                    "sion.ValueConverter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(", ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(">\r\n    {\r\n        /// <summary>ValueConverter</summary>\r\n        public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("ValueConverter()\r\n            : base(\r\n                    convertToProviderExpre" +
-                    "ssion: x => (");
+            this.Write("EntityFrameworkValueConverter()\r\n            : base(\r\n                    convert" +
+                    "ToProviderExpression: x => (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")x.GetOrNull(),\r\n                    convertFromProviderExpression: x => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(x))\r\n        {\r\n        }\r\n\r\n        /// <summary>ValueConverter</summary>\r\n    " +
                     "    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMap" +
-                    "pingHints mappingHints = null)\r\n            : base(\r\n                    convert" +
-                    "ToProviderExpression: x => (");
+            this.Write("EntityFrameworkValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversi" +
+                    "on.ConverterMappingHints mappingHints = null)\r\n            : base(\r\n            " +
+                    "        convertToProviderExpression: x => (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")x.GetOrNull(),\r\n                    convertFromProviderExpression: x => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(x),\r\n                    mappingHints: mappingHints)\r\n        {\r\n        }\r\n    " +
                     "}\r\n\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
+ if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.MessagePackFormatter\r\n    //\r\n\r\n    /// <sum" +
                     "mary>IMessagePackFormatter</summary>\r\n    private class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));

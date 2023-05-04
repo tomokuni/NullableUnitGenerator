@@ -11,14 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+<# if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { #>
 using System.Runtime.CompilerServices;
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { #>
 using System.Text.Json;
 using System.Text.Json.Serialization;
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { #>
 using MessagePack;
 using MessagePack.Formatters;
 <# } #>
@@ -34,22 +34,41 @@ namespace <#= Namespace #>;
 /// <#= Name #> is TernaryType ValueObject<br/>
 /// Primitive type is <#= TypeName #> (<#= TypeNameFull #>)
 /// </summary>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { #>
 [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { #>
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && ContainsOperater("CompareTo") ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
 {
-    // TypeName : <#= TypeName #>
-    // TypeNameFull : <#= TypeNameFull #>
-    // <#= TypeName #> support method : <#= OperatorsString #>
+    // Namespace : <#= Namespace ?? "(null)" #>
+    // Name      : <#= Name #>
     // UnitGenerateOptions : <#= Options #>
-    // ToStringFormat : <#= ToStringFormat ?? "(null)" #>
+    // ToStringFormat      : <#= ToStringFormat ?? "(null)" #>
+    //
+    // TypeName         : <#= TypeName ?? "(null)" #>
+    // TypeNameFull     : <#= TypeNameFull ?? "(null)" #>
+    // TypeNameNullable : <#= TypeNameNullable ?? "(null)" #>
     // IsValueType : <#= IsValueType #>
-    // IsArray : <#= IsArray #>
+    // IsArray     : <#= IsArray #>
+    // IsUlid      : <#= IsUlid #>
+    // HasArithmeticIncDecOperator    : <#= HasArithmeticIncDecOperator #>
+    // HasArithmeticAddSubOperator    : <#= HasArithmeticAddSubOperator #>
+    // HasArithmeticMulDevModOperator : <#= HasArithmeticMulDevModOperator #>
+    // HasComparisonOperator          : <#= HasComparisonOperator #>
+    // HasParseMethod     : <#= HasParseMethod #>
+    // HasCompareToMethod : <#= HasCompareToMethod #>
+    // HasMinMaxMethod    : <#= HasMinMaxMethod #>
+    // IsBuiltinIntegralType : <#= IsBuiltinIntegralType #>
+    // IsBuiltinFloatingType : <#= IsBuiltinFloatingType #>
+    // IsBuiltinNumericType  : <#= IsBuiltinNumericType #>
+    // IsSupportUtf8Formatter() : <#= IsSupportUtf8Formatter() #>
+    // GetDbType() : <#= "DbType." + GetDbType().ToString() #>
+    //
+    // <#= TypeName #> support method
+    //   <#= OperatorsString ?? "(null)" #>
     //
     // ITypeSymbol Info
     //   <#= DicTypeName[1] #>
@@ -157,7 +176,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     /// <summary>Display string as Null.</summary>
     public static readonly string sNull = $"~{UnitState.Null}~";
 
-<#if (IsNumericType) { #>
+<#if (IsBuiltinNumericType) { #>
 
     //
     // MaxValue, MinValue
@@ -476,7 +495,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // CompareTo, IComparable<<#= Name #>>    // UnitGenerateOptions.IComparable
     //
 
-<# if (ContainsOperater("CompareTo") || IsNumericType) { #>
+<# if (HasCompareToMethod) { #>
     /// <summary>Compares this instance to a specified <#= Name #> and returns an indication of their relative values.</summary>
     /// <returns>
     /// A signed number indicating the relative values of this instance and value.<br/>
@@ -500,43 +519,34 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // >, <, >=, <= operator    // UnitGenerateOptions.ComparisonOperator
     //
 
-<# if (ContainsOperater("op_GreaterThan") || IsNumericType) { #>
+<# if (HasComparisonOperator) { #>
     /// <summary>operator &gt; (GreaterThan)</summary>
     public static bool operator >(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? x.m_value > y.m_value
            : false;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater > (GreaterThan)
-<# } #>
 
-<# if (ContainsOperater("op_LessThan") || IsNumericType) { #>
     /// <summary>operator &lt; (LessThan)</summary>
     public static bool operator <(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? x.m_value < y.m_value
            : false;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater < (LessThan)
-<# } #>
 
-<# if (ContainsOperater("op_GreaterThanOrEqual") || IsNumericType) { #>
     /// <summary>operator &gt;= (GreaterThanOrEqual)</summary>
     public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? x.m_value >= y.m_value
            : false;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater >= (GreaterThanOrEqual)
-<# } #>
 
-<# if (ContainsOperater("op_LessThanOrEqual") || IsNumericType) { #>
     /// <summary>operator &lt;= (LessThanOrEqual)</summary>
     public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? x.m_value <= y.m_value
            : false;
 <# } else { #>
+    // <#= TypeName #> is types that do not support operater > (GreaterThan)
+    // <#= TypeName #> is types that do not support operater < (LessThan)
+    // <#= TypeName #> is types that do not support operater >= (GreaterThanOrEqual)
     // <#= TypeName #> is types that do not support operater <= (LessThanOrEqual)
 <# } #>
 
@@ -547,53 +557,44 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
     //
 
-<# if (ContainsOperater("op_Addition") || IsNumericType) { #>
+<# if (HasArithmeticAddSubOperator) { #>
     /// <summary>operator + (Addition)</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + y.m_value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater + (Addition)
-<# } #>
 
-<# if (ContainsOperater("op_Subtraction") || IsNumericType) { #>
     /// <summary>operator - (Subtraction)</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - y.m_value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 <# } else { #>
+    // <#= TypeName #> is types that do not support operater + (Addition)
     // <#= TypeName #> is types that do not support operater - (Subtraction)
 <# } #>
 
-<# if (ContainsOperater("op_Multiply") || IsNumericType) { #>
+<# if (HasArithmeticMulDevModOperator) { #>
     /// <summary>operator * (Multiply)</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value * y.m_value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater * (Multiply)
-<# } #>
 
-<# if (ContainsOperater("op_Division") || IsNumericType) { #>
     /// <summary>operator / (Division)</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value / y.m_value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater / (Division)
-<# } #>
 
-<# if (ContainsOperater("op_Modulus") || IsNumericType) { #>
     /// <summary>operator % (Modulus)</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value % y.m_value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 <# } else { #>
+    // <#= TypeName #> is types that do not support operater * (Multiply)
+    // <#= TypeName #> is types that do not support operater / (Division)
     // <#= TypeName #> is types that do not support operater % (Modulus)
 <# } #>
 
@@ -604,73 +605,61 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
     //
 
-<# if (ContainsOperater("op_Increment") || IsNumericType) { #>
+<# if (HasArithmeticIncDecOperator) { #>
     /// <summary>operator ++ (Increment)</summary>
     public static <#= Name #> operator ++(in <#= Name #> x)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + 1)))
            : x.IsUndef ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater ++ (Increment)
-<# } #>
 
-<# if (ContainsOperater("op_Decrement") || IsNumericType) { #>
     /// <summary>operator -- (Decrement)</summary>
     public static <#= Name #> operator --(in <#= Name #> x)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - 1)))
            : x.IsUndef ? UndefValue : NullValue;
 <# } else { #>
+    // <#= TypeName #> is types that do not support operater ++ (Increment)
     // <#= TypeName #> is types that do not support operater -- (Decrement)
 <# } #>
 
-<# if (ContainsOperater("op_Addition") || IsNumericType) { #>
+<# if (HasArithmeticAddSubOperator) { #>
     /// <summary>operator + (Addition)</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + y)))
            : x.IsUndef ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater + (Addition)
-<# } #>
 
-<# if (ContainsOperater("op_Subtraction") || IsNumericType) { #>
     /// <summary>operator - (Subtraction)</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - y)))
            : x.IsUndef ? UndefValue : NullValue;
 <# } else { #>
+    // <#= TypeName #> is types that do not support operater + (Addition)
     // <#= TypeName #> is types that do not support operater - (Subtraction)
 <# } #>
 
-<# if (ContainsOperater("op_Multiply") || IsNumericType) { #>
+<# if (HasArithmeticMulDevModOperator) { #>
     /// <summary>operator * (Multiply)</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value * y)))
            : x.IsUndef ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater * (Multiply)
-<# } #>
 
-<# if (ContainsOperater("op_Division") || IsNumericType) { #>
     /// <summary>operator / (Division)</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value / y)))
            : x.IsUndef ? UndefValue : NullValue;
-<# } else { #>
-    // <#= TypeName #> is types that do not support operater / (Division)
-<# } #>
 
-<# if (ContainsOperater("op_Modulus") || IsNumericType) { #>
     /// <summary>operator % (Modulus)</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
            ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value % y)))
            : x.IsUndef ? UndefValue : NullValue;
 <# } else { #>
+    // <#= TypeName #> is types that do not support operater * (Multiply)
+    // <#= TypeName #> is types that do not support operater / (Division)
     // <#= TypeName #> is types that do not support operater % (Modulus)
 <# } #>
 
@@ -738,7 +727,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // Parse, TryParse    // UnitGenerateOptions.ParseMethod
     //
 
-<# if (ContainsOperater("Parse") || IsNumericType) { #>
+<# if (HasParseMethod) { #>
     /// <summary>Converts the string representation of a number.</summary>
     /// <returns>A equivalent to the number contained in s.</returns>
     /// <exception cref="System.ArgumentNullException" >s is null.</exception>
@@ -750,11 +739,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 <# } else { #>
         => new <#= Name #>(<#= TypeName #>.Parse(s));
 <# } #>
-<# } else { #>
-    // <#= Name #> is types that do not support Method Parse
-<# } #>
 
-<# if (ContainsOperater("Parse") || IsNumericType) { #>
     /// <summary>Converts the string representation of a number. A return value indicates whether the conversion succeeded.</summary>
     /// <returns>true if s was converted successfully; otherwise, false.</returns>
     public static bool TryParse(string s, out <#= Name #> result)
@@ -784,6 +769,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 <# } #>
     }
 <# } else { #>
+    // <#= Name #> is types that do not support Method Parse
     // <#= Name #> is types that do not support Method TryParse
 <# } #>
 
@@ -795,23 +781,20 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     // Min, Max     // UnitGenerateOptions.MinMaxMethod
     //
 
-<# if (ContainsOperater("Min") || IsNumericType) { #>
+<# if (HasMinMaxMethod) { #>
     /// <summary>Min</summary>
     public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>((<#= TypeName #>)Math.Max(x.m_value, y.m_value))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
-<# } else { #>
-    // <#= Name #> is types that do not support method Min
-<# } #>
 
-<# if (ContainsOperater("Max") || IsNumericType) { #>
     /// <summary>Max</summary>
     public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
         => x.HasValue && y.HasValue
            ? new <#= Name #>((<#= TypeName #>)Math.Max(x.m_value, y.m_value))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 <# } else { #>
+    // <#= Name #> is types that do not support method Min
     // <#= Name #> is types that do not support method Max
 <# } #>
 
@@ -892,7 +875,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         }
     }
 
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { #>
 
     //
     // UnitGenerateOptions.JsonConverter
@@ -982,14 +965,14 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+<# if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { #>
 
     //
     // UnitGenerateOptions.DapperTypeHandler
     //
 
     /// <summary>Dapper.SqlMapper.TypeHandler</summary>
-    public class <#= Name #>TypeHandler : Dapper.SqlMapper.TypeHandler<<#= Name #>>
+    public class <#= Name #>DapperTypeHandler : Dapper.SqlMapper.TypeHandler<<#= Name #>>
     {
         /// <summary>Parse</summary>
         public override <#= Name #> Parse(object value)
@@ -1007,23 +990,23 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 
     /// <summary>Dapper.SqlMapper.AddTypeHandler</summary>
     [ModuleInitializer]
-    public static void AddTypeHandler()
+    public static void <#= Name #>AddDapperTypeHandler()
     {
-        Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>TypeHandler());
+        Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>DapperTypeHandler());
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
+<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverterSupport)) { #>
 
     //
     // UnitGenerateOptions.EntityFrameworkValueConverter
     //
 
     /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter</summary>
-    public class <#= Name #>ValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<<#= Name #>, <#= TypeNameNullable #>>
+    public class <#= Name #>EntityFrameworkValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<<#= Name #>, <#= TypeNameNullable #>>
     {
         /// <summary>ValueConverter</summary>
-        public <#= Name #>ValueConverter()
+        public <#= Name #>EntityFrameworkValueConverter()
             : base(
                     convertToProviderExpression: x => (<#= TypeNameNullable #>)x.GetOrNull(),
                     convertFromProviderExpression: x => new <#= Name #>(x))
@@ -1031,7 +1014,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         }
 
         /// <summary>ValueConverter</summary>
-        public <#= Name #>ValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
+        public <#= Name #>EntityFrameworkValueConverter(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ConverterMappingHints mappingHints = null)
             : base(
                     convertToProviderExpression: x => (<#= TypeNameNullable #>)x.GetOrNull(),
                     convertFromProviderExpression: x => new <#= Name #>(x),
@@ -1041,7 +1024,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { #>
 
     //
     // UnitGenerateOptions.MessagePackFormatter

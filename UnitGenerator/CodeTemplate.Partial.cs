@@ -93,59 +93,61 @@ public partial class CodeTemplate
 
 
     /// <summary>Nullable type display string.</summary>
-    internal string TypeNameNullable => $"{TypeName}{(IsValueType ? "?" : "")}";
+    internal string TypeNameNullable
+        => $"{TypeName}{(IsValueType ? "?" : "")}";
 
     /// <summary>IsValueType</summary>
-    internal bool IsValueType => TypeSymbol.IsValueType;
+    internal bool IsValueType
+        => TypeSymbol.IsValueType;
 
     /// <summary>IsArray</summary>
-    internal bool IsArray => TypeSymbol.TypeKind == TypeKind.Array;
+    internal bool IsArray
+        => TypeSymbol.TypeKind == TypeKind.Array;
+
+    /// <summary>Is the type name Ulid.</summary>
+    internal bool IsUlid
+        => TypeName == "Ulid" || TypeName == "System.Ulid";
 
 
     /// <summary>ITypeSymbol value</summary>
     internal Dictionary<int, string> DicTypeName { get; }
 
+    /// <summary>Specified operator is included or not.</summary>
+    internal bool ContainsOperater(string operater)
+        => TypeMenberNames.Contains(operater);
+
     /// <summary>Operators string.</summary>
-    internal string OperatorsString => string.Join(", ", TypeMenberNames);
+    internal string OperatorsString
+        => string.Join(", ", TypeMenberNames);
 
-    /// <summary>Specified operator is included or not.</summary>
-    internal bool ContainsOperater(string operater) => TypeMenberNames.Contains(operater);
 
-    /// <summary>Specified operator is included or not.</summary>
-    internal bool ContainsOperater1(string operater)
-    {
-        if (!TypeMenberNames.Contains(operater))
-            return false;
+    internal bool HasArithmeticIncDecOperator
+        => IsBuiltinNumericType 
+           || (ContainsOperater("op_Increment") && ContainsOperater("op_Decrement")) ;
 
-        var m = TypeSymbol.GetMembers().Where(x => x.Name == operater).ToList();
-        foreach (var t in m.Select(x => x.GetType()))
-        {
-            var p = t.GetMethod(operater).GetParameters();
-            if (p.Count() != 1)
-                continue;
-            if (p[0].ParameterType == t)
-                return true;
-        }
-        return false;
-    }
+    internal bool HasArithmeticAddSubOperator
+        => IsBuiltinNumericType
+           || (ContainsOperater("op_Addition") && ContainsOperater("op_Subtraction"));
 
-    /// <summary>Specified operator is included or not.</summary>
-    internal bool ContainsOperater2(string operater)
-    {
-        if (!TypeMenberNames.Contains(operater))
-            return false;
+    internal bool HasArithmeticMulDevModOperator
+        => IsBuiltinNumericType
+           || (ContainsOperater("op_Multiply") && ContainsOperater("op_Division") && ContainsOperater("op_Modulus"));
 
-        var m = TypeSymbol.GetMembers().Where(x => x.Name == operater).ToList();
-        foreach (var t in m.Select(x => x.GetType()))
-        {
-            var p = t.GetMethod(operater).GetParameters();
-            if (p.Count() != 2)
-                continue;
-            if (p[0].ParameterType == t && p[1].ParameterType == t)
-                return true;
-        }
-        return false;
-    }
+    internal bool HasComparisonOperator
+        => IsBuiltinNumericType
+           || (ContainsOperater("op_GreaterThan") && ContainsOperater("op_LessThan") && ContainsOperater("op_GreaterThanOrEqual") && ContainsOperater("op_LessThanOrEqual"));
+
+    internal bool HasParseMethod
+        => IsBuiltinNumericType
+           || (ContainsOperater("Parse") && ContainsOperater("TryParse"));
+
+    internal bool HasCompareToMethod
+        => IsBuiltinNumericType
+           || (ContainsOperater("CompareTo"));
+
+    internal bool HasMinMaxMethod
+        => IsBuiltinNumericType
+           || (ContainsOperater("Min") && ContainsOperater("Max"));
 
 
     /// <summary>Specified UnitGenerateOptions value is included or not.</summary>
@@ -153,13 +155,8 @@ public partial class CodeTemplate
         => Options.HasFlag(options);
 
 
-    /// <summary>Is the type name Ulid.</summary>
-    internal bool IsUlid
-        => TypeName == "Ulid" || TypeName == "System.Ulid";
-
-
     /// <summary>Integer type or not.</summary>
-    internal bool IsIntegralType
+    internal bool IsBuiltinIntegralType
         => TypeName switch
         {
             "char" => true,
@@ -177,7 +174,7 @@ public partial class CodeTemplate
         };
 
     /// <summary>Floating point type or not.</summary>
-    internal bool IsFloatingType
+    internal bool IsBuiltinFloatingType
         => TypeName switch
         {
             "float" => true,
@@ -187,8 +184,8 @@ public partial class CodeTemplate
         };
 
     /// <summary>Numeric type or not.</summary>
-    internal bool IsNumericType
-        => IsIntegralType || IsFloatingType;
+    internal bool IsBuiltinNumericType
+        => IsBuiltinIntegralType || IsBuiltinFloatingType;
 
     /// <summary>Is Utf8 formatter support or not.</summary>
     internal bool IsSupportUtf8Formatter()

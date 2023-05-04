@@ -5,7 +5,7 @@ namespace EntityFrameworkApp;
 
 [UnitOf(typeof(int),
     UnitGenerateOptions.ParseMethod |
-    UnitGenerateOptions.EntityFrameworkValueConverter)]
+    UnitGenerateOptions.EntityFrameworkValueConverterSupport)]
 public readonly partial struct UserId { }
 
 public class User
@@ -22,6 +22,6 @@ public class SampleDbContext : DbContext
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.Properties<UserId>().HaveConversion<UserId.UserIdValueConverter>();
+        configurationBuilder.Properties<UserId>().HaveConversion<UserId.UserIdEntityFrameworkValueConverter>();
     }
 }

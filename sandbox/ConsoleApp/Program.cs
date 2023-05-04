@@ -69,13 +69,13 @@ Console.WriteLine($"文字列化比較 : {sw.ElapsedMilliseconds}");
 [UnitOf(typeof(Guid), UGO.IComparable)]
 public readonly partial struct FooId { }
 
-[UnitOf(typeof(Ulid), UGO.IComparable | UGO.MessagePackFormatter | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(Ulid), UGO.IComparable | UGO.MessagePackFormatterSupport | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport)]
 public readonly partial struct BarId { }
 
 namespace Sample
 {
 
-    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.IComparable | UGO.ComparisonOperator | UGO.MinMaxMethod | UGO.JsonConverter | UGO.JsonConverterDictionaryKeySupport)]
+    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.IComparable | UGO.ComparisonOperator | UGO.MinMaxMethod | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport)]
     public readonly partial struct Hp
     {
         // public static Hp operator +(in Hp x, in Hp y) => new Hp(checked((int)(x.value + y.value)));
@@ -98,7 +98,7 @@ namespace Sample
 
     }
 
-    [UnitOf(typeof(int), UGO.MessagePackFormatter)]
+    [UnitOf(typeof(int), UGO.MessagePackFormatterSupport)]
     public readonly partial struct UserId { }
 
 
@@ -112,7 +112,7 @@ namespace Sample
         }
     }
 
-    [UnitOf(typeof(int), UGO.MessagePackFormatter)]
+    [UnitOf(typeof(int), UGO.MessagePackFormatterSupport)]
     public readonly partial struct UserId2
     {
         public void Foo()
