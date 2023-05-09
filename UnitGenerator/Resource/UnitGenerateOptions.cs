@@ -13,9 +13,11 @@ public enum UnitGenerateOptions
     /// <summary>None</summary>
     None = 0,
 
-    /// <summary>MaxExtent</summary>
-    /// <remarks>ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod</remarks>
+    /// <summary>MaxExtent = ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod</summary>
     MaxExtent = ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod,
+
+    /// <summary>MaxExtentForDateTime = ImplicitOperator | IComparable | ComparisonOperator | ParseMethod</summary>
+    MaxExtentForDateTime = ImplicitOperator | IComparable | ComparisonOperator | ParseMethod,
 
     /// <summary>ImplicitOperator</summary>
     ImplicitOperator = 0b0000_0000_0000_0001,

@@ -27,17 +27,8 @@ public partial class CodeTemplate
         Options = options;
         ToStringFormat = toStringFormat;
 
-        if (TypeSymbol is IArrayTypeSymbol { Rank: 1 } arrayTypeSymbol)
-        {
-            var elementType = arrayTypeSymbol.ElementType;
-            TypeName = $"{elementType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}[]";
-            TypeNameFull = $"{elementType.ContainingNamespace}.{elementType.Name}[]";
-        }
-        else
-        {
-            TypeName = $"{TypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}";
-            TypeNameFull = $"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}";
-        }
+        TypeName = typeSymbol.GetTypeName();
+        TypeNameFull = typeSymbol.GetTypeNameFull();
 
         TypeMenberNames = TypeSymbol.GetMembers().Select(x => x.Name).Distinct().ToList();
 
@@ -116,35 +107,42 @@ public partial class CodeTemplate
     internal bool ContainsOperater(string operater)
         => TypeMenberNames.Contains(operater);
 
-    /// <summary>Operators string.</summary>
+    /// <summary>Operators string</summary>
     internal string OperatorsString
         => string.Join(", ", TypeMenberNames);
 
 
+    /// <summary>HasArithmeticIncDecOperator</summary>
     internal bool HasArithmeticIncDecOperator
         => IsBuiltinNumericType 
            || (ContainsOperater("op_Increment") && ContainsOperater("op_Decrement")) ;
 
+    /// <summary>HasArithmeticAddSubOperator</summary>
     internal bool HasArithmeticAddSubOperator
         => IsBuiltinNumericType
            || (ContainsOperater("op_Addition") && ContainsOperater("op_Subtraction"));
 
+    /// <summary>HasArithmeticMulDevModOperator</summary>
     internal bool HasArithmeticMulDevModOperator
         => IsBuiltinNumericType
            || (ContainsOperater("op_Multiply") && ContainsOperater("op_Division") && ContainsOperater("op_Modulus"));
 
+    /// <summary>HasComparisonOperator</summary>
     internal bool HasComparisonOperator
         => IsBuiltinNumericType
            || (ContainsOperater("op_GreaterThan") && ContainsOperater("op_LessThan") && ContainsOperater("op_GreaterThanOrEqual") && ContainsOperater("op_LessThanOrEqual"));
 
+    /// <summary>HasParseMethod</summary>
     internal bool HasParseMethod
         => IsBuiltinNumericType
            || (ContainsOperater("Parse") && ContainsOperater("TryParse"));
 
+    /// <summary>HasCompareToMethod</summary>
     internal bool HasCompareToMethod
         => IsBuiltinNumericType
            || (ContainsOperater("CompareTo"));
 
+    /// <summary>HasMinMaxMethod</summary>
     internal bool HasMinMaxMethod
         => IsBuiltinNumericType
            || (ContainsOperater("Min") && ContainsOperater("Max"));

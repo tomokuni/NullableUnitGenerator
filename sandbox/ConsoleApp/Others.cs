@@ -17,25 +17,25 @@ public readonly partial struct VoUlid
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(DateTime), (UGO.MaxExtent & ~UGO.ArithmeticOperator & ~UGO.ValueArithmeticOperator) | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(DateTime), UGO.MaxExtentForDateTime | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoDatetime
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(DateOnly), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(DateOnly), UGO.MaxExtentForDateTime | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoDateonly
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(TimeOnly), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(TimeOnly), UGO.MaxExtentForDateTime | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoTimeonly
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(TimeSpan), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(TimeSpan), UGO.MaxExtentForDateTime | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 public readonly partial struct VoTimespan
 {
     private partial void Validate() { }
