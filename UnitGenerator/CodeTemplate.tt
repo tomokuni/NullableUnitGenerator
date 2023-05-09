@@ -326,7 +326,11 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
         => HasValue ? m_value : defaultValue;
 
 <# if (IsValueType) { #>
-    /// <inheritdoc cref="GetOr" />
+    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>defaultValue</b> : otherwise
+    /// </returns>
     public <#= TypeNameNullable #> GetOr(in <#= TypeNameNullable #> defaultValue)
         => HasValue ? m_value : defaultValue;
 <# } #>

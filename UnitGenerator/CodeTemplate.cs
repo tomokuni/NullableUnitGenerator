@@ -358,7 +358,9 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" defaultValue)\r\n        => HasValue ? m_value : defaultValue;\r\n\r\n");
  if (IsValueType) { 
-            this.Write("    /// <inheritdoc cref=\"GetOr\" />\r\n    public ");
+            this.Write("    /// <summary>return value if HasValue is true; otherwise, defaultValue</summa" +
+                    "ry>\r\n    /// <returns>\r\n    /// <b>value</b> : if assigned and not null<br/>\r\n  " +
+                    "  /// <b>defaultValue</b> : otherwise\r\n    /// </returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(" GetOr(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
