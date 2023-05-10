@@ -21,17 +21,20 @@ public partial class UnitOfAttribute : Attribute
     /// <summary>ToStringFormat</summary>
     public string? ToStringFormat { get; }
 
-    /// <summary>For OpenApiSchema.Format</summary>
-    public string? RestFormat { get; }
+    /// <summary>For OpenApiSchema.Type</summary>
+    public string? OasType { get; }
 
-    /// <summary>For OpenApiSchema.Example</summary>
-    public object? RestExample { get; }
+    /// <summary>For OpenApiSchema.Format</summary>
+    public string? OasFormat { get; }
 
     /// <summary>For OpenApiSchema.Pattern</summary>
-    public string? RestPattern { get; }
+    public string? OasPattern { get; }
 
     /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool? RestNullable { get; } = true;
+    public bool OasNullable { get; }
+
+    /// <summary>For OpenApiSchema.Example</summary>
+    public string? OasExample { get; }
 
     /// <summary>
     /// コンストラクタ
@@ -39,22 +42,28 @@ public partial class UnitOfAttribute : Attribute
     /// <param name="type"></param>
     /// <param name="options"></param>
     /// <param name="toStringFormat"></param>
-    /// <param name="restFormat"></param>
-    /// <param name="restExample"></param>
-    /// <param name="restPattern"></param>
+    /// <param name="oasType"></param>
+    /// <param name="oasFormat"></param>
+    /// <param name="oasPattern"></param>
+    /// <param name="oasNullable"></param>
+    /// <param name="oasExample"></param>
     public UnitOfAttribute(
         Type type,
         UnitGenerateOptions options = UnitGenerateOptions.None,
         string? toStringFormat = null,
-        string? restFormat = null,
-        object? restExample = null,
-        string? restPattern = null)
+        string? oasType = null,
+        string? oasFormat = null,
+        string? oasPattern = null,
+        bool oasNullable = true,
+        string? oasExample = null)
     {
         Type = type;
         Options = options;
         ToStringFormat = toStringFormat;
-        RestFormat = restFormat;
-        RestExample = restExample;
-        RestPattern = restPattern;
+        OasType = oasType;
+        OasFormat = oasFormat;
+        OasPattern = oasPattern;
+        OasNullable = oasNullable;
+        OasExample = oasExample;
     }
 }
