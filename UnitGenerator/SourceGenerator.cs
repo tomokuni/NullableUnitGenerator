@@ -62,7 +62,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
             typeSymbol: typeSymbol,
             options: (UnitGenerateOptions)parsedOptions,
             toStringFormat: attrCtorArgs[2].Value as string);
-        var text = template.TransformText();
+        var text = template.TransformText().Replace("\r\n", "\n");
 
         token.ThrowIfCancellationRequested();
 

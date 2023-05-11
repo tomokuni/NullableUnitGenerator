@@ -86,13 +86,13 @@ public partial class UnitOfOasAttribute : Attribute
     /// </summary>
     /// <param name="type">string, number, integer, boolean, ...</param>
     /// <param name="format">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
-    /// <param name="minimum">MaxValue is handled as null</param>
+    /// <param name="minimum">Parse to decimal</param>
     /// <param name="exclusiveMinimum"></param>
-    /// <param name="maximum">MinValue is handled as null</param>
+    /// <param name="maximum">Parse to decimal</param>
     /// <param name="exclusiveMaximum"></param>
-    /// <param name="multipleOf">Negative value is handled as null</param>
-    /// <param name="minLength">MaxValue is handled as null</param>
-    /// <param name="maxLength">MinValue is handled as null</param>
+    /// <param name="multipleOf">Parse to decimal</param>
+    /// <param name="minLength">Parse to int</param>
+    /// <param name="maxLength">Parse to int</param>
     /// <param name="pattern"></param>
     /// <param name="nullable"></param>
     /// <param name="example"></param>
@@ -100,26 +100,26 @@ public partial class UnitOfOasAttribute : Attribute
     public UnitOfOasAttribute(
         string type,
         string? format = null,
-        decimal maximum = decimal.MinValue,
+        string? maximum = null,
         bool exclusiveMinimum = false,
-        decimal minimum = decimal.MinValue,
+        string? minimum = null,
         bool exclusiveMaximum = false,
-        decimal multipleOf = decimal.MinValue,
-        int maxLength = int.MinValue,
-        int minLength = int.MinValue,
+        string? multipleOf = null,
+        string? maxLength = null,
+        string? minLength = null,
         string? pattern = null,
         string? example = null,
         bool nullable = true)
     {
         Type = type;
         Format = format;
-        Minimum = (minimum == decimal.MaxValue) ? null : minimum;
-        ExclusiveMinimum = (minimum == decimal.MaxValue) ? null : exclusiveMinimum;
-        Maximum = (maximum == decimal.MinValue) ? null : maximum;
-        ExclusiveMaximum = (maximum == decimal.MinValue) ? null : exclusiveMaximum;
-        MultipleOf = (multipleOf < 0) ? null : multipleOf;
-        MinLength = (minLength == int.MaxValue) ? null : minLength;
-        MaxLength = (maxLength == int.MinValue) ? null : maxLength;
+        Minimum = (minimum is null) ? null : decimal.Parse(minimum);
+        ExclusiveMinimum = (minimum is null) ? null : exclusiveMinimum;
+        Maximum = (maximum is null) ? null : decimal.Parse(maximum);
+        ExclusiveMaximum = (maximum is null) ? null : exclusiveMaximum;
+        MultipleOf = (multipleOf is null) ? null : decimal.Parse(multipleOf);
+        MinLength = (minLength is null) ? null : int.Parse(minLength);
+        MaxLength = (maxLength is null) ? null : int.Parse(maxLength);
         Pattern = pattern;
         Nullable = nullable;
         Example = example;
