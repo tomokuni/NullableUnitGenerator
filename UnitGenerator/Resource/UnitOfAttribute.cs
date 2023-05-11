@@ -2,6 +2,7 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NullableUnitGenerator;
 
@@ -46,7 +47,7 @@ public partial class UnitOfAttribute : Attribute
 public partial class UnitOfOasAttribute : Attribute
 {
     /// <summary>For OpenApiSchema.Type</summary>
-    public string? Type { get; }
+    public string Type { get; }
 
     /// <summary>For OpenApiSchema.Format</summary>
     public string? Format { get; }
@@ -85,15 +86,15 @@ public partial class UnitOfOasAttribute : Attribute
     /// <param name="nullable"></param>
     /// <param name="example"></param>
     public UnitOfOasAttribute(
-        string? type = null,
-        string? format = null,
-        decimal? maximum = null,
-        decimal? minimum = null,
-        int? maxLength = null,
-        int? minLength = null,
-        string? pattern = null,
-        bool nullable = true,
-        string? example = null)
+        [DisallowNull] string type,
+        [AllowNull] string? format = null,
+        [AllowNull] decimal? maximum = null,
+        [AllowNull] decimal? minimum = null,
+        [AllowNull] int? maxLength = null,
+        [AllowNull] int? minLength = null,
+        [AllowNull] string? pattern = null,
+        [AllowNull] string? example = null,
+        bool nullable = true)
     {
         Type = type;
         Format = format;
