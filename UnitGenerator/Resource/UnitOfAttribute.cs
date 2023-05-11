@@ -76,7 +76,7 @@ public partial class UnitOfOasAttribute : Attribute
     public string? Pattern { get; }
 
     /// <summary>For OpenApiSchema.Example</summary>
-    public string? Example { get; }
+    public object? Example { get; }
 
     /// <summary>For OpenApiSchema.Nullable</summary>
     public bool Nullable { get; }
@@ -108,7 +108,7 @@ public partial class UnitOfOasAttribute : Attribute
         string? maxLength = null,
         string? minLength = null,
         string? pattern = null,
-        string? example = null,
+        object? example = null,
         bool nullable = true)
     {
         Type = type;
