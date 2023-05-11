@@ -7,7 +7,7 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// NullableUnitGenerator でコード自動生成するための属性 と OpenApiDataType を定義する属性
+/// NullableUnitGenerator でコード自動生成するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
 public partial class UnitOfAttribute : Attribute
@@ -21,49 +21,88 @@ public partial class UnitOfAttribute : Attribute
     /// <summary>ToStringFormat</summary>
     public string? ToStringFormat { get; }
 
-    /// <summary>For OpenApiSchema.Type</summary>
-    public string? OasType { get; }
-
-    /// <summary>For OpenApiSchema.Format</summary>
-    public string? OasFormat { get; }
-
-    /// <summary>For OpenApiSchema.Pattern</summary>
-    public string? OasPattern { get; }
-
-    /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool OasNullable { get; }
-
-    /// <summary>For OpenApiSchema.Example</summary>
-    public string? OasExample { get; }
-
     /// <summary>
     /// コンストラクタ
     /// </summary>
     /// <param name="type"></param>
     /// <param name="options"></param>
     /// <param name="toStringFormat"></param>
-    /// <param name="oasType"></param>
-    /// <param name="oasFormat"></param>
-    /// <param name="oasPattern"></param>
-    /// <param name="oasNullable"></param>
-    /// <param name="oasExample"></param>
     public UnitOfAttribute(
         Type type,
         UnitGenerateOptions options = UnitGenerateOptions.None,
-        string? toStringFormat = null,
-        string? oasType = null,
-        string? oasFormat = null,
-        string? oasPattern = null,
-        bool oasNullable = true,
-        string? oasExample = null)
+        string? toStringFormat = null)
     {
         Type = type;
         Options = options;
         ToStringFormat = toStringFormat;
-        OasType = oasType;
-        OasFormat = oasFormat;
-        OasPattern = oasPattern;
-        OasNullable = oasNullable;
-        OasExample = oasExample;
+    }
+}
+
+
+/// <summary>
+/// NullableUnitGenerator で OpenApiDataType を定義する属性
+/// </summary>
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public partial class UnitOfOasAttribute : Attribute
+{
+    /// <summary>For OpenApiSchema.Type</summary>
+    public string? Type { get; }
+
+    /// <summary>For OpenApiSchema.Format</summary>
+    public string? Format { get; }
+
+    /// <summary>For OpenApiSchema.Format</summary>
+    public decimal? Maximum { get; }
+
+    /// <summary>For OpenApiSchema.Format</summary>
+    public decimal? Minimum { get; }
+
+    /// <summary>For OpenApiSchema.Format</summary>
+    public int? MaxLength { get; }
+
+    /// <summary>For OpenApiSchema.Format</summary>
+    public int? MinLength { get; }
+
+    /// <summary>For OpenApiSchema.Pattern</summary>
+    public string? Pattern { get; }
+
+    /// <summary>For OpenApiSchema.Nullable</summary>
+    public bool Nullable { get; }
+
+    /// <summary>For OpenApiSchema.Example</summary>
+    public string? Example { get; }
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="format"></param>
+    /// <param name="maximum"></param>
+    /// <param name="minimum"></param>
+    /// <param name="maxLength"></param>
+    /// <param name="minLength"></param>
+    /// <param name="pattern"></param>
+    /// <param name="nullable"></param>
+    /// <param name="example"></param>
+    public UnitOfOasAttribute(
+        string? type = null,
+        string? format = null,
+        decimal? maximum = null,
+        decimal? minimum = null,
+        int? maxLength = null,
+        int? minLength = null,
+        string? pattern = null,
+        bool nullable = true,
+        string? example = null)
+    {
+        Type = type;
+        Format = format;
+        Maximum = maximum;
+        Minimum = minimum;
+        MaxLength = maxLength;
+        MinLength = minLength;
+        Pattern = pattern;
+        Nullable = nullable;
+        Example = example;
     }
 }
