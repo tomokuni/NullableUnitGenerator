@@ -7,6 +7,7 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
+/// Attributes for automatic code generation with NullableUnitGenerator<br/>
 /// NullableUnitGenerator でコード自動生成するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
@@ -40,7 +41,8 @@ public partial class UnitOfAttribute : Attribute
 
 
 /// <summary>
-/// NullableUnitGenerator で OpenApiDataType を定義する属性
+/// Attribute for defining OpenApiDataType in NullableUnitGenerator<br/>
+/// NullableUnitGenerator で OpenApiDataType を定義するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
 public partial class UnitOfOasAttribute : Attribute
@@ -82,7 +84,9 @@ public partial class UnitOfOasAttribute : Attribute
     public bool Nullable { get; }
 
     /// <summary>
-    /// コンストラクタ
+    /// https://swagger.io/docs/specification/data-models/data-types/<br/>
+    /// minimum, maximum, and multipleOf are decimal values, and minLength and maxLength are int values<br/>
+    /// minimum, maximum, multipleOf は decimalの値、minLength, maxLength は int型の値を指定する
     /// </summary>
     /// <param name="type">string, number, integer, boolean, ...</param>
     /// <param name="format">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
@@ -96,30 +100,29 @@ public partial class UnitOfOasAttribute : Attribute
     /// <param name="pattern"></param>
     /// <param name="nullable"></param>
     /// <param name="example"></param>
-    /// <remarks>https://swagger.io/docs/specification/data-models/data-types/</remarks>
     public UnitOfOasAttribute(
         string type,
         string? format = null,
-        string? maximum = null,
+        object? maximum = null,
         bool exclusiveMinimum = false,
-        string? minimum = null,
+        object? minimum = null,
         bool exclusiveMaximum = false,
-        string? multipleOf = null,
-        string? maxLength = null,
-        string? minLength = null,
+        object? multipleOf = null,
+        object? maxLength = null,
+        object? minLength = null,
         string? pattern = null,
         object? example = null,
         bool nullable = true)
     {
         Type = type;
         Format = format;
-        Minimum = (minimum is null) ? null : decimal.Parse(minimum);
+        Minimum = (minimum is null) ? null : (decimal)minimum;
         ExclusiveMinimum = (minimum is null) ? null : exclusiveMinimum;
-        Maximum = (maximum is null) ? null : decimal.Parse(maximum);
+        Maximum = (maximum is null) ? null : (decimal)maximum;
         ExclusiveMaximum = (maximum is null) ? null : exclusiveMaximum;
-        MultipleOf = (multipleOf is null) ? null : decimal.Parse(multipleOf);
-        MinLength = (minLength is null) ? null : int.Parse(minLength);
-        MaxLength = (maxLength is null) ? null : int.Parse(maxLength);
+        MultipleOf = (multipleOf is null) ? null : (decimal)multipleOf;
+        MinLength = (minLength is null) ? null : (int)minLength;
+        MaxLength = (maxLength is null) ? null : (int)maxLength;
         Pattern = pattern;
         Nullable = nullable;
         Example = example;

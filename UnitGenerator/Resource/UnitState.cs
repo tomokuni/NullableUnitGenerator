@@ -5,7 +5,7 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// 値の状態
+/// Value Status
 /// </summary>
 [Flags]
 public enum UnitState
