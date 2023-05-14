@@ -53,6 +53,9 @@ public partial class UnitOfOasAttribute : Attribute
     /// <summary>For OpenApiSchema.Format</summary>
     public string? Format { get; }
 
+    /// <summary>For OpenApiSchema.Title</summary>
+    public string? Title { get; }
+
     /// <summary>For OpenApiSchema.Minimum</summary>
     public decimal? Minimum { get; }
 
@@ -77,11 +80,14 @@ public partial class UnitOfOasAttribute : Attribute
     /// <summary>For OpenApiSchema.Pattern</summary>
     public string? Pattern { get; }
 
+    /// <summary>For OpenApiSchema.Nullable</summary>
+    public bool Nullable { get; }
+
     /// <summary>For OpenApiSchema.Example</summary>
     public object? Example { get; }
 
-    /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool Nullable { get; }
+    /// <summary>For OpenApiSchema.Description</summary>
+    public string? Description { get; }
 
     /// <summary>
     /// https://swagger.io/docs/specification/data-models/data-types/<br/>
@@ -90,19 +96,33 @@ public partial class UnitOfOasAttribute : Attribute
     /// </summary>
     /// <param name="type">string, number, integer, boolean, ...</param>
     /// <param name="format">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
+    /// <param name="title">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
     /// <param name="minimum">Parse to decimal</param>
-    /// <param name="exclusiveMinimum"></param>
+    /// <param name="exclusiveMinimum">boolean</param>
     /// <param name="maximum">Parse to decimal</param>
-    /// <param name="exclusiveMaximum"></param>
+    /// <param name="exclusiveMaximum">boolean</param>
     /// <param name="multipleOf">Parse to decimal</param>
     /// <param name="minLength">Parse to int</param>
     /// <param name="maxLength">Parse to int</param>
-    /// <param name="pattern"></param>
-    /// <param name="nullable"></param>
+    /// <param name="pattern">regex pattern</param>
+    /// <param name="nullable">boolean</param>
     /// <param name="example"></param>
+    /// <param name="description"></param>
+    /// <remarks>
+    /// Types:<br/>
+    /// ・string: formats (date (2017-07-21), date-time (2017-07-21T17:32:28Z), password, byte(base64-encoded characters), binary, email, uuid, uri, hostname, ipv4, ipv6, and others)<br/>
+    /// ・number: <br/>
+    /// ・integer<br/>
+    /// ・boolean<br/>
+    /// ・array<br/>
+    /// ・object<br/>
+    /// 
+    /// 
+    /// </remarks>
     public UnitOfOasAttribute(
         string type,
         string? format = null,
+        string? title = null,
         object? maximum = null,
         bool exclusiveMinimum = false,
         object? minimum = null,
@@ -111,11 +131,13 @@ public partial class UnitOfOasAttribute : Attribute
         object? maxLength = null,
         object? minLength = null,
         string? pattern = null,
+        bool nullable = true,
         object? example = null,
-        bool nullable = true)
+        string? description = null)
     {
         Type = type;
         Format = format;
+        Title = title;
         Minimum = (minimum is null) ? null : (decimal)minimum;
         ExclusiveMinimum = (minimum is null) ? null : exclusiveMinimum;
         Maximum = (maximum is null) ? null : (decimal)maximum;
@@ -126,5 +148,6 @@ public partial class UnitOfOasAttribute : Attribute
         Pattern = pattern;
         Nullable = nullable;
         Example = example;
+        Description = description;
     }
 }
