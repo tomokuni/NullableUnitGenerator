@@ -28,4 +28,23 @@ public static class UnitHelper
         return attrs.ToList();
     }
 
+
+    /// <summary>
+    /// Undef値以外のプロパティを取得して Dictionary に変換
+    /// </summary>
+    /// <param name="modelClass"></param>
+    /// <returns></returns>
+    public static IDictionary<string, dynamic> ExcludeUndefDictionary(object modelClass)
+    {
+        // プロパティ一覧を取得
+        var properties = modelClass.GetType().GetProperties();
+
+        // Undef値以外のプロパティ取得して Dictionary に変換
+        var dic = properties
+            .Select(s => new { p = s, v = s.GetValue(modelClass)! })
+            .Where(w => w.v is not null && (!(w.v as IUnitOf)?.IsUndef ?? false))
+            .ToDictionary(x => x.p.Name, x => (dynamic)x.v);
+        return dic;
+    }
+
 }

@@ -44,6 +44,13 @@ public readonly partial struct VoBool
     private partial void Validate() { }
 }
 
+[UnitOf(typeof(char), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOfOas("string", format: "uint8")]
+public readonly partial struct VoChar
+{
+    private partial void Validate() { }
+}
+
 [UnitOf(typeof(byte), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 [UnitOfOas("integer", format: "int8")]
 public readonly partial struct VoByte
@@ -54,13 +61,6 @@ public readonly partial struct VoByte
 [UnitOf(typeof(sbyte), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 [UnitOfOas("integer", format: "uint8")]
 public readonly partial struct VoSbyte
-{
-    private partial void Validate() { }
-}
-
-[UnitOf(typeof(char), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
-[UnitOfOas("string", format: "uint8")]
-public readonly partial struct VoChar
 {
     private partial void Validate() { }
 }
@@ -89,20 +89,6 @@ public readonly partial struct VoInt
 [UnitOf(typeof(uint), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
 [UnitOfOas("integer", format: "uint32")]
 public readonly partial struct VoUint
-{
-    private partial void Validate() { }
-}
-
-[UnitOf(typeof(nint), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
-[UnitOfOas("integer", format: "int32")]
-public readonly partial struct VoNint
-{
-    private partial void Validate() { }
-}
-
-[UnitOf(typeof(nuint), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
-[UnitOfOas("integer", format: "uint32")]
-public readonly partial struct VoNuint
 {
     private partial void Validate() { }
 }

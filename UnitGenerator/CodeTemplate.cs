@@ -70,7 +70,7 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("TypeConverter))]\r\npublic readonly partial struct ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" : IEquatable<");
+            this.Write(" : IUnitOf, IEquatable<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">, IEqualityComparer<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -582,8 +582,8 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" other)\r\n        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value" +
-                    ");\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
+            this.Write(" other)\r\n        => m_state.Equals(other.m_state) && HasValue && m_value.Equals(o" +
+                    "ther.m_value);\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1064,11 +1064,12 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")) as JsonConverter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
-            this.Write(">;\r\n            if (converter is not null)\r\n                converter.Write(write" +
-                    "r, (");
+            this.Write(">;\r\n            if (converter is not null)\r\n            {\r\n                if (!v" +
+                    "alue.IsUndef)\r\n                    converter.Write(writer, (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
-            this.Write(")value.GetOrNull(), options);\r\n            else\r\n                throw new JsonEx" +
-                    "ception($\"{typeof(");
+            this.Write(")value.GetOrNull(), options);\r\n                else\r\n                    converte" +
+                    "r.Write(writer, null, options);\r\n            }\r\n            else\r\n              " +
+                    "  throw new JsonException($\"{typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")} converter does not found.\");\r\n        }\r\n\r\n        /// <summary>Read</summary>" +
                     "\r\n        public override ");

@@ -41,7 +41,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
 {
     // Namespace : <#= Namespace ?? "(null)" #>
     // Name      : <#= Name #>
@@ -527,7 +527,7 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 
     /// <inheritdoc/>
     public bool Equals(<#= Name #> other)
-        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
+        => m_state.Equals(other.m_state) && HasValue && m_value.Equals(other.m_value);
 
     /// <inheritdoc/>
     public bool Equals(<#= Name #> x, <#= Name #> y)
@@ -912,7 +912,12 @@ public readonly partial struct <#= Name #> : IEquatable<<#= Name #>>, IEqualityC
 
             var converter = options.GetConverter(typeof(<#= TypeNameNullable #>)) as JsonConverter<<#= TypeNameNullable #>>;
             if (converter is not null)
-                converter.Write(writer, (<#= TypeNameNullable #>)value.GetOrNull(), options);
+            {
+                if (!value.IsUndef)
+                    converter.Write(writer, (<#= TypeNameNullable #>)value.GetOrNull(), options);
+                else
+                    converter.Write(writer, null, options);
+            }
             else
                 throw new JsonException($"{typeof(<#= TypeNameNullable #>)} converter does not found.");
         }

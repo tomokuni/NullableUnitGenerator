@@ -55,10 +55,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitGenerateOptions.cs" />
-    <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitHelper.cs" />
-    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOfAttribute.cs" />
-    <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitState.cs" />
+    <EmbeddedResource Include="Resource\IUnitOf.cs" LogicalName="UnitOf.IUnitOf.cs" />
+    <EmbeddedResource Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitOf.UnitGenerateOptions.cs" />
+    <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
+    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOf.UnitOfAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />
   </ItemGroup>
 
   <ItemGroup>

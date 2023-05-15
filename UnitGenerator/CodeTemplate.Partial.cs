@@ -189,15 +189,18 @@ public partial class CodeTemplate
     internal bool IsSupportUtf8Formatter()
         => TypeName switch
         {
+            "char" => true,
             "short" => true,
             "int" => true,
             "long" => true,
             "ushort" => true,
             "uint" => true,
             "ulong" => true,
-            "bool" => true,
             "byte" => true,
             "sbyte" => true,
+            "nint" => true,
+            "nuint" => true,
+            "bool" => true,
             "float" => true,
             "double" => true,
             "DateTime" => true,

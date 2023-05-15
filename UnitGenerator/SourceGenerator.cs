@@ -80,10 +80,11 @@ public sealed class SourceGenerator : IIncrementalGenerator
     /// <param name="context"></param>
     private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
     {
-        AddCsResource("UnitGenerateOptions.cs");
-        AddCsResource("UnitHelper.cs");
-        AddCsResource("UnitOfAttribute.cs");
-        AddCsResource("UnitState.cs");
+        AddCsResource("UnitOf.IUnitOf.cs");
+        AddCsResource("UnitOf.UnitGenerateOptions.cs");
+        AddCsResource("UnitOf.UnitHelper.cs");
+        AddCsResource("UnitOf.UnitOfAttribute.cs");
+        AddCsResource("UnitOf.UnitState.cs");
 
         //
         // ローカル関数
