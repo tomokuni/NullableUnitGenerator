@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace NullableUnitGenerator;
 
@@ -34,17 +34,63 @@ public static class UnitHelper
     /// </summary>
     /// <param name="modelClass"></param>
     /// <returns></returns>
-    public static IDictionary<string, dynamic> ExcludeUndefDictionary(object modelClass)
+    public static dynamic ExcludeUndef(object modelClass)
     {
         // プロパティ一覧を取得
         var properties = modelClass.GetType().GetProperties();
 
         // Undef値以外のプロパティを取得して Dictionary に変換
         var dic = properties
-            .Select(s => new { p = s, v = s.GetValue(modelClass)! })
-            .Where(w => w.v is not null && (!(w.v as IUnitOf)?.IsUndef ?? false))
-            .ToDictionary(x => x.p.Name, x => (dynamic)x.v);
-        return dic;
+            .Where(w => w.GetValue(modelClass) is IUnitOf uo && !uo.IsUndef)
+            .ToDictionary(x => ToCamelCase(x.Name), x => (dynamic)x.GetValue(modelClass)!);
+        var eo = dic.Aggregate(new ExpandoObject() as IDictionary<string, dynamic>,
+            (a, p) => { a.Add(p); return a; }) as ExpandoObject;
+        return eo!;
     }
 
+
+    /// <summary>
+    /// キャメルケースに変換する
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static string ToCamelCase(string str)
+    {
+        var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+        var leadWord = Regex.Replace(words[0], @"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)",
+            m =>
+            {
+                return m.Groups[1].Value.ToLower() + m.Groups[2].Value.ToLower() + m.Groups[3].Value;
+            });
+
+        var tailWords = words.Skip(1)
+            .Select(word => char.ToUpper(word[0]) + word.Substring(1))
+            .ToArray();
+
+        return $"{leadWord}{string.Join(string.Empty, tailWords)}";
+    }
+
+
+    /// <summary>
+    /// パスカルケースに変換する
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static string ToPascalCase(string str)
+    {
+        var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
+
+        var leadWord = Regex.Replace(words[0], @"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)",
+            m =>
+            {
+                return m.Groups[1].Value.ToUpper() + m.Groups[2].Value.ToLower() + m.Groups[3].Value;
+            });
+
+        var tailWords = words.Skip(1)
+            .Select(word => char.ToUpper(word[0]) + word.Substring(1))
+            .ToArray();
+
+        return $"{leadWord}{string.Join(string.Empty, tailWords)}";
+    }
 }

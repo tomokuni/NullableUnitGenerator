@@ -16,8 +16,4 @@
     <ProjectReference Include="..\ConsoleApp\ConsoleApp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Base\" />
-  </ItemGroup>
-
 </Project>

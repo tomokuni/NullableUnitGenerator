@@ -69,27 +69,4 @@ public static class NullableUnitGeneratorExtensions
         return schema;
     }
 
-
-    //internal static IDictionary<string, dynamic> ExcludeUndefDictionary(object modelClass)
-    //{
-    //    //var dic = new Dictionary<string, dynamic>();
-    //
-    //    //プロパティ一覧を取得
-    //    var properties = modelClass.GetType().GetProperties();
-    //    var dic = properties
-    //        .Select(s => new { p = s, v = s.GetValue(modelClass)! })
-    //        .Where(w => w.v is not null && (!(w.v as IUnitOf)?.IsUndef ?? false))
-    //        .ToDictionary(x => x.p.Name, x => (dynamic)x.v);
-    //    return dic;
-    //    //foreach (var p in properties)
-    //    //{
-    //    //    var p1 = p.GetValue(modelClass) as IUnitOf;
-    //    //    if (p1 is not null && !p1.IsUndef)
-    //    //    {
-    //    //        dic[p.Name] = p1;
-    //    //    }
-    //    //}
-    //    //return dic;
-    //}
-
 }

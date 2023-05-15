@@ -30,43 +30,34 @@ public class ValueObjectSampleController : ControllerBase
     }
 
     /// <summary></summary>
-    [HttpPost("Get/{id}")]
-    public IDictionary<string, dynamic> Get(ValueObjectSample vol)
+    [HttpPost("Get")]
+    public dynamic Get(ValueObjectSample vol)
     {
-        //return new ValueObjectSample
-        //{
-        //    VoInt = VoInt.NullValue, //VoInt.UndefinedValue, //VoInt = new(index)
-        //    VoDatetime = new (DateTime.Now.AddDays(1)),
-        //    VoDouble = Random.Shared.Next(-20, 55),
-        //    VoDecimal = Random.Shared.Next(-20, 55),
-        //    VoString = new (Summaries[Random.Shared.Next(Summaries.Length)])
-        //};
-
-        Dictionary<string, dynamic> dic = new Dictionary<string, dynamic> {
-            { "voInt", VoInt.NullValue },
-            { "voLong", VoLong.UndefValue },
-            { "voDatetime", new VoDatetime(DateTime.Now.AddDays(1)) },
-            { "voDouble", new VoDouble((double)Random.Shared.Next(-20, 55)) },
-            { "voDecimal", new VoDecimal((decimal)Random.Shared.Next(-20, 55)) },
-            { "voString", new VoString(Summaries[Random.Shared.Next(Summaries.Length)]) },
-            { "key1", 10 },
-            { "key2", 1.25 },
-            { "key3", false },
-            { "key4", DateTime.Now },
-            { "key5", new int[] { 1, 2, 3 } },
-            { "key6", new List<string> { "a", "b", "c" } },
-            { "key7", new Dictionary<string, int> { { "sub1", 10 }, { "sub2", 20 } }},
-        };
-        return dic;
+        var eo = UnitHelper.ExcludeUndef( new {
+            VoNullValue = VoInt.NullValue,
+            VoUndefValue = VoLong.UndefValue,
+            VoDatetime= new VoDatetime(DateTime.Now.AddDays(1)) ,
+            VoDouble= new VoDouble((double)Random.Shared.Next(-20, 55)) ,
+            VoDecimal= new VoDecimal((decimal)Random.Shared.Next(-20, 55)) ,
+            VoString= new VoString(Summaries[Random.Shared.Next(Summaries.Length)]) ,
+            key1 = 10,
+            key2 = 1.25 ,
+            key3= false ,
+            key4= DateTime.Now ,
+            key5= new int[] { 1, 2, 3 } ,
+            key6= new List<string> { "a", "b", "c" } ,
+            key7 = new Dictionary<string, int> { { "sub1", 10 }, { "sub2", 20 } },
+        });
+        return eo;
     }
 
     /// <summary></summary>
     [HttpPost("GetList")]
-    public IEnumerable<IDictionary<string, dynamic>> GetList(ValueObjectSample vol)
+    public IEnumerable<dynamic> GetList(ValueObjectSample vol)
     {
-        return new List<IDictionary<string, dynamic>>
+        return new List<dynamic>
         {
-            UnitHelper.ExcludeUndefDictionary(new ValueObjectSample
+            UnitHelper.ExcludeUndef(new ValueObjectSample
             {
                 Title = "全部値あり",
                 VoBool = true,
@@ -92,7 +83,7 @@ public class ValueObjectSampleController : ControllerBase
                 VoTimespan = DateTime.Now.TimeOfDay,
                 VoByteArray = new byte[]{ 20,21 },
             }),
-            UnitHelper.ExcludeUndefDictionary(new ValueObjectSample
+            UnitHelper.ExcludeUndef(new ValueObjectSample
             {
                 Title = "全部NullValue",
                 VoBool = VoBool.NullValue,
@@ -118,7 +109,7 @@ public class ValueObjectSampleController : ControllerBase
                 VoTimespan = VoTimespan.NullValue,
                 VoByteArray = VoByteArray.NullValue,
             }),
-            UnitHelper.ExcludeUndefDictionary(new ValueObjectSample
+            UnitHelper.ExcludeUndef(new ValueObjectSample
             {
                 Title = "全部UndefValue",
                 VoBool = VoBool.UndefValue,
@@ -144,7 +135,7 @@ public class ValueObjectSampleController : ControllerBase
                 VoTimespan = VoTimespan.UndefValue,
                 VoByteArray = VoByteArray.UndefValue,
             }),
-            UnitHelper.ExcludeUndefDictionary(new ValueObjectSample
+            UnitHelper.ExcludeUndef(new ValueObjectSample
             {
                 Title = "全部値ValueStateDefaultValue",
                 VoBool = VoBool.ValueStateDefaultValue,
@@ -170,7 +161,7 @@ public class ValueObjectSampleController : ControllerBase
                 VoTimespan = VoTimespan.ValueStateDefaultValue,
                 VoByteArray = VoByteArray.ValueStateDefaultValue,
             }),
-            UnitHelper.ExcludeUndefDictionary(new ValueObjectSample
+            UnitHelper.ExcludeUndef(new ValueObjectSample
             {
                 Title = "全部値省略(Defalut値)",
             }),
