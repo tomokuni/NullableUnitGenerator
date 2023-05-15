@@ -39,7 +39,7 @@ public static class UnitHelper
         // プロパティ一覧を取得
         var properties = modelClass.GetType().GetProperties();
 
-        // Undef値以外のプロパティ取得して Dictionary に変換
+        // Undef値以外のプロパティを取得して Dictionary に変換
         var dic = properties
             .Select(s => new { p = s, v = s.GetValue(modelClass)! })
             .Where(w => w.v is not null && (!(w.v as IUnitOf)?.IsUndef ?? false))
