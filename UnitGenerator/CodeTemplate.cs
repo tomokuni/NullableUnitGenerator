@@ -582,15 +582,21 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" other)\r\n        => m_state.Equals(other.m_state) && HasValue && m_value.Equals(o" +
-                    "ther.m_value);\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
+            this.Write(" other)\r\n");
+ if (IsValueType) { 
+            this.Write("        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);\r\n");
+ } else { 
+            this.Write("        => m_state.Equals(other.m_state) && (m_value?.Equals(other.m_value) ?? ot" +
+                    "her.m_value is null);\r\n");
+ } 
+            this.Write("\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" x, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" y)\r\n        => x.Equals(y);\r\n\r\n    /// <inheritdoc/>\r\n    public override bool E" +
                     "quals(object? obj)\r\n        => obj is ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@" ts && Equals(ts);
+            this.Write(@" uo && Equals(uo);
 
 
     //

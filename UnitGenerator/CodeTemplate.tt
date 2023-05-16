@@ -527,7 +527,11 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
 
     /// <inheritdoc/>
     public bool Equals(<#= Name #> other)
-        => m_state.Equals(other.m_state) && HasValue && m_value.Equals(other.m_value);
+<# if (IsValueType) { #>
+        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
+<# } else { #>
+        => m_state.Equals(other.m_state) && (m_value?.Equals(other.m_value) ?? other.m_value is null);
+<# } #>
 
     /// <inheritdoc/>
     public bool Equals(<#= Name #> x, <#= Name #> y)
@@ -535,7 +539,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)
-        => obj is <#= Name #> ts && Equals(ts);
+        => obj is <#= Name #> uo && Equals(uo);
 
 
     //
