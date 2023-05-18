@@ -60,41 +60,65 @@ public static class UnitHelper
 
 
     /// <summary>
+    /// 文字列をパスカルケースに変換する
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    /// <seealso cref="https://code-maze.com/csharp-convert-string-titlecase-camelcase/"/>
+    public static string ToPascalCase(string str)
+    {
+        Regex regexLead = new(@"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)");
+        Regex regexTail = new(@"([A-Z])([A-Z]+)($|[A-Z][a-z0-9])");
+
+        string Pascalize(string w0)
+        {
+            var w1 = regexLead.Replace(w0, m => m.Groups[1].Value.ToLower() + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
+            var w2 = regexTail.Replace(w1, m => m.Groups[1].Value + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
+            var w3 = char.ToUpper(w2[0]) + w2[1..];
+            return w3;
+        }
+
+        var words = str
+            .Split(new[] { "_", "-", " " }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(Pascalize)
+            .ToArray();
+
+        return string.Join(string.Empty, words);
+    }
+
+
+    /// <summary>
     /// 文字列をキャメルケースに変換する
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
     public static string ToCamelCase(string str)
     {
-        var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
-
-        var leadWord = Regex.Replace(words[0], @"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)",
-            m =>  m.Groups[1].Value.ToLower() + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
-
-        var tailWords = words.Skip(1)
-            .Select(word => char.ToUpper(word[0]) + word.Substring(1))
-            .ToArray();
-
-        return $"{leadWord}{string.Join(string.Empty, tailWords)}";
+        var pascal = ToPascalCase(str);
+        return char.ToLower(pascal[0]) + pascal[1..];
     }
 
 
     /// <summary>
-    /// 文字列をパスカルケースに変換する
+    /// 
     /// </summary>
-    /// <param name="str"></param>
     /// <returns></returns>
-    public static string ToPascalCase(string str)
+    /// <seealso cref="https://masanyon.com/cameltosnake/"/>
+    public static string ToSnakeCase(string str)
     {
-        var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
+        var camel = ToCamelCase(str);
+        return Regex.Replace(camel, @"([a-z0-9])([A-Z])", "$1_$2".ToLower());
+    }
 
-        var leadWord = Regex.Replace(words[0], @"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)",
-            m => m.Groups[1].Value.ToUpper() + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
 
-        var tailWords = words.Skip(1)
-            .Select(word => char.ToUpper(word[0]) + word.Substring(1))
-            .ToArray();
-
-        return $"{leadWord}{string.Join(string.Empty, tailWords)}";
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    /// <seealso cref="https://masanyon.com/cameltosnake/"/>
+    public static string ToKebabCase(string str)
+    {
+        var camel = ToCamelCase(str);
+        return Regex.Replace(camel, @"([a-z0-9])([A-Z])", "$1-$2".ToLower());
     }
 }
