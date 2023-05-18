@@ -7,8 +7,10 @@ using WebApiApp.Models;
 using ConsoleApp.Builtins;
 using ConsoleApp.Others;
 using NullableUnitGenerator;
+using WebApiApp.BusinessLogic;
+using System.Dynamic;
 
-namespace WebApi.Controllers;
+namespace WebApiApp.Controllers;
 
 
 /// <summary></summary>
@@ -16,11 +18,6 @@ namespace WebApi.Controllers;
 [Route("[controller]")]
 public class ValueObjectSampleController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<ValueObjectSampleController> _logger;
 
     /// <summary></summary>
@@ -29,143 +26,63 @@ public class ValueObjectSampleController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary></summary>
-    [HttpPost("Get")]
-    public dynamic Get(ValueObjectSample vol)
-    {
-        var eo = UnitHelper.ExcludeUndef( new {
-            VoNullValue = VoInt.NullValue,
-            VoUndefValue = VoLong.UndefValue,
-            VoDatetime= new VoDatetime(DateTime.Now.AddDays(1)) ,
-            VoDouble= new VoDouble((double)Random.Shared.Next(-20, 55)) ,
-            VoDecimal= new VoDecimal((decimal)Random.Shared.Next(-20, 55)) ,
-            VoString= new VoString(Summaries[Random.Shared.Next(Summaries.Length)]) ,
-            key1 = 10,
-            key2 = 1.25 ,
-            key3= false ,
-            key4= DateTime.Now ,
-            key5= new int[] { 1, 2, 3 } ,
-            key6= new List<string> { "a", "b", "c" } ,
-            key7 = new Dictionary<string, int> { { "sub1", 10 }, { "sub2", 20 } },
-        });
-        return eo;
-    }
 
     /// <summary></summary>
-    [HttpPost("GetList")]
-    public IEnumerable<dynamic> GetList(ValueObjectSample vol)
+    [HttpPost("GetValueSample")]
+    public dynamic GetValueSample()
     {
-        return new List<dynamic>
+        var vals = new
         {
-            UnitHelper.ExcludeUndef(new ValueObjectSample
-            {
-                Title = "全部値あり",
-                VoBool = true,
-                VoByte = 1,
-                VoSbyte = 2,
-                VoChar = '3',
-                VoShort = 4,
-                VoUshort = 5,
-                VoInt = 6,
-                VoUint = 7,
-                VoLong = 10,
-                VoUlong = 11,
-                VoFloat = 12.2f,
-                VoDouble = 13.3,
-                VoDecimal = 14.4m,
-                VoString = "15",
-                VoUrlSafeBinary = "",
-                VoGuid = VoGuid.NewVoGuid(),
-                VoUlid = VoUlid.NewVoUlid(),
-                VoDatetime = DateTime.Now,
-                VoDateonly = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                VoTimeonly = new TimeOnly(DateTime.Now.TimeOfDay.Ticks),
-                VoTimespan = DateTime.Now.TimeOfDay,
-                VoByteArray = new byte[]{ 20,21 },
-            }),
-            UnitHelper.ExcludeUndef(new ValueObjectSample
-            {
-                Title = "全部NullValue",
-                VoBool = VoBool.NullValue,
-                VoByte = VoByte.NullValue,
-                VoSbyte = VoSbyte.NullValue,
-                VoChar = VoChar.NullValue,
-                VoShort = VoShort.NullValue,
-                VoUshort = VoUshort.NullValue,
-                VoInt = VoInt.NullValue,
-                VoUint = VoUint.NullValue,
-                VoLong = VoLong.NullValue,
-                VoUlong = VoUlong.NullValue,
-                VoFloat = VoFloat.NullValue,
-                VoDouble = VoDouble.NullValue,
-                VoDecimal = VoDecimal.NullValue,
-                VoString = VoString.NullValue,
-                VoUrlSafeBinary = VoUrlSafeBinary.NullValue,
-                VoGuid = VoGuid.NullValue,
-                VoUlid = VoUlid.NullValue,
-                VoDatetime = VoDatetime.NullValue,
-                VoDateonly = VoDateonly.NullValue,
-                VoTimeonly = VoTimeonly.NullValue,
-                VoTimespan = VoTimespan.NullValue,
-                VoByteArray = VoByteArray.NullValue,
-            }),
-            UnitHelper.ExcludeUndef(new ValueObjectSample
-            {
-                Title = "全部UndefValue",
-                VoBool = VoBool.UndefValue,
-                VoByte = VoByte.UndefValue,
-                VoSbyte = VoSbyte.UndefValue,
-                VoChar = VoChar.UndefValue,
-                VoShort = VoShort.UndefValue,
-                VoUshort = VoUshort.UndefValue,
-                VoInt = VoInt.UndefValue,
-                VoUint = VoUint.UndefValue,
-                VoLong = VoLong.UndefValue,
-                VoUlong = VoUlong.UndefValue,
-                VoFloat = VoFloat.UndefValue,
-                VoDouble = VoDouble.UndefValue,
-                VoDecimal = VoDecimal.UndefValue,
-                VoString = VoString.UndefValue,
-                VoUrlSafeBinary = VoUrlSafeBinary.UndefValue,
-                VoGuid = VoGuid.UndefValue,
-                VoUlid = VoUlid.UndefValue,
-                VoDatetime = VoDatetime.UndefValue,
-                VoDateonly = VoDateonly.UndefValue,
-                VoTimeonly = VoTimeonly.UndefValue,
-                VoTimespan = VoTimespan.UndefValue,
-                VoByteArray = VoByteArray.UndefValue,
-            }),
-            UnitHelper.ExcludeUndef(new ValueObjectSample
-            {
-                Title = "全部値ValueStateDefaultValue",
-                VoBool = VoBool.ValueStateDefaultValue,
-                VoByte = VoByte.ValueStateDefaultValue,
-                VoSbyte = VoSbyte.ValueStateDefaultValue,
-                VoChar = VoChar.ValueStateDefaultValue,
-                VoShort = VoShort.ValueStateDefaultValue,
-                VoUshort = VoUshort.ValueStateDefaultValue,
-                VoInt = VoInt.ValueStateDefaultValue,
-                VoUint = VoUint.ValueStateDefaultValue,
-                VoLong = VoLong.ValueStateDefaultValue,
-                VoUlong = VoUlong.ValueStateDefaultValue,
-                VoFloat = VoFloat.ValueStateDefaultValue,
-                VoDouble = VoDouble.ValueStateDefaultValue,
-                VoDecimal = VoDecimal.ValueStateDefaultValue,
-                VoString = VoString.ValueStateDefaultValue,
-                VoUrlSafeBinary = VoUrlSafeBinary.ValueStateDefaultValue,
-                VoGuid = VoGuid.ValueStateDefaultValue,
-                VoUlid = VoUlid.ValueStateDefaultValue,
-                VoDatetime = VoDatetime.ValueStateDefaultValue,
-                VoDateonly = VoDateonly.ValueStateDefaultValue,
-                VoTimeonly = VoTimeonly.ValueStateDefaultValue,
-                VoTimespan = VoTimespan.ValueStateDefaultValue,
-                VoByteArray = VoByteArray.ValueStateDefaultValue,
-            }),
-            UnitHelper.ExcludeUndef(new ValueObjectSample
-            {
-                Title = "全部値省略(Defalut値)",
-            }),
-        }; 
-
+            Key1 = 10,
+            Key2 = 1.25,
+            Key3 = false,
+            Key4 = DateTime.Now,
+            Key5 = new int[] { 1, 2, 3 },
+            Key6 = new List<string> { "a", "b", "c" },
+            Key7 = new Dictionary<string, int> { { "sub1", 10 }, { "sub2", 20 } },
+        };
+        return vals;
     }
+
+
+    /// <summary></summary>
+    [HttpPost("GetUnitOfSample")]
+    public dynamic GetUnitOfSample()
+    {
+        var val = DummyVoSample.GetAllValue();
+        return val;//.ExcludeUndef(val);
+    }
+
+
+    /// <summary></summary>
+    [HttpPost("GetUnitOfSampleList")]
+    public IEnumerable<dynamic> GetUnitOfSampleList()
+    {
+        var list = new List<dynamic>
+        {
+            DummyVoSample.GetAllValue(),
+            DummyVoSample.GetAllNullValue(),
+            DummyVoSample.GetAllUndefValue(),
+            DummyVoSample.GetAllValueStateDefaultValue(),
+            DummyVoSample.GetAllDefalut(),
+        }; 
+        return list.Select(x => UnitHelper.ExcludeUndef(x)).ToList();
+    }
+
+
+    /// <summary></summary>
+    [HttpPost("SameReturnUnitOf")]
+    public dynamic SameReturnUnitOf(UnitOfSample uos)
+    {
+        return UnitHelper.ExcludeUndef(uos);
+    }
+
+
+    /// <summary></summary>
+    [HttpPost("SameReturnExpandoObject")]
+    public dynamic SameReturnExpandoObject(ExpandoObject eo)
+    {
+        return UnitHelper.ExcludeUndef(eo);
+    }
+
 }

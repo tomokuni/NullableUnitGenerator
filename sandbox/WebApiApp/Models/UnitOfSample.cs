@@ -7,7 +7,7 @@ namespace WebApiApp.Models;
 
 
 /// <summary>ValueObjectSample</summary>
-public record ValueObjectSample
+public record UnitOfSample
 {
     /// <summary></summary>
     public VoString Title { get; set; }
@@ -53,9 +53,6 @@ public record ValueObjectSample
 
     /// <summary></summary>
     public VoString VoString { get; set; }
-
-    /// <summary></summary>
-    public VoUrlSafeBinary VoUrlSafeBinary { get; set; }
 
     /// <summary></summary>
     public VoGuid VoGuid { get; set; }

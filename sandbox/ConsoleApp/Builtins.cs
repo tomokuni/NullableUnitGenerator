@@ -134,10 +134,3 @@ public readonly partial struct VoString
 {
     private partial void Validate() { }
 }
-
-[UnitOf(typeof(string), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
-[UnitOfOas("string", format: "base64url")]
-public readonly partial struct VoUrlSafeBinary  // base64url encoded characters
-{
-    private partial void Validate() { }
-}

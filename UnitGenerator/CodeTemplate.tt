@@ -205,10 +205,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
 
 
     /// <summary>base type.</summary>
-    static readonly Type BaseType = typeof(<#= TypeName #>);
-
-    /// <summary>Get base type.</summary>
-    public static Type GetBaseType() => BaseType;
+    public static Type BaseType { get; } = typeof(<#= TypeName #>);
 
     /// <summary>Is base type nullable?</summary>
     public static bool IsNullable { get; }
@@ -265,23 +262,28 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
     // get state
     //
 
-    /// <summary><see langword="true"/> if undefined; otherwise, <see langword="false"/>.</summary>
+    /// <summary><see langword="true"/> if undefined; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if undefined</returns>
     public bool IsUndef
         => m_state == UnitState.Undef;
 
-    /// <summary><see langword="true"/> if null; otherwise, <see langword="false"/>.</summary>
+    /// <summary><see langword="true"/> if null; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if null</returns>
     public bool IsNull
         => m_state == UnitState.Null;
 
-    /// <summary><see langword="true"/> if undefined or null; otherwise, <see langword="false"/>.</summary>
+    /// <summary><see langword="true"/> if undefined or null; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if null or undefined</returns>
     public bool IsUndefOrNull
         => m_state != UnitState.Value;
 
-    /// <summary><see langword="true"/> if not undefined and not null; otherwise, <see langword="false"/>.</summary>
-    /// <returns><b><see langword="true"/></b> : if not undefined and not null</returns>
+    /// <summary><see langword="true"/> if null or hasValue; otherwise.</summary>
+    /// <returns><b><see langword="true"/></b> : if null or hasValue</returns>
+    public bool IsNullOrHasValue
+        => m_state != UnitState.Undef;
+
+    /// <summary><see langword="true"/> if not undefined and not null; otherwise.</summary>
+    /// <returns><b><see langword="true"/></b> : if hasValuel</returns>
     public bool HasValue
         => m_state == UnitState.Value;
 

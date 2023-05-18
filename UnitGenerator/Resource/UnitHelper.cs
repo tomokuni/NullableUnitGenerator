@@ -30,27 +30,37 @@ public static class UnitHelper
 
 
     /// <summary>
-    /// Undef値以外のプロパティを取得して Dictionary に変換
+    /// 引数のオブジェクトからプロパティを取得し、Undef値以外を ExpandoObject 型に変換
     /// </summary>
     /// <param name="modelClass"></param>
     /// <returns></returns>
-    public static dynamic ExcludeUndef(object modelClass)
+    public static ExpandoObject ExcludeUndef(object modelClass)
     {
-        // プロパティ一覧を取得
-        var properties = modelClass.GetType().GetProperties();
-
-        // Undef値以外のプロパティを取得して Dictionary に変換
-        var dic = properties
-            .Where(w => w.GetValue(modelClass) is IUnitOf uo && !uo.IsUndef)
-            .ToDictionary(x => ToCamelCase(x.Name), x => (dynamic)x.GetValue(modelClass)!);
-        var eo = dic.Aggregate(new ExpandoObject() as IDictionary<string, dynamic>,
-            (a, p) => { a.Add(p); return a; }) as ExpandoObject;
-        return eo!;
+        if (modelClass is IDictionary<string, dynamic> d)
+        {
+            var dic = d
+                // Undef値以外のプロパティを取得して Dictionary に変換
+                .Where(w => (w.Value is IUnitOf uo && !uo.IsUndef) || (w.Value is not IUnitOf))
+                .ToDictionary(x => x.Key, x => (dynamic)x.Value!);
+            var res = dic.Aggregate(new ExpandoObject() as IDictionary<string, dynamic>,
+                (a, p) => { a.Add(p); return a; }) as ExpandoObject;
+            return res!;
+        }
+        else
+        {
+            var dic = modelClass.GetType().GetProperties()
+                // Undef値以外のプロパティを取得して Dictionary に変換
+                .Where(w => (w.GetValue(modelClass) is IUnitOf uo && !uo.IsUndef) || (w.GetValue(modelClass) is not IUnitOf))
+                .ToDictionary(x => x.Name, x => (dynamic)x.GetValue(modelClass)!);
+            var res = dic.Aggregate(new ExpandoObject() as IDictionary<string, dynamic>,
+                (a, p) => { a.Add(p); return a; }) as ExpandoObject;
+            return res!;
+        }
     }
 
 
     /// <summary>
-    /// キャメルケースに変換する
+    /// 文字列をキャメルケースに変換する
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
@@ -59,10 +69,7 @@ public static class UnitHelper
         var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
 
         var leadWord = Regex.Replace(words[0], @"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)",
-            m =>
-            {
-                return m.Groups[1].Value.ToLower() + m.Groups[2].Value.ToLower() + m.Groups[3].Value;
-            });
+            m =>  m.Groups[1].Value.ToLower() + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
 
         var tailWords = words.Skip(1)
             .Select(word => char.ToUpper(word[0]) + word.Substring(1))
@@ -73,7 +80,7 @@ public static class UnitHelper
 
 
     /// <summary>
-    /// パスカルケースに変換する
+    /// 文字列をパスカルケースに変換する
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
@@ -82,10 +89,7 @@ public static class UnitHelper
         var words = str.Split(new[] { "_", " " }, StringSplitOptions.RemoveEmptyEntries);
 
         var leadWord = Regex.Replace(words[0], @"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)",
-            m =>
-            {
-                return m.Groups[1].Value.ToUpper() + m.Groups[2].Value.ToLower() + m.Groups[3].Value;
-            });
+            m => m.Groups[1].Value.ToUpper() + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
 
         var tailWords = words.Skip(1)
             .Select(word => char.ToUpper(word[0]) + word.Substring(1))

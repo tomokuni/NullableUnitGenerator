@@ -96,7 +96,7 @@ public partial class UnitOfOasAttribute : Attribute
     /// </summary>
     /// <param name="type">string, number, integer, boolean, ...</param>
     /// <param name="format">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
-    /// <param name="title">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
+    /// <param name="title"></param>
     /// <param name="minimum">Parse to decimal</param>
     /// <param name="exclusiveMinimum">boolean</param>
     /// <param name="maximum">Parse to decimal</param>
@@ -116,8 +116,6 @@ public partial class UnitOfOasAttribute : Attribute
     /// ・boolean<br/>
     /// ・array<br/>
     /// ・object<br/>
-    /// 
-    /// 
     /// </remarks>
     public UnitOfOasAttribute(
         string type,

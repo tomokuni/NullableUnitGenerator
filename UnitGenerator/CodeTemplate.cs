@@ -249,12 +249,9 @@ if (IsBuiltinNumericType) {
                     "te default value instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" ValueStateDefaultValue { get; } = new(UnitState.Value, default);\r\n\r\n\r\n    /// <s" +
-                    "ummary>base type.</summary>\r\n    static readonly Type BaseType = typeof(");
+                    "ummary>base type.</summary>\r\n    public static Type BaseType { get; } = typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(@");
-
-    /// <summary>Get base type.</summary>
-    public static Type GetBaseType() => BaseType;
 
     /// <summary>Is base type nullable?</summary>
     public static bool IsNullable { get; }
@@ -316,27 +313,28 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(".ValueStateDefaultValue),\r\n        };\r\n        result = outVal;\r\n        return s" +
                     "tate;\r\n    }\r\n\r\n\r\n    //\r\n    // get state\r\n    //\r\n\r\n    /// <summary><see lang" +
-                    "word=\"true\"/> if undefined; otherwise, <see langword=\"false\"/>.</summary>\r\n    /" +
-                    "// <returns><b><see langword=\"true\"/></b> : if undefined</returns>\r\n    public b" +
-                    "ool IsUndef\r\n        => m_state == UnitState.Undef;\r\n\r\n    /// <summary><see lan" +
-                    "gword=\"true\"/> if null; otherwise, <see langword=\"false\"/>.</summary>\r\n    /// <" +
-                    "returns><b><see langword=\"true\"/></b> : if null</returns>\r\n    public bool IsNul" +
-                    "l\r\n        => m_state == UnitState.Null;\r\n\r\n    /// <summary><see langword=\"true" +
-                    "\"/> if undefined or null; otherwise, <see langword=\"false\"/>.</summary>\r\n    ///" +
-                    " <returns><b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n    pu" +
-                    "blic bool IsUndefOrNull\r\n        => m_state != UnitState.Value;\r\n\r\n    /// <summ" +
-                    "ary><see langword=\"true\"/> if not undefined and not null; otherwise, <see langwo" +
-                    "rd=\"false\"/>.</summary>\r\n    /// <returns><b><see langword=\"true\"/></b> : if not" +
-                    " undefined and not null</returns>\r\n    public bool HasValue\r\n        => m_state " +
-                    "== UnitState.Value;\r\n\r\n    /// <summary>return value state.</summary>\r\n    /// <" +
-                    "returns>\r\n    /// <b>Undef</b><br/>\r\n    /// <b>Null</b><br/>\r\n    /// <b>Value<" +
-                    "/b>\r\n    /// </returns>\r\n    public UnitState State\r\n        => m_state;\r\n\r\n\r\n  " +
-                    "  //\r\n    // get value\r\n    //\r\n\r\n    /// <summary>return value if HasValue is t" +
-                    "rue; otherwise, throw InvalidOperationException()</summary>\r\n    /// <returns>\r\n" +
-                    "    /// <b>value</b> : if HasValue is true<br/>\r\n    /// <b>throw InvalidOperati" +
-                    "onException(\"Value is Null.\")</b> : if IsNull is true<br/>\r\n    /// <b>throw Inv" +
-                    "alidOperationException(\"Value is Undef.\")</b> : if IsUndef is true\r\n    /// </re" +
-                    "turns>\r\n    public ");
+                    "word=\"true\"/> if undefined; otherwise.</summary>\r\n    /// <returns><b><see langw" +
+                    "ord=\"true\"/></b> : if undefined</returns>\r\n    public bool IsUndef\r\n        => m" +
+                    "_state == UnitState.Undef;\r\n\r\n    /// <summary><see langword=\"true\"/> if null; o" +
+                    "therwise.</summary>\r\n    /// <returns><b><see langword=\"true\"/></b> : if null</r" +
+                    "eturns>\r\n    public bool IsNull\r\n        => m_state == UnitState.Null;\r\n\r\n    //" +
+                    "/ <summary><see langword=\"true\"/> if undefined or null; otherwise.</summary>\r\n  " +
+                    "  /// <returns><b><see langword=\"true\"/></b> : if null or undefined</returns>\r\n " +
+                    "   public bool IsUndefOrNull\r\n        => m_state != UnitState.Value;\r\n\r\n    /// " +
+                    "<summary><see langword=\"true\"/> if null or hasValue; otherwise.</summary>\r\n    /" +
+                    "// <returns><b><see langword=\"true\"/></b> : if null or hasValue</returns>\r\n    p" +
+                    "ublic bool IsNullOrHasValue\r\n        => m_state != UnitState.Undef;\r\n\r\n    /// <" +
+                    "summary><see langword=\"true\"/> if not undefined and not null; otherwise.</summar" +
+                    "y>\r\n    /// <returns><b><see langword=\"true\"/></b> : if hasValuel</returns>\r\n   " +
+                    " public bool HasValue\r\n        => m_state == UnitState.Value;\r\n\r\n    /// <summar" +
+                    "y>return value state.</summary>\r\n    /// <returns>\r\n    /// <b>Undef</b><br/>\r\n " +
+                    "   /// <b>Null</b><br/>\r\n    /// <b>Value</b>\r\n    /// </returns>\r\n    public Un" +
+                    "itState State\r\n        => m_state;\r\n\r\n\r\n    //\r\n    // get value\r\n    //\r\n\r\n    " +
+                    "/// <summary>return value if HasValue is true; otherwise, throw InvalidOperation" +
+                    "Exception()</summary>\r\n    /// <returns>\r\n    /// <b>value</b> : if HasValue is " +
+                    "true<br/>\r\n    /// <b>throw InvalidOperationException(\"Value is Null.\")</b> : if" +
+                    " IsNull is true<br/>\r\n    /// <b>throw InvalidOperationException(\"Value is Undef" +
+                    ".\")</b> : if IsUndef is true\r\n    /// </returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    publ" +
                     "ic ");
