@@ -1,15 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(ProjectDir)obj\Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
 
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(ProjectDir)obj\Generated</CompilerGeneratedFilesOutputPath>
-        <IsPackable>false</IsPackable>
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
 
 </Project>

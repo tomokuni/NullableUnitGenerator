@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using MessagePack;
+﻿#pragma warning disable CA1822	// メンバーを static に設定します
+
 using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOptions;
 
@@ -37,98 +31,98 @@ namespace ConsoleApp.Builtins;
 //    object? example = null,
 //    bool nullable = true)
 
-[UnitOf(typeof(bool), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(bool), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("boolean", example:"true")]
 public readonly partial struct VoBool
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(char), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(char), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("string", format: "uint8")]
 public readonly partial struct VoChar
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(byte), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(byte), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "int8")]
 public readonly partial struct VoByte
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(sbyte), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(sbyte), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "uint8")]
 public readonly partial struct VoSbyte
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(short), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(short), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "int16")]
 public readonly partial struct VoShort
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(ushort), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(ushort), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "uint16")]
 public readonly partial struct VoUshort
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(int), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(int), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "int32")]
 public readonly partial struct VoInt
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(uint), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(uint), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "uint32")]
 public readonly partial struct VoUint
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(long), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(long), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "int64")]
 public readonly partial struct VoLong
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(ulong), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(ulong), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("integer", format: "uint64")]
 public readonly partial struct VoUlong
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(float), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(float), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("number", format: "float")]
 public readonly partial struct VoFloat
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(double), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(double), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("number", format: "double")]
 public readonly partial struct VoDouble
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(decimal), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(decimal), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("number", format: "decimal")]
 public readonly partial struct VoDecimal
 {
     private partial void Validate() { }
 }
 
-[UnitOf(typeof(string), UGO.MaxExtent | UGO.Validate | UGO.JsonConverterSupport | UGO.JsonConverterDictionaryKeySupport | UGO.MessagePackFormatterSupport | UGO.DapperTypeHandlerSupport | UGO.EntityFrameworkValueConverterSupport)]
+[UnitOf(typeof(string), UGO.MaxExtent | UGO.Validate | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("string")]
 public readonly partial struct VoString
 {

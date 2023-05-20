@@ -21,7 +21,7 @@ public static class UnitHelper
     /// <returns></returns>
     public static IEnumerable<(Type type, T attr)> GetTypeAndAttributes<T>() where T : Attribute
     {
-        var asms = AppDomain.CurrentDomain.GetAssemblies();
+        var asms = AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic);
         var types = asms.SelectMany(asm => asm.GetExportedTypes());
         var typesHasAttr = types.Where(w => w.GetCustomAttributes(typeof(T), false).Any());
         var attrs = typesHasAttr.Select(s => (s.UnderlyingSystemType, (T)s.GetCustomAttributes(typeof(T), false).First()));
@@ -30,11 +30,11 @@ public static class UnitHelper
 
 
     /// <summary>
-    /// 引数のオブジェクトからプロパティを取得し、Undef値以外を ExpandoObject 型に変換
+    /// 引数のオブジェクトからプロパティを取得し、Undef値以外を dynamic (ExpandoObject) 型に変換
     /// </summary>
     /// <param name="modelClass"></param>
     /// <returns></returns>
-    public static ExpandoObject ExcludeUndef(object modelClass)
+    public static dynamic ExcludeUndef(object modelClass)
     {
         if (modelClass is IDictionary<string, dynamic> d)
         {
@@ -64,25 +64,26 @@ public static class UnitHelper
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>
-    /// <seealso cref="https://code-maze.com/csharp-convert-string-titlecase-camelcase/"/>
+    public static string Pascalize(string str)
+    {
+        var w = regexPascalize.Replace(str, 
+            m => char.ToUpper(m.Groups[1].Value[0]) + m.Groups[1].Value[1..].ToLower() + m.Groups[2].Value);
+        return char.ToUpper(w[0]) + w[1..];
+    }
+    static Regex regexPascalize = new(@"(^[A-Z][A-Z]*|[A-Z][A-Z]+)($|[A-Z][a-z0-9])");
+
+
+    /// <summary>
+    /// 文字列をパスカルケースに変換する
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
     public static string ToPascalCase(string str)
     {
-        Regex regexLead = new(@"([A-Z])([A-Z]+|[a-z0-9]+)($|[A-Z]\w*)");
-        Regex regexTail = new(@"([A-Z])([A-Z]+)($|[A-Z][a-z0-9])");
-
-        string Pascalize(string w0)
-        {
-            var w1 = regexLead.Replace(w0, m => m.Groups[1].Value.ToLower() + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
-            var w2 = regexTail.Replace(w1, m => m.Groups[1].Value + m.Groups[2].Value.ToLower() + m.Groups[3].Value);
-            var w3 = char.ToUpper(w2[0]) + w2[1..];
-            return w3;
-        }
-
         var words = str
             .Split(new[] { "_", "-", " " }, StringSplitOptions.RemoveEmptyEntries)
             .Select(Pascalize)
             .ToArray();
-
         return string.Join(string.Empty, words);
     }
 
@@ -104,21 +105,9 @@ public static class UnitHelper
     /// </summary>
     /// <returns></returns>
     /// <seealso cref="https://masanyon.com/cameltosnake/"/>
-    public static string ToSnakeCase(string str)
+    public static string ToSnakeCase(string str, string delimiter = "_")
     {
         var camel = ToCamelCase(str);
-        return Regex.Replace(camel, @"([a-z0-9])([A-Z])", "$1_$2".ToLower());
-    }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    /// <seealso cref="https://masanyon.com/cameltosnake/"/>
-    public static string ToKebabCase(string str)
-    {
-        var camel = ToCamelCase(str);
-        return Regex.Replace(camel, @"([a-z0-9])([A-Z])", "$1-$2".ToLower());
+        return Regex.Replace(camel, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2")).ToLower();
     }
 }

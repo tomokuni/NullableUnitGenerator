@@ -88,27 +88,27 @@ public enum UnitGenerateOptions
     Validate = 0b0001_0000_0000_0000,
 
     /// <summary>
-    /// <b>JsonConverterSupport</b><br/>
+    /// <b>JsonConverter</b><br/>
     /// </summary>
-    JsonConverterSupport = 0b0000_0000_0001_0000_0000_0000_0000_0000,
+    JsonConverter = 0b0000_0000_0001_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>JsonConverterDictionaryKeySupport</b><br/>
+    /// <b>JsonConverterDictionaryKey</b><br/>
     /// </summary>
-    JsonConverterDictionaryKeySupport = 0b0000_0000_0010_0000_0000_0000_0000_0000,
+    JsonConverterDictionaryKey = 0b0000_0000_0010_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>MessagePackFormatterSupport</b><br/>
+    /// <b>MessagePackFormatter</b><br/>
     /// </summary>
-    MessagePackFormatterSupport = 0b0000_0000_1000_0000_0000_0000_0000_0000,
+    MessagePackFormatter = 0b0000_0000_1000_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>DapperTypeHandlerSupport</b><br/>
+    /// <b>DapperTypeHandler</b><br/>
     /// </summary>
-    DapperTypeHandlerSupport = 0b0000_0001_0000_0000_0000_0000_0000_0000,
+    DapperTypeHandler = 0b0000_0001_0000_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>EntityFrameworkValueConverterSupport</b><br/>
+    /// <b>EntityFrameworkValueConverter</b><br/>
     /// </summary>
-    EntityFrameworkValueConverterSupport = 0b0000_0010_0000_0000_0000_0000_0000_0000,
+    EntityFrameworkValueConverter = 0b0000_0010_0000_0000_0000_0000_0000_0000,
 }

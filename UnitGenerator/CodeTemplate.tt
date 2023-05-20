@@ -11,14 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
 using System.Runtime.CompilerServices;
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
 using System.Text.Json;
 using System.Text.Json.Serialization;
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
 using MessagePack;
 using MessagePack.Formatters;
 <# } #>
@@ -34,10 +34,10 @@ namespace <#= Namespace #>;
 /// <#= Name #> is TernaryType ValueObject<br/>
 /// Primitive type is <#= TypeName #> (<#= TypeNameFull #>)
 /// </summary>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
 [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
@@ -898,7 +898,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
         }
     }
 
-<# if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
 
     //
     // UnitGenerateOptions.JsonConverter
@@ -948,7 +948,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
             }
         }
 
-<# if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  #>
+<# if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKey)) {  #>
         /// <summary>WriteAsPropertyName</summary>
         public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
         {
@@ -993,7 +993,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
 
     //
     // UnitGenerateOptions.DapperTypeHandler
@@ -1024,7 +1024,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
 
     //
     // UnitGenerateOptions.EntityFrameworkValueConverter
@@ -1052,7 +1052,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { #>
+<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
 
     //
     // UnitGenerateOptions.MessagePackFormatter

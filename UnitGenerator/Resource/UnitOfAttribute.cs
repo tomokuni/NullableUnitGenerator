@@ -39,6 +39,27 @@ public partial class UnitOfAttribute : Attribute
     }
 }
 
+#if NET7_0_OR_GREATER
+/// <summary>
+/// Attributes for automatic code generation with NullableUnitGenerator<br/>
+/// NullableUnitGenerator でコード自動生成するための属性
+/// </summary>
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public partial class UnitOfAttribute<T> : UnitOfAttribute
+{
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="options"></param>
+    /// <param name="toStringFormat"></param>
+    public UnitOfAttribute(
+        UnitGenerateOptions options = UnitGenerateOptions.None,
+        string? toStringFormat = null)
+        : base(typeof(T), options, toStringFormat)
+    {}
+}
+#endif
 
 /// <summary>
 /// Attribute for defining OpenApiDataType in NullableUnitGenerator<br/>

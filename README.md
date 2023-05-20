@@ -236,12 +236,12 @@ enum UnitGenerateOptions
     ValueArithmeticOperator = 16,
     Comparable = 32,
     Validate = 64,
-    JsonConverterSupport = 128,
-    MessagePackFormatterSupport = 256,  // Unsupported
-    DapperTypeHandlerSupport = 512,
-    EntityFrameworkValueConverterSupport = 1024,  // Unsupported
+    JsonConverter = 128,
+    MessagePackFormatter = 256,  // Unsupported
+    DapperTypeHandler = 512,
+    EntityFrameworkValueConverter = 1024,  // Unsupported
     WithoutComparisonOperator = 2048,
-    JsonConverterDictionaryKeySupport = 4096
+    JsonConverterDictionaryKey = 4096
 }
 ```
 
@@ -260,7 +260,7 @@ public readonly partial struct UserId { }
 [MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
 public readonly partial struct UserId
 {
-    class UserIdMessagePackFormatterSupport : IMessagePackFormatter<UserId>
+    class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
     {
         public void Serialize(ref MessagePackWriter writer, UserId value, MessagePackSerializerOptions options)
         {
@@ -290,7 +290,7 @@ public readonly partial struct UserId
   - [WithoutComparisonOperator](#withoutcomparisonoperator)
   - [Validate](#validate)
   - [JsonConverter](#jsonconverter)
-  - [JsonConverterDictionaryKeySupport](#jsonconverterdictionarykeysupport)
+  - [JsonConverterDictionaryKey](#JsonConverterDictionaryKey)
   - [DapperTypeHandler](#dappertypehandler)
   - ~~[MessagePackFormatter](#messagepackformatter)~~
   - ~~[EntityFrameworkValueConverter](#entityframeworkvalueconverter)~~
@@ -388,10 +388,10 @@ internal enum UnitGenerateOptions
     ValueArithmeticOperator = 16,
     Comparable = 32,
     Validate = 64,
-    JsonConverterSupport = 128,
-    MessagePackFormatterSupport = 256,
-    DapperTypeHandlerSupport = 512,
-    EntityFrameworkValueConverterSupport = 1024,
+    JsonConverter = 128,
+    MessagePackFormatter = 256,
+    DapperTypeHandler = 512,
+    EntityFrameworkValueConverter = 1024,
 }
 ```
 
@@ -406,7 +406,7 @@ public readonly partial struct Strength { }
 [UnitOf(typeof(DateTime), UnitGenerateOptions.Validate | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.Comparable)]
 public readonly partial struct EndDate { }
 
-[UnitOf(typeof(double), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverterSupport | UnitGenerateOptions.MessagePackFormatterSupport | UnitGenerateOptions.DapperTypeHandlerSupport | UnitGenerateOptions.EntityFrameworkValueConverter)]
+[UnitOf(typeof(double), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter)]
 public readonly partial struct AllOptionsStruct { }
 ```
 
@@ -542,12 +542,12 @@ Implements `System.Text.Json`'s `JsonConverter`. It will be used `JsonSerializer
 [JsonConverter(typeof(UserIdJsonConverter))]
 public readonly partial struct UserId
 {
-    class UserIdJsonConverterSupport : JsonConverter<UserId>
+    class UserIdJsonConverter : JsonConverter<UserId>
 }
 ```
 
 
-### JsonConverterDictionaryKeySupport
+### JsonConverterDictionaryKey
 
 Implements `JsonConverter`'s `WriteAsPropertyName/ReadAsPropertyName`. It supports from .NET 6, supports Dictionary's Key.
 
@@ -591,7 +591,7 @@ C#の `MessagePackFormatter` 用のMessagePackを実装しています。自動�
 [MessagePackFormatter(typeof(UserIdMessagePackFormatter))]
 public readonly partial struct UserId
 {
-    class UserIdMessagePackFormatterSupport : IMessagePackFormatter<UserId>
+    class UserIdMessagePackFormatter : IMessagePackFormatter<UserId>
 }
 ```
 </details>

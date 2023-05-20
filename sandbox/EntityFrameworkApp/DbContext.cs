@@ -5,7 +5,7 @@ namespace EntityFrameworkApp;
 
 [UnitOf(typeof(int),
     UnitGenerateOptions.ParseMethod |
-    UnitGenerateOptions.EntityFrameworkValueConverterSupport)]
+    UnitGenerateOptions.EntityFrameworkValueConverter)]
 public readonly partial struct UserId { }
 
 public class User

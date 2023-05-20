@@ -34,13 +34,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 ");
- if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { 
+ if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
             this.Write("using System.Runtime.CompilerServices;\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
             this.Write("using System.Text.Json;\r\nusing System.Text.Json.Serialization;\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("using MessagePack;\r\nusing MessagePack.Formatters;\r\n");
  } 
             this.Write("\r\nusing NullableUnitGenerator;\r\n\r\n");
@@ -56,12 +56,12 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(" (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
             this.Write(")\r\n/// </summary>\r\n");
- if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("[MessagePackFormatter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("MessagePackFormatter))]\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
             this.Write("[JsonConverter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("JsonConverter))]\r\n");
@@ -1052,7 +1052,7 @@ if (IsBuiltinNumericType) {
     }
 
 ");
- if (HasFlag(UnitGenerateOptions.JsonConverterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.JsonConverter\r\n    //\r\n\r\n    /// <summary>Js" +
                     "onConverter</summary>\r\n    private class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1096,7 +1096,7 @@ if (IsBuiltinNumericType) {
                     "      throw new JsonException($\"{typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(")} converter does not found.\");\r\n            }\r\n        }\r\n\r\n");
- if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKeySupport)) {  
+ if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKey)) {  
             this.Write("        /// <summary>WriteAsPropertyName</summary>\r\n        public override void " +
                     "WriteAsPropertyName(Utf8JsonWriter writer, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1154,7 +1154,7 @@ if (IsSupportUtf8Formatter()) {
  } 
             this.Write("    }\r\n\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.DapperTypeHandlerSupport)) { 
+ if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.DapperTypeHandler\r\n    //\r\n\r\n    /// <summar" +
                     "y>Dapper.SqlMapper.TypeHandler</summary>\r\n    public class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1182,7 +1182,7 @@ if (IsSupportUtf8Formatter()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("DapperTypeHandler());\r\n    }\r\n\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.EntityFrameworkValueConverter\r\n    //\r\n\r\n   " +
                     " /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConvert" +
                     "er</summary>\r\n    public class ");
@@ -1211,7 +1211,7 @@ if (IsSupportUtf8Formatter()) {
             this.Write("(x),\r\n                    mappingHints: mappingHints)\r\n        {\r\n        }\r\n    " +
                     "}\r\n\r\n");
  } 
- if (HasFlag(UnitGenerateOptions.MessagePackFormatterSupport)) { 
+ if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOptions.MessagePackFormatter\r\n    //\r\n\r\n    /// <sum" +
                     "mary>IMessagePackFormatter</summary>\r\n    private class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));

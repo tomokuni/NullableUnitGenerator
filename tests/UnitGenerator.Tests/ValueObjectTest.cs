@@ -12,7 +12,8 @@ using Microsoft.CodeAnalysis;
 
 namespace NullableUnitGenerator.Tests;
 
-public class VoIntTest
+
+public class ValueObjectTest
 {
     [Fact]
     public void Equal()
@@ -188,7 +189,7 @@ public class VoIntTest
 }
 
 
-[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.ComparisonOperator | UnitGenerateOptions.IComparable | UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverterSupport | UnitGenerateOptions.MessagePackFormatterSupport | UnitGenerateOptions.DapperTypeHandlerSupport | UnitGenerateOptions.EntityFrameworkValueConverterSupport | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.ComparisonOperator | UnitGenerateOptions.IComparable | UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKey)]
 public readonly partial struct VoInt
 {
     private partial void Validate()
@@ -197,7 +198,7 @@ public readonly partial struct VoInt
     }
 }
 
-//[UnitOf(typeof(DateTime), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverterSupport | UnitGenerateOptions.MessagePackFormatterSupport | UnitGenerateOptions.DapperTypeHandlerSupport | UnitGenerateOptions.EntityFrameworkValueConverterSupport | UnitGenerateOptions.JsonConverterDictionaryKeySupport)]
+//[UnitOf(typeof(DateTime), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKey)]
 //public readonly partial struct VoDateTime
 //{
 //    private partial void Validate()

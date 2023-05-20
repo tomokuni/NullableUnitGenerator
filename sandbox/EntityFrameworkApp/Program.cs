@@ -1,4 +1,6 @@
-﻿using EntityFrameworkApp;
+﻿using System;
+using System.Linq;
+using EntityFrameworkApp;
 using Microsoft.EntityFrameworkCore;
 
 var options = new DbContextOptionsBuilder<SampleDbContext>()
