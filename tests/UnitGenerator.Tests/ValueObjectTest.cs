@@ -9,6 +9,9 @@ using NullableUnitGenerator;
 using System.Reflection;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
+using Xunit.Sdk;
+using static NullableUnitGenerator.Tests.ValueObjectTest;
+using UnitGenerator.Tests;
 
 namespace NullableUnitGenerator.Tests;
 
@@ -16,6 +19,79 @@ namespace NullableUnitGenerator.Tests;
 public class ValueObjectTest
 {
     [Fact]
+    public void VoBool_Equal()
+    {
+        var vo = new VoBool[] { default, new((bool?)null), new(default(bool)), new(false), new(true) };
+
+        //
+        // Undefined, Null, Default
+        //
+        Assert.Equal(vo[0], VoBool.UndefValue);
+        Assert.Equal(vo[1], VoBool.NullValue);
+        Assert.Equal(vo[2], VoBool.DefaultValueOfValueState);
+
+        //
+        // Equals, ==, !=
+        //
+        foreach (var (v1, i1) in vo.Select((value, index) => (value, index)))
+        {
+            foreach (var (v2, i2) in vo.Select((value, index) => (value, index)))
+            {
+                if (v1.HasValue
+                    && v2.HasValue
+                    && v1.Value.Equals(v2.Value))
+                {
+                    Assert.True(v1.Equals(v2));
+                    Assert.True(v1.Equals((object)v2));
+                    Assert.True(v1 == v2);
+                    Assert.False(v1 != v2);
+                    if (v2.HasValue)
+                    {
+                        //Assert.True(v1.Equals(v2.Value));
+                        //Assert.True(v1 == v2.Value);
+                        //Assert.False(v1 != v2.Value);
+                    }
+                    else
+                    {
+                        //Assert.False(v1.Equals(v2.Value));
+                        //Assert.False(v1 == v2.Value);
+                        //Assert.False(v1 != v2.Value);
+                    }
+                }
+                else
+                {
+                    if (v1.IsUndef.Equals(v2.IsUndef) && v1.IsUndef)
+                    {
+                        Assert.True(v1.Equals(v2));
+                        Assert.True(v1.Equals((object)v2));
+                        Assert.True(v1 == v2);
+                        Assert.False(v1 != v2);
+                    }
+                    else if (v1.IsNull.Equals(v2.IsNull) && v1.IsNull)
+                    {
+                        Assert.True(v1.Equals(v2));
+                        Assert.True(v1.Equals((object)v2));
+                        Assert.True(v1 == v2);
+                        Assert.False(v1 != v2);
+                    }
+                    else
+                    {
+                        Assert.False(v1.Equals(v2));
+                        Assert.False(v1.Equals((object)v2));
+                        Assert.False(v1 == v2);
+                        Assert.True(v1 != v2);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    //var tw = new TestVoWrapper<VoBool, bool>();
+    //tw.Equal(vo);
+
+
     public void Equal()
     {
         VoInt a = default;
@@ -29,7 +105,7 @@ public class ValueObjectTest
         //
         Assert.Equal(a, VoInt.UndefValue);
         Assert.Equal(b, VoInt.NullValue);
-        Assert.Equal(c, VoInt.ValueStateDefaultValue);
+        Assert.Equal(c, VoInt.DefaultValueOfValueState);
 
         //
         // Equals, ==, !=

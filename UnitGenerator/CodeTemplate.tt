@@ -41,7 +41,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
 {
     // Namespace : <#= Namespace ?? "(null)" #>
     // Name      : <#= Name #>
@@ -201,7 +201,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
     public static <#= Name #> NullValue { get; } = new(UnitState.Null, default);
 
     /// <summary>Value state default value instance.</summary>
-    public static <#= Name #> ValueStateDefaultValue { get; } = new(UnitState.Value, default);
+    public static <#= Name #> DefaultValueOfValueState   { get; } = new(UnitState.Value, default);
 
 
     /// <summary>base type.</summary>
@@ -232,7 +232,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
             { y.IsUndef: true } => (UnitState.Undef, <#= Name #>.UndefValue),
             { x.IsNull: true } => (UnitState.Null, <#= Name #>.NullValue),
             { y.IsNull: true } => (UnitState.Null, <#= Name #>.NullValue),
-            _ => (UnitState.Value, <#= Name #>.ValueStateDefaultValue),
+            _ => (UnitState.Value, <#= Name #>.DefaultValueOfValueState  ),
         };
         result = outVal;
         return state;
@@ -251,7 +251,7 @@ public readonly partial struct <#= Name #> : IUnitOf, IEquatable<<#= Name #>>, I
         {
             { IsUndef: true } => (UnitState.Undef, <#= Name #>.UndefValue),
             { IsNull: true } => (UnitState.Null, <#= Name #>.NullValue),
-            _ => (UnitState.Value, <#= Name #>.ValueStateDefaultValue),
+            _ => (UnitState.Value, <#= Name #>.DefaultValueOfValueState  ),
         };
         result = outVal;
         return state;

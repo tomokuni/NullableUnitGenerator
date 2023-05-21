@@ -121,32 +121,32 @@ public class DummyVoSample
     /// 
     /// </summary>
     /// <returns></returns>
-    public static UnitOfSample GetAllValueStateDefaultValue()
+    public static UnitOfSample GetAllDefaultValueOfValueState  ()
     {
         return new UnitOfSample
         {
-            Title = "全部ValueStateDefaultValue",
-            VoBool = VoBool.ValueStateDefaultValue,
-            VoByte = VoByte.ValueStateDefaultValue,
-            VoSbyte = VoSbyte.ValueStateDefaultValue,
-            VoChar = VoChar.ValueStateDefaultValue,
-            VoShort = VoShort.ValueStateDefaultValue,
-            VoUshort = VoUshort.ValueStateDefaultValue,
-            VoInt = VoInt.ValueStateDefaultValue,
-            VoUint = VoUint.ValueStateDefaultValue,
-            VoLong = VoLong.ValueStateDefaultValue,
-            VoUlong = VoUlong.ValueStateDefaultValue,
-            VoFloat = VoFloat.ValueStateDefaultValue,
-            VoDouble = VoDouble.ValueStateDefaultValue,
-            VoDecimal = VoDecimal.ValueStateDefaultValue,
-            VoString = VoString.ValueStateDefaultValue,
-            VoGuid = VoGuid.ValueStateDefaultValue,
-            VoUlid = VoUlid.ValueStateDefaultValue,
-            VoDatetime = VoDatetime.ValueStateDefaultValue,
-            VoDateonly = VoDateonly.ValueStateDefaultValue,
-            VoTimeonly = VoTimeonly.ValueStateDefaultValue,
-            VoTimespan = VoTimespan.ValueStateDefaultValue,
-            VoByteArray = VoByteArray.ValueStateDefaultValue,
+            Title = "全部DefaultValueOfValueState  ",
+            VoBool = VoBool.DefaultValueOfValueState  ,
+            VoByte = VoByte.DefaultValueOfValueState  ,
+            VoSbyte = VoSbyte.DefaultValueOfValueState  ,
+            VoChar = VoChar.DefaultValueOfValueState  ,
+            VoShort = VoShort.DefaultValueOfValueState  ,
+            VoUshort = VoUshort.DefaultValueOfValueState  ,
+            VoInt = VoInt.DefaultValueOfValueState  ,
+            VoUint = VoUint.DefaultValueOfValueState  ,
+            VoLong = VoLong.DefaultValueOfValueState  ,
+            VoUlong = VoUlong.DefaultValueOfValueState  ,
+            VoFloat = VoFloat.DefaultValueOfValueState  ,
+            VoDouble = VoDouble.DefaultValueOfValueState  ,
+            VoDecimal = VoDecimal.DefaultValueOfValueState  ,
+            VoString = VoString.DefaultValueOfValueState  ,
+            VoGuid = VoGuid.DefaultValueOfValueState  ,
+            VoUlid = VoUlid.DefaultValueOfValueState  ,
+            VoDatetime = VoDatetime.DefaultValueOfValueState  ,
+            VoDateonly = VoDateonly.DefaultValueOfValueState  ,
+            VoTimeonly = VoTimeonly.DefaultValueOfValueState  ,
+            VoTimespan = VoTimespan.DefaultValueOfValueState  ,
+            VoByteArray = VoByteArray.DefaultValueOfValueState  ,
         };
     }
 

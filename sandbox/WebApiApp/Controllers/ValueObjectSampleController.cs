@@ -63,7 +63,7 @@ public class ValueObjectSampleController : ControllerBase
             DummyVoSample.GetAllValue(),
             DummyVoSample.GetAllNullValue(),
             DummyVoSample.GetAllUndefValue(),
-            DummyVoSample.GetAllValueStateDefaultValue(),
+            DummyVoSample.GetAllDefaultValueOfValueState  (),
             DummyVoSample.GetAllDefalut(),
         }; 
         return list.Select(x => UnitHelper.ExcludeUndef(x)).ToList();
