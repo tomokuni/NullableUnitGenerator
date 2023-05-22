@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
+﻿#pragma warning disable IDE0079 // 不要な抑制を削除します
+#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 using System;
@@ -70,7 +71,7 @@ public static class UnitHelper
             m => char.ToUpper(m.Groups[1].Value[0]) + m.Groups[1].Value[1..].ToLower() + m.Groups[2].Value);
         return char.ToUpper(w[0]) + w[1..];
     }
-    static Regex regexPascalize = new(@"(^[A-Z][A-Z]*|[A-Z][A-Z]+)($|[A-Z][a-z0-9])");
+    static readonly Regex regexPascalize = new(@"(^[A-Z][A-Z]*|[A-Z][A-Z]+)($|[A-Z][a-z0-9])");
 
 
     /// <summary>
