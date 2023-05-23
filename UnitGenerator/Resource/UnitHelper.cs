@@ -77,8 +77,8 @@ public static class UnitHelper
     /// <summary>
     /// 文字列をパスカルケースに変換する
     /// </summary>
-    /// <param name="str"></param>
-    /// <returns></returns>
+    /// <param name="str">変換元文字列</param>
+    /// <returns>パスカルケースの文字列</returns>
     public static string ToPascalCase(string str)
     {
         var words = str
@@ -92,8 +92,8 @@ public static class UnitHelper
     /// <summary>
     /// 文字列をキャメルケースに変換する
     /// </summary>
-    /// <param name="str"></param>
-    /// <returns></returns>
+    /// <param name="str">変換元文字列</param>
+    /// <returns>キャメルケースの文字列</returns>
     public static string ToCamelCase(string str)
     {
         var pascal = ToPascalCase(str);
@@ -102,10 +102,11 @@ public static class UnitHelper
 
 
     /// <summary>
-    /// 
+    /// 文字列をスネークケースに変換する
     /// </summary>
-    /// <returns></returns>
-    /// <seealso cref="https://masanyon.com/cameltosnake/"/>
+    /// <param name="str">変換元文字列</param>
+    /// <param name="delimiter">区切り文字</param>
+    /// <returns>スネークケースの文字列</returns>
     public static string ToSnakeCase(string str, string delimiter = "_")
     {
         var camel = ToCamelCase(str);
