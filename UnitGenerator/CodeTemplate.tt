@@ -999,8 +999,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
-#if !UGO_DAPPER_DISABLE
 
+#if !UGO_DAPPER_DISABLE
     //
     // UnitGenerateOptions.DapperTypeHandler
     //
@@ -1028,12 +1028,12 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>DapperTypeHandler());
     }
-
 #endif
+
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
-#if !UGO_ENTITYFRAMEWORK_DISABLE
 
+#if !UGO_ENTITYFRAMEWORK_DISABLE
     //
     // UnitGenerateOptions.EntityFrameworkValueConverter
     //
@@ -1058,12 +1058,12 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         {
         }
     }
-
 #endif
+
 <# } #>
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
-#if !UGO_MESSAGEPACK_DISABLE
 
+#if !UGO_MESSAGEPACK_DISABLE
     //
     // UnitGenerateOptions.MessagePackFormatter
     //
@@ -1083,8 +1083,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             return new <#= Name #>(options.Resolver.GetFormatterWithVerify<<#= TypeName #>>().Deserialize(ref reader, options));
         }
     }
-
 #endif
+
 <# } #>
 
 }
