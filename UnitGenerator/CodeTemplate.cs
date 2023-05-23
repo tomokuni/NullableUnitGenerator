@@ -34,20 +34,18 @@ namespace NullableUnitGenerator
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-#if !UGO_DAPPER_DISABLE
 ");
  if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
-            this.Write("using System.Runtime.CompilerServices;\r\n");
+            this.Write("#if !UGO_DAPPER_DISABLE\r\nusing System.Runtime.CompilerServices;\r\n#endif\r\n");
  } 
-            this.Write("#endif\r\n");
  if (HasFlag(UnitGenerateOptions.JsonConverter)) { 
             this.Write("using System.Text.Json;\r\nusing System.Text.Json.Serialization;\r\n");
  } 
-            this.Write("#if !UGO_MESSAGEPACKFORMATTER_DISABLE\r\n");
  if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
-            this.Write("using MessagePack;\r\nusing MessagePack.Formatters;\r\n");
+            this.Write("#if !UGO_MESSAGEPACK_DISABLE\r\nusing MessagePack;\r\nusing MessagePack.Formatters;\r\n" +
+                    "#endif\r\n");
  } 
-            this.Write("#endif\r\n\r\nusing NullableUnitGenerator;\r\n\r\n");
+            this.Write("\r\nusing NullableUnitGenerator;\r\n\r\n");
  if (!string.IsNullOrEmpty(Namespace)) { 
             this.Write("namespace ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
@@ -1163,10 +1161,10 @@ if (IsSupportUtf8Formatter()) {
  } 
             this.Write("    }\r\n\r\n");
  } 
-            this.Write("#if !UGO_DAPPER_DISABLE\r\n");
  if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { 
-            this.Write("\r\n    //\r\n    // UnitGenerateOptions.DapperTypeHandler\r\n    //\r\n\r\n    /// <summar" +
-                    "y>Dapper.SqlMapper.TypeHandler</summary>\r\n    public class ");
+            this.Write("#if !UGO_DAPPER_DISABLE\r\n\r\n    //\r\n    // UnitGenerateOptions.DapperTypeHandler\r\n" +
+                    "    //\r\n\r\n    /// <summary>Dapper.SqlMapper.TypeHandler</summary>\r\n    public cl" +
+                    "ass ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("DapperTypeHandler : Dapper.SqlMapper.TypeHandler<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1190,13 +1188,12 @@ if (IsSupportUtf8Formatter()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(".");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("DapperTypeHandler());\r\n    }\r\n\r\n");
+            this.Write("DapperTypeHandler());\r\n    }\r\n\r\n#endif\r\n");
  } 
-            this.Write("#endif\r\n#if !UGO_ENTITYFRAMEWORKVALUECONVERTER_DISABLE\r\n");
  if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { 
-            this.Write("\r\n    //\r\n    // UnitGenerateOptions.EntityFrameworkValueConverter\r\n    //\r\n\r\n   " +
-                    " /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConvert" +
-                    "er</summary>\r\n    public class ");
+            this.Write("#if !UGO_ENTITYFRAMEWORK_DISABLE\r\n\r\n    //\r\n    // UnitGenerateOptions.EntityFram" +
+                    "eworkValueConverter\r\n    //\r\n\r\n    /// <summary>Microsoft.EntityFrameworkCore.St" +
+                    "orage.ValueConversion.ValueConverter</summary>\r\n    public class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("EntityFrameworkValueConverter : Microsoft.EntityFrameworkCore.Storage.ValueConver" +
                     "sion.ValueConverter<");
@@ -1220,12 +1217,12 @@ if (IsSupportUtf8Formatter()) {
             this.Write(")x.GetOrNull(),\r\n                    convertFromProviderExpression: x => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(x),\r\n                    mappingHints: mappingHints)\r\n        {\r\n        }\r\n    " +
-                    "}\r\n\r\n");
+                    "}\r\n\r\n#endif\r\n");
  } 
-            this.Write("#endif\r\n#if !UGO_MESSAGEPACKFORMATTER_DISABLE\r\n");
  if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { 
-            this.Write("\r\n    //\r\n    // UnitGenerateOptions.MessagePackFormatter\r\n    //\r\n\r\n    /// <sum" +
-                    "mary>IMessagePackFormatter</summary>\r\n    private class ");
+            this.Write("#if !UGO_MESSAGEPACK_DISABLE\r\n\r\n    //\r\n    // UnitGenerateOptions.MessagePackFor" +
+                    "matter\r\n    //\r\n\r\n    /// <summary>IMessagePackFormatter</summary>\r\n    private " +
+                    "class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("MessagePackFormatter : IMessagePackFormatter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -1243,9 +1240,9 @@ if (IsSupportUtf8Formatter()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(options.Resolver.GetFormatterWithVerify<");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(">().Deserialize(ref reader, options));\r\n        }\r\n    }\r\n\r\n");
+            this.Write(">().Deserialize(ref reader, options));\r\n        }\r\n    }\r\n\r\n#endif\r\n");
  } 
-            this.Write("#endif\r\n\r\n}\r\n");
+            this.Write("\r\n}\r\n");
             return this.GenerationEnvironment.ToString();
         }
     }

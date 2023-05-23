@@ -12,21 +12,21 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-#if !UGO_DAPPER_DISABLE
 <# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+#if !UGO_DAPPER_DISABLE
 using System.Runtime.CompilerServices;
-<# } #>
 #endif
+<# } #>
 <# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
 using System.Text.Json;
 using System.Text.Json.Serialization;
 <# } #>
-#if !UGO_MESSAGEPACKFORMATTER_DISABLE
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+#if !UGO_MESSAGEPACK_DISABLE
 using MessagePack;
 using MessagePack.Formatters;
-<# } #>
 #endif
+<# } #>
 
 using NullableUnitGenerator;
 
@@ -998,8 +998,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     }
 
 <# } #>
-#if !UGO_DAPPER_DISABLE
 <# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+#if !UGO_DAPPER_DISABLE
 
     //
     // UnitGenerateOptions.DapperTypeHandler
@@ -1029,10 +1029,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         Dapper.SqlMapper.AddTypeHandler(new <#= Name #>.<#= Name #>DapperTypeHandler());
     }
 
-<# } #>
 #endif
-#if !UGO_ENTITYFRAMEWORKVALUECONVERTER_DISABLE
+<# } #>
 <# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
+#if !UGO_ENTITYFRAMEWORK_DISABLE
 
     //
     // UnitGenerateOptions.EntityFrameworkValueConverter
@@ -1059,10 +1059,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         }
     }
 
-<# } #>
 #endif
-#if !UGO_MESSAGEPACKFORMATTER_DISABLE
+<# } #>
 <# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+#if !UGO_MESSAGEPACK_DISABLE
 
     //
     // UnitGenerateOptions.MessagePackFormatter
@@ -1084,7 +1084,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         }
     }
 
-<# } #>
 #endif
+<# } #>
 
 }
