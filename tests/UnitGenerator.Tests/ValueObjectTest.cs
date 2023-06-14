@@ -265,12 +265,11 @@ public class ValueObjectTest
 }
 
 
-[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.ComparisonOperator | UnitGenerateOptions.IComparable | UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKey)]
+[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.ComparisonOperator | UnitGenerateOptions.IComparable | UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ValidateAtGeneration | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKey)]
 public readonly partial struct VoInt
 {
-    private partial void Validate()
+    partial void CustomValidate()
     {
-        _ = HasValue;
     }
 }
 

@@ -102,11 +102,11 @@ namespace Sample
     public readonly partial struct UserId { }
 
 
-    [UnitOf(typeof(int), UGO.Validate)]
+    [UnitOf(typeof(int), UGO.ValidateAtGeneration)]
     public readonly partial struct SampleValidate
     {
         // impl here.
-        private partial void Validate()
+        partial void CustomValidate()
         {
             if (m_value > 9999) throw new Exception("Invalid value range: " + m_value);
         }

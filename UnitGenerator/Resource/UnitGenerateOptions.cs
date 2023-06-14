@@ -85,30 +85,82 @@ public enum UnitGenerateOptions
     /// Option to call Validate method from constructor<br/>
     /// コンストラクタから Validate メソッドを呼び出すオプション
     /// </summary>
-    Validate = 0b0001_0000_0000_0000,
+    ValidateAtGeneration = 0b0001_0000_0000_0000,
 
     /// <summary>
-    /// <b>JsonConverter</b><br/>
+    /// <b>JsonConverter</b>
     /// </summary>
     JsonConverter = 0b0000_0000_0001_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>JsonConverterDictionaryKey</b><br/>
+    /// <b>JsonConverterDictionaryKey</b>
     /// </summary>
     JsonConverterDictionaryKey = 0b0000_0000_0010_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>MessagePackFormatter</b><br/>
+    /// <b>MessagePackFormatter</b>
     /// </summary>
     MessagePackFormatter = 0b0000_0000_1000_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>DapperTypeHandler</b><br/>
+    /// <b>DapperTypeHandler</b>
     /// </summary>
     DapperTypeHandler = 0b0000_0001_0000_0000_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>EntityFrameworkValueConverter</b><br/>
+    /// <b>EntityFrameworkValueConverter</b>
     /// </summary>
     EntityFrameworkValueConverter = 0b0000_0010_0000_0000_0000_0000_0000_0000,
+}
+
+
+/// <summary>
+/// UnitGenerate の生成オプション
+/// </summary>
+public enum ValidateType
+{
+    /// <summary>None : non-validation</summary>
+    None = 0,
+
+    /// <summary>String : string - length,pattern</summary>
+    String,
+
+    /// <summary>Integer : integer - length,range</summary>
+    Integer,
+
+    /// <summary>Number : number - length,range</summary>
+    Number,
+
+    /// <summary>Boolean : boolean</summary>
+    Boolean,
+
+    /// <summary>Password : string - length,pattern</summary>
+    Password,
+
+    /// <summary>Email : string - length</summary>
+    Email,
+
+    /// <summary>Uri : string - length</summary>
+    Uri,
+
+    /// <summary>Tel : string - pattern</summary>
+    Tel,
+
+    /// <summary>DateYMD : string</summary>
+    DateYMD,
+
+    /// <summary>DateYM : string</summary>
+    DateYM,
+
+    /// <summary>TimeHMS : string</summary>
+    TimeHMS,
+
+    /// <summary>TimeHM : string</summary>
+    TimeHM,
+
+    /// <summary>DatetimeHMS : string</summary>
+    DatetimeHMS,
+
+    /// <summary>DatetimeHM : string</summary>
+    DatetimeHM,
 }

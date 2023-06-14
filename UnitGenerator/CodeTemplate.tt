@@ -117,8 +117,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         (m_state, m_value) = (value.m_state, value.m_value);
 
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-        // UnitGenerateOptions.Validate
+<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
+        // UnitGenerateOptions.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -136,8 +136,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             _ => (state, value)
         };
 
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-        // UnitGenerateOptions.Validate
+<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
+        // UnitGenerateOptions.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -148,8 +148,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         (m_state, m_value) = (UnitState.Value, value);
 
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-        // UnitGenerateOptions.Validate
+<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
+        // UnitGenerateOptions.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -164,8 +164,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             _ => (UnitState.Value, (<#= TypeName #>)value),
         };
 
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
-        // UnitGenerateOptions.Validate
+<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
+        // UnitGenerateOptions.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -411,15 +411,31 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // Validate    // UnitGenerateOptions.Validate
+    // Validate
     //
 
-<# if (HasFlag(UnitGenerateOptions.Validate)) { #>
     /// <summary>Validate</summary>
-    private partial void Validate();
-<# } else { #>
-        // No option specified
-<# } #>
+    public bool Validate() {
+        if (!InnerValidate())
+            return false;
+
+        try { 
+            CustomValidate(); 
+        } catch { 
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>InnerValidate</summary>
+    private bool InnerValidate()
+    {
+        return true;
+    }
+
+    /// <summary>CustomValidate</summary>
+    partial void CustomValidate();
 
 <# if (TypeName == "Guid" || TypeName == "System.Guid") { #>
 

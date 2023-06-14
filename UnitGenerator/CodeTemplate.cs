@@ -177,8 +177,8 @@ using System.Diagnostics.CodeAnalysis;
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (value.m_state, value.m_value);\r\n\r\n");
- if (HasFlag(UnitGenerateOptions.Validate)) { 
-            this.Write("        // UnitGenerateOptions.Validate\r\n        this.Validate();\r\n");
+ if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { 
+            this.Write("        // UnitGenerateOptions.ValidateAtGeneration\r\n        this.Validate();\r\n");
  } 
             this.Write("    }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -191,8 +191,8 @@ using System.Diagnostics.CodeAnalysis;
             this.Write("            (_, null) => (state, default),\r\n");
  } 
             this.Write("            _ => (state, value)\r\n        };\r\n\r\n");
- if (HasFlag(UnitGenerateOptions.Validate)) { 
-            this.Write("        // UnitGenerateOptions.Validate\r\n        this.Validate();\r\n");
+ if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { 
+            this.Write("        // UnitGenerateOptions.ValidateAtGeneration\r\n        this.Validate();\r\n");
  } 
             this.Write("    }\r\n\r\n");
  if (IsValueType) { 
@@ -201,8 +201,8 @@ using System.Diagnostics.CodeAnalysis;
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (UnitState.Value, value);\r\n\r\n");
- if (HasFlag(UnitGenerateOptions.Validate)) { 
-            this.Write("        // UnitGenerateOptions.Validate\r\n        this.Validate();\r\n");
+ if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { 
+            this.Write("        // UnitGenerateOptions.ValidateAtGeneration\r\n        this.Validate();\r\n");
  } 
             this.Write("    }\r\n");
  } 
@@ -214,8 +214,8 @@ using System.Diagnostics.CodeAnalysis;
                     " null => (UnitState.Null, default),\r\n            _ => (UnitState.Value, (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(")value),\r\n        };\r\n\r\n");
- if (HasFlag(UnitGenerateOptions.Validate)) { 
-            this.Write("        // UnitGenerateOptions.Validate\r\n        this.Validate();\r\n");
+ if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { 
+            this.Write("        // UnitGenerateOptions.ValidateAtGeneration\r\n        this.Validate();\r\n");
  } 
             this.Write(@"    }
 
@@ -453,16 +453,33 @@ if (IsBuiltinNumericType) {
 
 
     //
-    // Validate    // UnitGenerateOptions.Validate
+    // Validate
     //
 
+    /// <summary>Validate</summary>
+    public bool Validate() {
+        if (!InnerValidate())
+            return false;
+
+        try { 
+            CustomValidate(); 
+        } catch { 
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>InnerValidate</summary>
+    private bool InnerValidate()
+    {
+        return true;
+    }
+
+    /// <summary>CustomValidate</summary>
+    partial void CustomValidate();
+
 ");
- if (HasFlag(UnitGenerateOptions.Validate)) { 
-            this.Write("    /// <summary>Validate</summary>\r\n    private partial void Validate();\r\n");
- } else { 
-            this.Write("        // No option specified\r\n");
- } 
-            this.Write("\r\n");
  if (TypeName == "Guid" || TypeName == "System.Guid") { 
             this.Write("\r\n    //\r\n    // Guid\r\n    //\r\n\r\n    /// <summary>NewGuid</summary>\r\n    /// <ret" +
                     "urns>Guid.NewGuid()</returns>\r\n    public static ");
@@ -1265,7 +1282,7 @@ if (IsSupportUtf8Formatter()) {
         /// <summary>
         /// The string builder that generation-time code is using to assemble generated output
         /// </summary>
-        protected System.Text.StringBuilder GenerationEnvironment
+        public System.Text.StringBuilder GenerationEnvironment
         {
             get
             {
