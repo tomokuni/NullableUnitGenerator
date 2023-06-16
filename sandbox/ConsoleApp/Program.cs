@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Diagnostics;
 using NullableUnitGenerator;
-using UGO = NullableUnitGenerator.UnitGenerateOptions;
+using UGO = NullableUnitGenerator.UnitGenOpts;
 
 //var a = UGO.JsonConverterDictionaryKey;
 

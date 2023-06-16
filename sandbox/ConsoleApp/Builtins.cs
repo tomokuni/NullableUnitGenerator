@@ -3,7 +3,7 @@
 using System.Runtime.CompilerServices;
 
 using NullableUnitGenerator;
-using UGO = NullableUnitGenerator.UnitGenerateOptions;
+using UGO = NullableUnitGenerator.UnitGenOpts;
 
 namespace ConsoleApp.Builtins;
 
@@ -35,12 +35,7 @@ namespace ConsoleApp.Builtins;
 
 [UnitOf(typeof(bool), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("boolean", example:"true")]
-public readonly partial struct VoBool
-{
-    void a() {
-        var d = (bool)(GetType().GetMethod("CustomValidate")?.Invoke(this, null) ?? true);
-    }
-}
+public readonly partial struct VoBool { }
 
 
 [UnitOf(typeof(char), UGO.MaxExtent | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]

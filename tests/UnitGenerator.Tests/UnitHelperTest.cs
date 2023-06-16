@@ -131,6 +131,11 @@ public class UnitHelperTest
             { "ISODateTIME", "IsoDateTime" },
             { "IOStreamFILE", "IoStreamFile" },
             { "IoSTREAMFile", "IoStreamFile" },
+            { "IOStream2FILE", "IoStream2File" },
+            { "IoSTREAM2File", "IoStream2File" },
+            { "IoSTREAMFile2", "IoStreamFile2" },
+            { "TELNO1", "Telno1" },
+            { "1TELNO", "1Telno" },
         };
 
         foreach ((var src, var expect) in inputs)
@@ -158,6 +163,11 @@ public class UnitHelperTest
             { "ISODateTIME", "isoDateTime" },
             { "IOStreamFILE", "ioStreamFile" },
             { "IoSTREAMFile", "ioStreamFile" },
+            { "IOStream2FILE", "ioStream2File" },
+            { "IoSTREAM2File", "ioStream2File" },
+            { "IoSTREAMFile2", "ioStreamFile2" },
+            { "TELNO1", "telno1" },
+            { "1TELNO", "1Telno" },
         };
 
         foreach ((var src, var expect) in inputs)
@@ -184,6 +194,11 @@ public class UnitHelperTest
             { "ISODateTIME", "iso_date_time" },
             { "IOStreamFILE", "io_stream_file" },
             { "IoSTREAMFile", "io_stream_file" },
+            { "IOStream2FILE", "io_stream_2_file" },
+            { "IoSTREAM2File", "io_stream_2_file" },
+            { "IoSTREAMFile2", "io_stream_file_2" },
+            { "TELNO1", "telno_1" },
+            { "1TELNO", "1_telno" },
         };
 
         foreach ((var src, var expect) in inputs)

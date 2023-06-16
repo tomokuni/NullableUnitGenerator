@@ -1,12 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace NullableUnitGenerator;
 
@@ -15,7 +13,7 @@ namespace NullableUnitGenerator;
 /// ソースジェネレータ
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class SourceGenerator : IIncrementalGenerator
+public sealed class Generate : IIncrementalGenerator
 {
     /// <summary>
     /// ソース生成の開始ポイント
@@ -54,13 +52,13 @@ public sealed class SourceGenerator : IIncrementalGenerator
         var ns = targetSymbol.ContainingNamespace;
         if (attrCtorArgs[0].Value is not ITypeSymbol typeSymbol)
             throw new Exception("require UnitOf attribute parameter [Type]");
-        var parsedOptions = Enum.ToObject(typeof(UnitGenerateOptions), (attrCtorArgs[1].Value ?? UnitGenerateOptions.None));
+        var parsedOptions = Enum.ToObject(typeof(UnitGenOpts), (attrCtorArgs[1].Value ?? UnitGenOpts.None));
 
         var template = new CodeTemplate(
             ns: ns.IsGlobalNamespace ? null : ns.ToDisplayString(), 
             name: targetSymbol.Name,
             typeSymbol: typeSymbol,
-            options: (UnitGenerateOptions)parsedOptions,
+            options: (UnitGenOpts)parsedOptions,
             toStringFormat: attrCtorArgs[2].Value as string);
         var text = template.TransformText().Replace("\r\n", "\n");
 
@@ -81,7 +79,7 @@ public sealed class SourceGenerator : IIncrementalGenerator
     private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
     {
         AddCsResource("UnitOf.IUnitOf.cs");
-        AddCsResource("UnitOf.UnitGenerateOptions.cs");
+        AddCsResource("UnitOf.UnitGenOpts.cs");
         AddCsResource("UnitOf.UnitHelper.cs");
         AddCsResource("UnitOf.UnitOfAttribute.cs");
         AddCsResource("UnitOf.UnitState.cs");

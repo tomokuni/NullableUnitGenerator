@@ -1,14 +1,13 @@
-﻿
-using System;
+﻿using System;
 
 namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// UnitGenerate の生成オプション
+/// NullableUnitGenerator の生成オプション
 /// </summary>
 [Flags]
-public enum UnitGenerateOptions
+public enum UnitGenOpts
 {
     /// <summary>None</summary>
     None = 0,
@@ -111,56 +110,4 @@ public enum UnitGenerateOptions
     /// <b>EntityFrameworkValueConverter</b>
     /// </summary>
     EntityFrameworkValueConverter = 0b0000_0010_0000_0000_0000_0000_0000_0000,
-}
-
-
-/// <summary>
-/// UnitGenerate の生成オプション
-/// </summary>
-public enum ValidateType
-{
-    /// <summary>None : non-validation</summary>
-    None = 0,
-
-    /// <summary>String : string - length,pattern</summary>
-    String,
-
-    /// <summary>Integer : integer - length,range</summary>
-    Integer,
-
-    /// <summary>Number : number - length,range</summary>
-    Number,
-
-    /// <summary>Boolean : boolean</summary>
-    Boolean,
-
-    /// <summary>Password : string - length,pattern</summary>
-    Password,
-
-    /// <summary>Email : string - length</summary>
-    Email,
-
-    /// <summary>Uri : string - length</summary>
-    Uri,
-
-    /// <summary>Tel : string - pattern</summary>
-    Tel,
-
-    /// <summary>DateYMD : string</summary>
-    DateYMD,
-
-    /// <summary>DateYM : string</summary>
-    DateYM,
-
-    /// <summary>TimeHMS : string</summary>
-    TimeHMS,
-
-    /// <summary>TimeHM : string</summary>
-    TimeHM,
-
-    /// <summary>DatetimeHMS : string</summary>
-    DatetimeHMS,
-
-    /// <summary>DatetimeHM : string</summary>
-    DatetimeHM,
 }

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -17,9 +16,9 @@ public partial class CodeTemplate
     /// <param name="ns">Namespace</param>
     /// <param name="name">Value-object name</param>
     /// <param name="typeSymbol">type specified by the attribute</param>
-    /// <param name="options">UnitGenerateOptions specified by the attribute</param>
+    /// <param name="options">UnitGenOpts specified by the attribute</param>
     /// <param name="toStringFormat">ToStringFormat value specified by the attribute</param>
-    public CodeTemplate(string? ns, string name, ITypeSymbol typeSymbol, UnitGenerateOptions options, string? toStringFormat)
+    public CodeTemplate(string? ns, string name, ITypeSymbol typeSymbol, UnitGenOpts options, string? toStringFormat)
     {
         Namespace = ns;
         Name = name;
@@ -64,8 +63,8 @@ public partial class CodeTemplate
     /// <summary>type specified by the attribute.</summary>
     internal ITypeSymbol TypeSymbol { get; }
 
-    /// <summary>UnitGenerateOptions specified by the attribute.</summary>
-    internal UnitGenerateOptions Options { get; }
+    /// <summary>UnitGenOpts specified by the attribute.</summary>
+    internal UnitGenOpts Options { get; }
 
     /// <summary>ToStringFormat value specified by the attribute.</summary>
     internal string? ToStringFormat { get; }
@@ -94,6 +93,14 @@ public partial class CodeTemplate
     /// <summary>IsArray</summary>
     internal bool IsArray
         => TypeSymbol.TypeKind == TypeKind.Array;
+
+    /// <summary>Is the type name DateOnly.</summary>
+    internal bool IsDateOnly
+        => TypeName == "DateOnly";
+
+    /// <summary>Is the type name TimeOnly.</summary>
+    internal bool IsTimeOnly
+        => TypeName == "TimeOnly";
 
     /// <summary>Is the type name Ulid.</summary>
     internal bool IsUlid
@@ -148,8 +155,8 @@ public partial class CodeTemplate
            || (ContainsOperater("Min") && ContainsOperater("Max"));
 
 
-    /// <summary>Specified UnitGenerateOptions value is included or not.</summary>
-    internal bool HasFlag(UnitGenerateOptions options)
+    /// <summary>Specified UnitGenOpts value is included or not.</summary>
+    internal bool HasFlag(UnitGenOpts options)
         => Options.HasFlag(options);
 
 
@@ -205,6 +212,8 @@ public partial class CodeTemplate
             "double" => true,
             "DateTime" => true,
             "DateTimeOffset" => true,
+            "DateOnly" => false,
+            "TimeOnly" => false,
             "TimeSpan" => true,
             "Guid" => true,
             _ => false
@@ -229,10 +238,12 @@ public partial class CodeTemplate
             "float" => DbType.Single,
             "double" => DbType.Double,
             "decimal" => DbType.Currency,
-            "System.DateTime" => DbType.DateTime,
-            "System.DateTimeOffset" => DbType.DateTimeOffset,
-            "System.TimeSpan" => DbType.Time,
-            "System.Guid" => DbType.Guid,
+            "DateTime" => DbType.DateTime,
+            "DateTimeOffset" => DbType.DateTimeOffset,
+            "DateOnly" => DbType.Date,
+            "TimeOnly" => DbType.Time,
+            "TimeSpan" => DbType.Time,
+            "Guid" => DbType.Guid,
             _ => DbType.Object
         };
 

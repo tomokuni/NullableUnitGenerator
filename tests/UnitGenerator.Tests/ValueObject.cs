@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MessagePack;
 using NullableUnitGenerator;
-using UGO = NullableUnitGenerator.UnitGenerateOptions;
+using UGO = NullableUnitGenerator.UnitGenOpts;
 
 namespace UnitGenerator.Tests;
 

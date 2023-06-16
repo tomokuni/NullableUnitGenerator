@@ -265,7 +265,7 @@ public class ValueObjectTest
 }
 
 
-[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.ComparisonOperator | UnitGenerateOptions.IComparable | UnitGenerateOptions.ImplicitOperator | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ValidateAtGeneration | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKey)]
+[UnitOf(typeof(int), UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.ComparisonOperator | UnitGenOpts.IComparable | UnitGenOpts.ImplicitOperator | UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.ValidateAtGeneration | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter | UnitGenOpts.JsonConverterDictionaryKey)]
 public readonly partial struct VoInt
 {
     partial void CustomValidate()
@@ -273,7 +273,7 @@ public readonly partial struct VoInt
     }
 }
 
-//[UnitOf(typeof(DateTime), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter | UnitGenerateOptions.JsonConverterDictionaryKey)]
+//[UnitOf(typeof(DateTime), UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.Comparable | UnitGenOpts.Validate | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter | UnitGenOpts.JsonConverterDictionaryKey)]
 //public readonly partial struct VoDateTime
 //{
 //    private partial void Validate()

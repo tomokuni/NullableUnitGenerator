@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.71</Version>
+    <Version>0.0.2.76</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -65,7 +65,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resource\IUnitOf.cs" LogicalName="UnitOf.IUnitOf.cs" />
-    <EmbeddedResource Include="Resource\UnitGenerateOptions.cs" LogicalName="UnitOf.UnitGenerateOptions.cs" />
+    <EmbeddedResource Include="Resource\UnitGenOpts.cs" LogicalName="UnitOf.UnitGenOpts.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
     <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOf.UnitOfAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />
@@ -78,8 +78,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="SourceGenerator.cs" />
-    <Compile Include="Resource\UnitGenerateOptions.cs" Link="UnitGenerateOptions.cs" />
+    <Compile Include="Generate.cs" />
+    <Compile Include="Resource\UnitGenOpts.cs" Link="UnitGenOpts.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -97,6 +97,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   
   <ItemGroup>

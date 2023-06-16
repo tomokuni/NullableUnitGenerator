@@ -2,7 +2,7 @@
 
 using System;
 using NullableUnitGenerator;
-using UGO = NullableUnitGenerator.UnitGenerateOptions;
+using UGO = NullableUnitGenerator.UnitGenOpts;
 
 namespace ConsoleApp.Others;
 

@@ -3,6 +3,8 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NullableUnitGenerator;
 
@@ -12,13 +14,13 @@ namespace NullableUnitGenerator;
 /// NullableUnitGenerator でコード自動生成するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-public partial class UnitOfAttribute : Attribute
+public class UnitOfAttribute : Attribute
 {
     /// <summary>primitive type</summary>
     public Type Type { get; }
 
     /// <summary>UnitGenerater Options</summary>
-    public UnitGenerateOptions Options { get; }
+    public UnitGenOpts Options { get; }
 
     /// <summary>ToStringFormat</summary>
     public string? ToStringFormat { get; }
@@ -32,7 +34,7 @@ public partial class UnitOfAttribute : Attribute
     /// <param name="toStringFormat"></param>
     public UnitOfAttribute(
         Type type,
-        UnitGenerateOptions options = UnitGenerateOptions.None,
+        UnitGenOpts options = UnitGenOpts.None,
         string? toStringFormat = null)
     {
         Type = type;
@@ -55,7 +57,7 @@ public partial class UnitOfAttribute<T> : UnitOfAttribute
     /// <param name="options"></param>
     /// <param name="toStringFormat"></param>
     public UnitOfAttribute(
-        UnitGenerateOptions options = UnitGenerateOptions.None,
+        UnitGenOpts options = UnitGenOpts.None,
         string? toStringFormat = null)
         : base(typeof(T), 
                options: options, 
@@ -70,7 +72,7 @@ public partial class UnitOfAttribute<T> : UnitOfAttribute
 /// NullableUnitGenerator で OpenApiDataType を定義するための属性
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-public partial class UnitOfOasAttribute : Attribute
+public class UnitOfOasAttribute : Attribute
 {
     /// <summary>For OpenApiSchema.Type</summary>
     public string Type { get; }
@@ -177,66 +179,47 @@ public partial class UnitOfOasAttribute : Attribute
 }
 
 
+
+
 /// <summary>
-/// Attribute for automatic generation of value validation code with NullableUnitGenerator<br/>
-/// NullableUnitGenerator で値の検証コードを自動生成するための属性
+/// Validation attribute to assert Range. 
+/// </summary>
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+public class UnitOfRangeAttribute : RangeAttribute
+{
+    /// <summary>Constructor</summary>
+    /// <param name="minimum">The minimum value, inclusive</param>
+    /// <param name="maximum">The maximum value, inclusive</param>
+    public UnitOfRangeAttribute(int minimum, int maximum) : base(minimum, maximum) { }
+
+    /// <summary>Constructor</summary>
+    /// <param name="minimum">The minimum value, inclusive</param>
+    /// <param name="maximum">The maximum value, inclusive</param>
+    public UnitOfRangeAttribute(double minimum, double maximum) : base(minimum, maximum) { }
+
+    /// <summary>Constructor</summary>
+    /// <param name="type">The type of the range parameters. Must implement IComparable.</param>
+    /// <param name="minimum">The minimum allowable value.</param>
+    /// <param name="maximum">The maximum allowable value.</param>
+    public UnitOfRangeAttribute(Type type, string minimum, string maximum) : base(type, minimum, maximum) { }
+
+    public override bool IsValid(object? value)
+        => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
+}
+
+
+/// <summary>
+/// Validation attribute to assert StringLength. 
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-public partial class UnitOfValidateAttribute : Attribute
+public class UnitOfStringLengthAttribute : StringLengthAttribute
 {
-    /// <summary>Validate Type (検証タイプ)</summary>
-    public ValidateType ValidateType { get; }
+    /// <summary>Constructor</summary>
+    /// <param name="maximumLength"></param>
+    public UnitOfStringLengthAttribute(int maximumLength) : base(maximumLength) { }
 
-    /// <summary>Minimum (最小値を除外)</summary>
-    public object? Minimum { get; }
-
-    /// <summary>ExclusiveMinimum (最小値)</summary>
-    public bool ExclusiveMinimum { get; }
-
-    /// <summary>Maximum (最大値)</summary>
-    public object? Maximum { get; }
-
-    /// <summary>ExclusiveMaximum (最大値を除外)</summary>
-    public bool ExclusiveMaximum { get; }
-
-    /// <summary>MinLength (最小文字数)</summary>
-    public int? MinLength { get; }
-
-    /// <summary>MaxLength (最大文字数)</summary>
-    public int? MaxLength { get; }
-
-    /// <summary>Pattern (正規表現)</summary>
-    public string? Pattern { get; }
-
-    /// <summary>Message (無効な値の場合のメッセージ)</summary>
-    public string? Message { get; }
-
-
-    /// <summary>
-    /// コンストラクタ
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="options"></param>
-    /// <param name="toStringFormat"></param>
-    public UnitOfValidateAttribute(
-        ValidateType validateType = ValidateType.None,
-        object? minimum = null,
-        bool exclusiveMaximum = false,
-        object? maximum = null,
-        bool exclusiveMinimum = false,
-        object? minLength = null,
-        object? maxLength = null,
-        string? pattern = null,
-        string? message = null)
-    {
-        ValidateType = validateType;
-        Minimum = minimum;
-        ExclusiveMinimum = exclusiveMinimum;
-        Maximum = maximum;
-        ExclusiveMaximum = exclusiveMaximum;
-        MinLength = (minLength is null) ? null : (int)minLength;
-        MaxLength = (maxLength is null) ? null : (int)maxLength;
-        Pattern = pattern;
-        Message = Message;
-    }
+    public override bool IsValid(object? value)
+        => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
 }
+
+

@@ -28,6 +28,10 @@ public interface IUnitOf
     /// <summary>return value state.</summary>
     public UnitState State { get; }
 
+    /// <summary>return raw value</summary>
+    /// <returns>inner raw value</returns>
+    public object GetRawValueAsObject();
+
 
 #if NET7_0_OR_GREATER
     /// <summary>base type.</summary>
@@ -47,6 +51,10 @@ public interface IUnitOf<T, U> : IUnitOf
 {
     /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException()</summary>
     public U Value { get; }
+
+    /// <summary>return raw value</summary>
+    /// <returns>inner raw value</returns>
+    public U GetRawValue();
 
 
 #if NET7_0_OR_GREATER

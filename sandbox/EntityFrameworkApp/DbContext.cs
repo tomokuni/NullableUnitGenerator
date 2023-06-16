@@ -4,8 +4,8 @@ using NullableUnitGenerator;
 namespace EntityFrameworkApp;
 
 [UnitOf(typeof(int),
-    UnitGenerateOptions.ParseMethod |
-    UnitGenerateOptions.EntityFrameworkValueConverter)]
+    UnitGenOpts.ParseMethod |
+    UnitGenOpts.EntityFrameworkValueConverter)]
 public readonly partial struct UserId { }
 
 public class User

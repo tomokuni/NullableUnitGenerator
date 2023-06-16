@@ -120,12 +120,12 @@ However, Hp in games, should not be allowed to be assigned to other types, but s
 しかし、ゲームにおける Hp は、他の型に代入することは許されず、intを使った算術演算をサポートする必要があります。例えば、double heal = `target.Hp = Hp.Min(target.Hp * 2, target.MaxHp)`.
 
 ```csharp
-[UnitOf(typeof(int), UnitGenerateOptions.ImplicitOperator
-                   | UnitGenerateOptions.ParseMethod
-                   | UnitGenerateOptions.MinMaxMethod
-                   | UnitGenerateOptions.ArithmeticOperator
-                   | UnitGenerateOptions.ValueArithmeticOperator
-                   | UnitGenerateOptions.Comparable)]
+[UnitOf(typeof(int), UnitGenOpts.ImplicitOperator
+                   | UnitGenOpts.ParseMethod
+                   | UnitGenOpts.MinMaxMethod
+                   | UnitGenOpts.ArithmeticOperator
+                   | UnitGenOpts.ValueArithmeticOperator
+                   | UnitGenOpts.Comparable)]
 public readonly partial struct Hp { }
 
 // -- generates
@@ -166,7 +166,7 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     public int GetHashCode(Hp obj)    => ...;
     public override string ToString() => ...;
 
-    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator
+    // implicit, explicit operator    // UnitGenOpts.ImplicitOperator
     public static implicit operator int(in Hp value)  => ...;
     public static implicit operator Hp(in int value)  => ...;
     public static implicit operator int?(in Hp value) => ...;
@@ -181,31 +181,31 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
     public static bool operator ==(in Hp x, in Hp y) => ...;
     public static bool operator !=(in Hp x, in Hp y) => ...;
 
-    // CompareTo, IComparable<Hp>    // UnitGenerateOptions.Comparable
+    // CompareTo, IComparable<Hp>    // UnitGenOpts.Comparable
     public int CompareTo(Hp other) => ...;
 
-    // >, <, >=, <= operator    // UnitGenerateOptions.Comparable and WithoutComparisonOperator
+    // >, <, >=, <= operator    // UnitGenOpts.Comparable and WithoutComparisonOperator
     public static bool operator >(in Hp x, in Hp y)  => ...;
     public static bool operator <(in Hp x, in Hp y)  => ...;
     public static bool operator >=(in Hp x, in Hp y) => ...;
     public static bool operator <=(in Hp x, in Hp y) => ...;
 
-    // Parse, TryParse    // UnitGenerateOptions.ParseMethod
+    // Parse, TryParse    // UnitGenOpts.ParseMethod
     public static Hp Parse(string s)                     => ...;
     public static bool TryParse(string s, out Hp result) => ...;
 
-    // Min, Max    // UnitGenerateOptions.MinMaxMethod
+    // Min, Max    // UnitGenOpts.MinMaxMethod
     public static Hp Min(Hp x, Hp y) => ...;
     public static Hp Max(Hp x, Hp y) => ...;
 
-    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
+    // +, -, *, /, % operator    UnitGenOpts.ArithmeticOperator
     public static Hp operator +(in Hp x, in Hp y) => ...;
     public static Hp operator -(in Hp x, in Hp y) => ...;
     public static Hp operator *(in Hp x, in Hp y) => ...;
     public static Hp operator /(in Hp x, in Hp y) => ...;
     public static Hp operator %(in Hp x, in Hp y) => ...;
 
-    // ++, --, +, -, *, /, % operator    // UnitGenerateOptions.ValueArithmeticOperator
+    // ++, --, +, -, *, /, % operator    // UnitGenOpts.ValueArithmeticOperator
     public static Hp operator ++(in Hp x)          => ...;
     public static Hp operator --(in Hp x)          => ...;
     public static Hp operator +(in Hp x, in int y) => ...;
@@ -220,13 +220,13 @@ public readonly partial struct Hp : IEquatable<Hp> , IComparable<Hp>
 }
 ```
 
-You can configure with `UnitGenerateOptions`, which method to implement.
+You can configure with `UnitGenOpts`, which method to implement.
 
-どのメソッドを実装するかは `UnitGenerateOptions` で設定することができます。
+どのメソッドを実装するかは `UnitGenOpts` で設定することができます。
 
 ```csharp
 [Flags]
-enum UnitGenerateOptions
+enum UnitGenOpts
 {
     None = 0,
     ImplicitOperator = 1,
@@ -245,14 +245,14 @@ enum UnitGenerateOptions
 }
 ```
 
-UnitGenerateOptions has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.
+UnitGenOpts has some serializer support. For example, a result like `Serialize(userId) => { Value = 1111 }` is awful. The value-object should be serialized natively, i.e. `Serialize(useId) => 1111`, and should be able to be added directly to a database, etc.
 Currently UnitGenerator supports System.Text.Json(JsonSerializer), [Dapper](https://github.com/StackExchange/Dapper), ~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp) and EntityFrameworkCore~~.
 
-UnitGenerateOptionsには、いくつかのシリアライザーサポートがあります。例えば、`Serialize(userId) => { Value = 1111 }`のような結果はひどいものです。値オブジェクトはネイティブにシリアライズされるべきで、すなわち `Serialize(useId) => 1111` となり、データベースなどに直接追加できるようにすべきです。
+UnitGenOptsには、いくつかのシリアライザーサポートがあります。例えば、`Serialize(userId) => { Value = 1111 }`のような結果はひどいものです。値オブジェクトはネイティブにシリアライズされるべきで、すなわち `Serialize(useId) => 1111` となり、データベースなどに直接追加できるようにすべきです。
 現在、UnitGeneratorは、System.Text.Json(JsonSerializer)、[Dapper](https://github.com/StackExchange/Dapper)、~~[MessagePack for C#](https://github.com/neuecc/MessagePack-CSharp)、EntityFrameworkCore~~ をサポートしています。。
 
 ```csharp
-[UnitOf(typeof(int), UnitGenerateOptions.MessagePackFormatter)]
+[UnitOf(typeof(int), UnitGenOpts.MessagePackFormatter)]
 public readonly partial struct UserId { }
 
 // -- generates
@@ -280,7 +280,7 @@ public readonly partial struct UserId
 ## Table of Contents
 
 - [UnitOfAttribute](#unitofattribute)
-- [UnitGenerateOptions](#unitgenerateoptions)
+- [UnitGenOpts](#UnitGenOpts)
   - [ImplicitOperator](#implicitoperator)
   - [ParseMethod](#parsemethod)
   - [MinMaxMethod](#minmaxmethod)
@@ -311,7 +311,7 @@ namespace UnitGenerator
     [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
     internal class UnitOfAttribute : Attribute
     {
-        public UnitOfAttribute(Type type, UnitGenerateOptions options = UnitGenerateOptions.None, string toStringFormat = null)
+        public UnitOfAttribute(Type type, UnitGenOpts options = UnitGenOpts.None, string toStringFormat = null)
     }
 }
 ```
@@ -340,11 +340,11 @@ public readonly partial struct StartDate { }
 public readonly partial struct StreetAddress { }
 ```
 
-Standard UnitOf(`UnitGenerateOptions.None`) generates value constructor, `explicit operator`, `implement IEquatable<T>`, `override GetHashCode`, `override ToString`, `==` and `!=` operator, `TypeConverter` for ASP.NET Core binding, `AsPrimitive` method.
+Standard UnitOf(`UnitGenOpts.None`) generates value constructor, `explicit operator`, `implement IEquatable<T>`, `override GetHashCode`, `override ToString`, `==` and `!=` operator, `TypeConverter` for ASP.NET Core binding, `AsPrimitive` method.
 If you want to retrieve primitive value, use `AsPrimitive()` instead of `.Value`. This is intended to avoid casual getting of primitive values (using the arithmetic operator option if available).
 > When type is bool, also implements `true`, `false`, `!` operators.
 
-標準の UnitOf(`UnitGenerateOptions.None`) は、値のコンストラクタ、`explicit operator` 、`implement IEquatable<T>` 、`override GetHashCode` 、 `override ToString` 、`==` と `!=` オペレータ、`TypeConverter` for ASP.NET Core binding 、`AsPrimitive` メソッドを生成します。
+標準の UnitOf(`UnitGenOpts.None`) は、値のコンストラクタ、`explicit operator` 、`implement IEquatable<T>` 、`override GetHashCode` 、 `override ToString` 、`==` と `!=` オペレータ、`TypeConverter` for ASP.NET Core binding 、`AsPrimitive` メソッドを生成します。
 プリミティブな値を取得したい場合は、`.Value`の代わりに `AsPrimitive()` を使用します。これは、プリミティブな値のカジュアルな取得を避けるためのものです（算術演算子オプションがある場合はそれを使用します）。
 > タイプがboolの場合、`true`, `false`, `!` 演算子も実装します。
 
@@ -363,22 +363,22 @@ public static GroupId New();
 public static GroupId NewGroupId();
 ```
 
-Second parameter `UnitGenerateOptions options` can configure which method to implement, default is `None`.
+Second parameter `UnitGenOpts options` can configure which method to implement, default is `None`.
 Third parameter `strign toStringFormat` can configure `ToString` format. Default is null and output as $`{0}`.
 
-2番目のパラメータ `UnitGenerateOptions options` は、どのメソッドを実装するかを設定することができる（デフォルトは `None` ）。
+2番目のパラメータ `UnitGenOpts options` は、どのメソッドを実装するかを設定することができる（デフォルトは `None` ）。
 第3パラメータ `strign toStringFormat` は `ToString` のフォーマットを設定することができる。デフォルトはNULLで、$`{0}`として出力される。
 
 
-## UnitGenerateOptions
+## UnitGenOpts
 
-When referring to the UnitGenerator, it generates a internal `UnitGenerateOptions` that is bit flag of which method to implement.
+When referring to the UnitGenerator, it generates a internal `UnitGenOpts` that is bit flag of which method to implement.
 
-UnitGeneratorを参照する場合、どのメソッドを実装するかのビットフラグである内部`UnitGenerateOptions`を生成します。
+UnitGeneratorを参照する場合、どのメソッドを実装するかのビットフラグである内部`UnitGenOpts`を生成します。
 
 ```csharp
 [Flags]
-internal enum UnitGenerateOptions
+internal enum UnitGenOpts
 {
     None = 0,
     ImplicitOperator = 1,
@@ -400,13 +400,13 @@ You can use this with `[UnitOf]`.
 `[UnitOf]` 属性の引数に指定できます。
 
 ```csharp
-[UnitOf(typeof(int), UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.MinMaxMethod)]
+[UnitOf(typeof(int), UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.Comparable | UnitGenOpts.MinMaxMethod)]
 public readonly partial struct Strength { }
 
-[UnitOf(typeof(DateTime), UnitGenerateOptions.Validate | UnitGenerateOptions.ParseMethod | UnitGenerateOptions.Comparable)]
+[UnitOf(typeof(DateTime), UnitGenOpts.Validate | UnitGenOpts.ParseMethod | UnitGenOpts.Comparable)]
 public readonly partial struct EndDate { }
 
-[UnitOf(typeof(double), UnitGenerateOptions.ParseMethod | UnitGenerateOptions.MinMaxMethod | UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.Validate | UnitGenerateOptions.JsonConverter | UnitGenerateOptions.MessagePackFormatter | UnitGenerateOptions.DapperTypeHandler | UnitGenerateOptions.EntityFrameworkValueConverter)]
+[UnitOf(typeof(double), UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.Comparable | UnitGenOpts.Validate | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter)]
 public readonly partial struct AllOptionsStruct { }
 ```
 
@@ -417,7 +417,7 @@ You can setup project default options like this.
 ```csharp
 internal static class UnitOfOptions
 {
-    public const UnitGenerateOptions Default = UnitGenerateOptions.ArithmeticOperator | UnitGenerateOptions.ValueArithmeticOperator | UnitGenerateOptions.Comparable | UnitGenerateOptions.MinMaxMethod;
+    public const UnitGenOpts Default = UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.Comparable | UnitGenOpts.MinMaxMethod;
 }
 
 [UnitOf(typeof(int), UnitOfOptions.Default)]
@@ -432,7 +432,7 @@ public readonly partial struct Hp { }
 public static explicit operator U(T value) => value.value;
 public static explicit operator T(U value) => new T(value);
 
-// UnitGenerateOptions.ImplicitOperator
+// UnitGenOpts.ImplicitOperator
 public static implicit operator U(T value) => value.value;
 public static implicit operator T(U value) => new T(value);
 ```
@@ -498,7 +498,7 @@ Without implements `>`, `<`, `>=`, `<=` operators. For example, useful for Guid.
 例えば、Guid は、 `>`, `<`, `>=`, `<=` 演算子 は を実装しません。
 
 ```csharp
-[UnitOf(typeof(Guid), UnitGenerateOptions.Comparable | UnitGenerateOptions.WithoutComparisonOperator)]
+[UnitOf(typeof(Guid), UnitGenOpts.Comparable | UnitGenOpts.WithoutComparisonOperator)]
 public readonly partial struct FooId { }
 ```
 
@@ -511,7 +511,7 @@ Implements `partial void Validate()` method that is called on constructor.
 
 ```csharp
 // You can implement this custom validate method.
-[UnitOf(typeof(int), UnitGenerateOptions.Validate)]
+[UnitOf(typeof(int), UnitGenOpts.Validate)]
 public readonly partial struct SampleValidate
 {
     // impl here.

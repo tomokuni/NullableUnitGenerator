@@ -12,16 +12,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+<# if (HasFlag(UnitGenOpts.JsonConverter)) { #>
+using System.Text.Json;
+using System.Text.Json.Serialization;
+<# } #>
+<# if (HasFlag(UnitGenOpts.DapperTypeHandler)) { #>
 #if !UGO_DAPPER_DISABLE
 using System.Runtime.CompilerServices;
 #endif
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
-using System.Text.Json;
-using System.Text.Json.Serialization;
-<# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+<# if (HasFlag(UnitGenOpts.MessagePackFormatter)) { #>
 #if !UGO_MESSAGEPACK_DISABLE
 using MessagePack;
 using MessagePack.Formatters;
@@ -39,18 +39,18 @@ namespace <#= Namespace #>;
 /// <#= Name #> is TernaryType ValueObject<br/>
 /// Primitive type is <#= TypeName #> (<#= TypeNameFull #>)
 /// </summary>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+<# if (HasFlag(UnitGenOpts.MessagePackFormatter)) { #>
 [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+<# if (HasFlag(UnitGenOpts.JsonConverter)) { #>
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOptions.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenOpts.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
 {
     // Namespace : <#= Namespace ?? "(null)" #>
     // Name      : <#= Name #>
-    // UnitGenerateOptions : <#= Options #>
+    // UnitGenOpts : <#= Options #>
     // ToStringFormat      : <#= ToStringFormat ?? "(null)" #>
     //
     // TypeName         : <#= TypeName ?? "(null)" #>
@@ -76,24 +76,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     //   <#= OperatorsString ?? "(null)" #>
     //
     // ITypeSymbol Info
-    //   <#= DicTypeName[1] #>
-    //   <#= DicTypeName[2] #>
-    //   <#= DicTypeName[3] #>
-    //   <#= DicTypeName[4] #>
-    //   <#= DicTypeName[5] #>
-    //   <#= DicTypeName[6] #>
-    //   <#= DicTypeName[7] #>
-    //   <#= DicTypeName[8] #>
-    //   <#= DicTypeName[9] #>
-    //   <#= DicTypeName[10] #>
-    //   <#= DicTypeName[11] #>
-    //   <#= DicTypeName[12] #>
-    //   <#= DicTypeName[13] #>
-    //   <#= DicTypeName[14] #>
-    //   <#= DicTypeName[15] #>
-    //   <#= DicTypeName[16] #>
-    //   <#= DicTypeName[17] #>
-    //   <#= DicTypeName[18] #>
+<# foreach(var k in DicTypeName.Keys){ #>
+    //   <#= DicTypeName[k] #>
+<# } #>
 
 
     //
@@ -117,8 +102,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         (m_state, m_value) = (value.m_state, value.m_value);
 
-<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
-        // UnitGenerateOptions.ValidateAtGeneration
+<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
+        // UnitGenOpts.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -136,8 +121,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             _ => (state, value)
         };
 
-<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
-        // UnitGenerateOptions.ValidateAtGeneration
+<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
+        // UnitGenOpts.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -148,8 +133,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         (m_state, m_value) = (UnitState.Value, value);
 
-<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
-        // UnitGenerateOptions.ValidateAtGeneration
+<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
+        // UnitGenOpts.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -164,8 +149,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             _ => (UnitState.Value, (<#= TypeName #>)value),
         };
 
-<# if (HasFlag(UnitGenerateOptions.ValidateAtGeneration)) { #>
-        // UnitGenerateOptions.ValidateAtGeneration
+<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
+        // UnitGenOpts.ValidateAtGeneration
         this.Validate();
 <# } #>
     }
@@ -176,10 +161,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     //
 
     /// <summary>Display string as Undef.</summary>
-    public static readonly string sUndef = $"~{UnitState.Undef}~";
+    public static readonly string sUndef = $"({UnitState.Undef})";
 
     /// <summary>Display string as Null.</summary>
-    public static readonly string sNull = $"~{UnitState.Null}~";
+    public static readonly string sNull = $"({UnitState.Null})";
 
 <#if (IsBuiltinNumericType) { #>
 
@@ -322,6 +307,11 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>return raw value</summary>
     /// <returns>inner raw value</returns>
     public <#= TypeName #>  GetRawValue()
+        => m_value;
+
+    /// <summary>return raw value</summary>
+    /// <returns>inner raw value</returns>
+    public object GetRawValueAsObject()
         => m_value;
 
     /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
@@ -496,10 +486,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 <# } #>
 
     //
-    // implicit, explicit operator    // UnitGenerateOptions.ImplicitOperator or Unspecified
+    // implicit, explicit operator    // UnitGenOpts.ImplicitOperator or Unspecified
     //
 
-<# if (HasFlag(UnitGenerateOptions.ImplicitOperator)) { #>
+<# if (HasFlag(UnitGenOpts.ImplicitOperator)) { #>
     /// <summary>implicit(暗黙的) operator</summary>
     public static implicit operator <#= TypeName #>(in <#= Name #> value)
         => (<#= TypeName #>)value.GetOrThrow();
@@ -581,9 +571,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // CompareTo, IComparable<<#= Name #>>    // UnitGenerateOptions.IComparable
+    // CompareTo, IComparable<<#= Name #>>    // UnitGenOpts.IComparable
     //
-<# if (HasFlag(UnitGenerateOptions.IComparable)) { #>
+<# if (HasFlag(UnitGenOpts.IComparable)) { #>
 
 <# if (HasCompareToMethod) { #>
     /// <summary>Compares this instance to a specified <#= Name #> and returns an indication of their relative values.</summary>
@@ -607,9 +597,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // >, <, >=, <= operator    // UnitGenerateOptions.ComparisonOperator
+    // >, <, >=, <= operator    // UnitGenOpts.ComparisonOperator
     //
-<# if (HasFlag(UnitGenerateOptions.ComparisonOperator)) { #>
+<# if (HasFlag(UnitGenOpts.ComparisonOperator)) { #>
 
 <# if (HasComparisonOperator) { #>
     /// <summary>operator &gt; (GreaterThan)</summary>
@@ -647,9 +637,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // +, -, *, /, % operator    UnitGenerateOptions.ArithmeticOperator
+    // +, -, *, /, % operator    UnitGenOpts.ArithmeticOperator
     //
-<# if (HasFlag(UnitGenerateOptions.ArithmeticOperator)) { #>
+<# if (HasFlag(UnitGenOpts.ArithmeticOperator)) { #>
 
 <# if (HasArithmeticAddSubOperator) { #>
     /// <summary>operator + (Addition)</summary>
@@ -697,9 +687,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // ++, --, +, -, *, /, % operator    UnitGenerateOptions.ValueArithmeticOperator
+    // ++, --, +, -, *, /, % operator    UnitGenOpts.ValueArithmeticOperator
     //
-<# if (HasFlag(UnitGenerateOptions.ValueArithmeticOperator)) { #>
+<# if (HasFlag(UnitGenOpts.ValueArithmeticOperator)) { #>
 
 <# if (HasArithmeticIncDecOperator) { #>
     /// <summary>operator ++ (Increment)</summary>
@@ -764,9 +754,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // Parse, TryParse    // UnitGenerateOptions.ParseMethod
+    // Parse, TryParse    // UnitGenOpts.ParseMethod
     //
-<# if (HasFlag(UnitGenerateOptions.ParseMethod)) { #>
+<# if (HasFlag(UnitGenOpts.ParseMethod)) { #>
 
 <# if (HasParseMethod) { #>
     /// <summary>Converts the string representation of a number.</summary>
@@ -819,9 +809,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
 
     //
-    // Min, Max     // UnitGenerateOptions.MinMaxMethod
+    // Min, Max     // UnitGenOpts.MinMaxMethod
     //
-<# if (HasFlag(UnitGenerateOptions.MinMaxMethod)) { #>
+<# if (HasFlag(UnitGenOpts.MinMaxMethod)) { #>
 
 <# if (HasMinMaxMethod) { #>
     /// <summary>Min</summary>
@@ -919,10 +909,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         }
     }
 
-<# if (HasFlag(UnitGenerateOptions.JsonConverter)) { #>
+<# if (HasFlag(UnitGenOpts.JsonConverter)) { #>
 
     //
-    // UnitGenerateOptions.JsonConverter
+    // UnitGenOpts.JsonConverter
     //
 
     /// <summary>JsonConverter</summary>
@@ -969,7 +959,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             }
         }
 
-<# if (HasFlag(UnitGenerateOptions.JsonConverterDictionaryKey)) {  #>
+<# if (HasFlag(UnitGenOpts.JsonConverterDictionaryKey)) {  #>
         /// <summary>WriteAsPropertyName</summary>
         public override void WriteAsPropertyName(Utf8JsonWriter writer, <#= Name #> value, JsonSerializerOptions options)
         {
@@ -983,6 +973,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             {
                 writer.WritePropertyName(value.m_value.ToString());
             }
+<# } else if (IsDateOnly) { #>
+            writer.WritePropertyName(value.m_value.ToString("yyyy-MM-dd"));
+<# } else if (IsTimeOnly) { #>
+            writer.WritePropertyName(value.m_value.ToString("HH:mm:ss.FFFFFFF"));
 <# } else if (IsUlid) { #>
             writer.WritePropertyName(value.m_value.ToString());
 <# } else { #>
@@ -1002,7 +996,11 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             {
                 return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
             }
-<# } else if (IsUlid) { #>
+<# } else if (IsDateOnly) { #>
+            return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
+<# } else if (IsTimeOnly) { #>
+            return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
+<# } else if ( IsUlid) { #>
             return new <#= Name #>(<#= TypeName #>.Parse(reader.GetString()));
 <# } else if(TypeName == "string")  { #>
             return new <#= Name #>(reader.GetString());
@@ -1014,11 +1012,11 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     }
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.DapperTypeHandler)) { #>
+<# if (HasFlag(UnitGenOpts.DapperTypeHandler)) { #>
 
 #if !UGO_DAPPER_DISABLE
     //
-    // UnitGenerateOptions.DapperTypeHandler
+    // UnitGenOpts.DapperTypeHandler
     //
 
     /// <summary>Dapper.SqlMapper.TypeHandler</summary>
@@ -1047,11 +1045,11 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 #endif
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.EntityFrameworkValueConverter)) { #>
+<# if (HasFlag(UnitGenOpts.EntityFrameworkValueConverter)) { #>
 
 #if !UGO_ENTITYFRAMEWORK_DISABLE
     //
-    // UnitGenerateOptions.EntityFrameworkValueConverter
+    // UnitGenOpts.EntityFrameworkValueConverter
     //
 
     /// <summary>Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter</summary>
@@ -1077,11 +1075,11 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 #endif
 
 <# } #>
-<# if (HasFlag(UnitGenerateOptions.MessagePackFormatter)) { #>
+<# if (HasFlag(UnitGenOpts.MessagePackFormatter)) { #>
 
 #if !UGO_MESSAGEPACK_DISABLE
     //
-    // UnitGenerateOptions.MessagePackFormatter
+    // UnitGenOpts.MessagePackFormatter
     //
 
     /// <summary>IMessagePackFormatter</summary>

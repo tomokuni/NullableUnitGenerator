@@ -71,7 +71,7 @@ public static class UnitHelper
             m => char.ToUpper(m.Groups[1].Value[0]) + m.Groups[1].Value[1..].ToLower() + m.Groups[2].Value);
         return char.ToUpper(w[0]) + w[1..];
     }
-    static readonly Regex regexPascalize = new(@"(^[A-Z][A-Z]*|[A-Z][A-Z]+)($|[A-Z][a-z0-9])");
+    static readonly Regex regexPascalize = new(@"(^[A-Z][A-Z0-9]*|[A-Z][A-Z0-9]+)($|[A-Z][a-z0-9])");
 
 
     /// <summary>
@@ -109,7 +109,9 @@ public static class UnitHelper
     /// <returns>スネークケースの文字列</returns>
     public static string ToSnakeCase(string str, string delimiter = "_")
     {
-        var camel = ToCamelCase(str);
-        return Regex.Replace(camel, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2")).ToLower();
+        var s0 = ToCamelCase(str);
+        var s1 = Regex.Replace(s0, @"([a-z])([A-Z0-9])", ("$1" + delimiter + "$2"));
+        var s2 = Regex.Replace(s1, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2"));
+        return s2.ToLower();
     }
 }
