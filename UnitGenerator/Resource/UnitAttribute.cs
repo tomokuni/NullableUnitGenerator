@@ -184,24 +184,24 @@ public class UnitOfOasAttribute : Attribute
 /// <summary>
 /// Validation attribute to assert Range. 
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class UnitOfRangeAttribute : RangeAttribute
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitRangeAttribute : RangeAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>
     /// <param name="minimum">The minimum value, inclusive</param>
     /// <param name="maximum">The maximum value, inclusive</param>
-    public UnitOfRangeAttribute(int minimum, int maximum) : base(minimum, maximum) { }
+    public UnitRangeAttribute(int minimum, int maximum) : base(minimum, maximum) { }
 
     /// <summary>Constructor</summary>
     /// <param name="minimum">The minimum value, inclusive</param>
     /// <param name="maximum">The maximum value, inclusive</param>
-    public UnitOfRangeAttribute(double minimum, double maximum) : base(minimum, maximum) { }
+    public UnitRangeAttribute(double minimum, double maximum) : base(minimum, maximum) { }
 
     /// <summary>Constructor</summary>
     /// <param name="type">The type of the range parameters. Must implement IComparable.</param>
     /// <param name="minimum">The minimum allowable value.</param>
     /// <param name="maximum">The maximum allowable value.</param>
-    public UnitOfRangeAttribute(Type type, string minimum, string maximum) : base(type, minimum, maximum) { }
+    public UnitRangeAttribute(Type type, string minimum, string maximum) : base(type, minimum, maximum) { }
 
     public override bool IsValid(object? value)
         => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
@@ -212,11 +212,11 @@ public class UnitOfRangeAttribute : RangeAttribute
 /// Validation attribute to assert StringLength. 
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-public class UnitOfStringLengthAttribute : StringLengthAttribute
+public class UnitStringLengthAttribute : StringLengthAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>
     /// <param name="maximumLength"></param>
-    public UnitOfStringLengthAttribute(int maximumLength) : base(maximumLength) { }
+    public UnitStringLengthAttribute(int maximumLength) : base(maximumLength) { }
 
     public override bool IsValid(object? value)
         => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));

@@ -33,7 +33,11 @@ namespace NullableUnitGenerator
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 ");
  if (HasFlag(UnitGenOpts.JsonConverter)) { 
             this.Write("using System.Text.Json;\r\nusing System.Text.Json.Serialization;\r\n");
@@ -138,19 +142,17 @@ using System.Diagnostics.CodeAnalysis;
  } 
             this.Write("\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n\r\n\r\n    /" +
-                    "/\r\n    // Constructor\r\n    //\r\n\r\n    /// <summary>Complete Constructor</summary>" +
-                    "\r\n    public ");
+            this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n    reado" +
+                    "nly IList<string>? m_validateMessage = null;\r\n\r\n\r\n    //\r\n    // Constructor\r\n  " +
+                    "  //\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("()\r\n    { }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (value.m_state, value.m_value);\r\n\r\n");
- if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { 
-            this.Write("        // UnitGenOpts.ValidateAtGeneration\r\n        this.Validate();\r\n");
- } 
-            this.Write("    }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
+            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (value.m_state, value.m_value);\r\n\r\n " +
+                    "       m_validateMessage = this.Validation();\r\n    }\r\n\r\n    /// <summary>Complet" +
+                    "e Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in UnitState state, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
@@ -160,21 +162,15 @@ using System.Diagnostics.CodeAnalysis;
  if (!IsValueType) { 
             this.Write("            (_, null) => (state, default),\r\n");
  } 
-            this.Write("            _ => (state, value)\r\n        };\r\n\r\n");
- if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { 
-            this.Write("        // UnitGenOpts.ValidateAtGeneration\r\n        this.Validate();\r\n");
- } 
-            this.Write("    }\r\n\r\n");
+            this.Write("            _ => (state, value)\r\n        };\r\n\r\n        m_validateMessage = this.V" +
+                    "alidation();\r\n    }\r\n\r\n");
  if (IsValueType) { 
             this.Write("    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (UnitState.Value, value);\r\n\r\n");
- if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { 
-            this.Write("        // UnitGenOpts.ValidateAtGeneration\r\n        this.Validate();\r\n");
- } 
-            this.Write("    }\r\n");
+            this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (UnitState.Value, value);\r\n\r\n       " +
+                    " m_validateMessage = this.Validation();\r\n    }\r\n");
  } 
             this.Write("\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -183,11 +179,11 @@ using System.Diagnostics.CodeAnalysis;
             this.Write(" value)\r\n    {\r\n        (m_state, m_value) = value switch\r\n        {\r\n           " +
                     " null => (UnitState.Null, default),\r\n            _ => (UnitState.Value, (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(")value),\r\n        };\r\n\r\n");
- if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { 
-            this.Write("        // UnitGenOpts.ValidateAtGeneration\r\n        this.Validate();\r\n");
- } 
-            this.Write(@"    }
+            this.Write(@")value),
+        };
+
+        m_validateMessage = this.Validation();
+    }
 
 
     //
@@ -431,28 +427,39 @@ if (IsBuiltinNumericType) {
     // Validate
     //
 
-    /// <summary>Validate</summary>
-    public bool Validate() {
-        if (!InnerValidate())
-            return false;
+    /// <summary>IsValid</summary>
+    public bool IsValid()
+        => !m_validateMessage.Any();
 
-        try { 
-            CustomValidate(); 
-        } catch { 
-            return false;
-        }
-
-        return true;
+    /// <summary>Validation</summary>
+    private IList<string> Validation() {
+        var msg = ValidationWithUnitOfValidateAttribute();
+        ValidationWithCustomCode(ref msg);
+        return msg.AsReadOnly();
     }
 
-    /// <summary>InnerValidate</summary>
-    private bool InnerValidate()
+    /// <summary>ValidationWithUnitOfValidateAttribute</summary>
+    private List<string> ValidationWithUnitOfValidateAttribute()
     {
-        return true;
+        var msg = new List<string>();
+        var va = typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(@").GetCustomAttributes<ValidationAttribute>();
+        foreach (var a in va)
+        {
+            if (a is IUnitValidationAttribute && !a.IsValid(this))
+            {
+                var context = new ValidationContext(this, null, null);
+                var result = a.GetValidationResult(this, context);
+                if (result!.ErrorMessage is not null)
+                    msg.Add(result.ErrorMessage);
+            }
+        }
+        return msg;
     }
 
-    /// <summary>CustomValidate</summary>
-    partial void CustomValidate();
+    /// <summary>ValidationWithCustomCode</summary>
+    partial void ValidationWithCustomCode(ref List<string> refMsg);
 
 ");
  if (TypeName == "Guid" || TypeName == "System.Guid") { 

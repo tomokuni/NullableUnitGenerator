@@ -6,7 +6,7 @@ namespace NullableUnitGenerator;
 
 
 /// <summary>
-/// UnitOf属性を付けたクラスに付与されるインターフェイス
+/// 生成される構造体に付与されるインターフェイス
 /// </summary>
 public interface IUnitOf
 {
@@ -45,7 +45,7 @@ public interface IUnitOf
 
 
 /// <summary>
-/// UnitOf&lt;T>属性を付けたクラスに付与されるインターフェイス
+/// 生成される構造体に付与されるインターフェイス
 /// </summary>
 public interface IUnitOf<T, U> : IUnitOf
 {
@@ -82,4 +82,12 @@ public interface IUnitOf<T, U> : IUnitOf
     //abstract public static bool operator !=(in T x, in T y);
 #endif
 
+}
+
+
+/// <summary>
+/// NullableUnitGenerator 用の検証属性を表すためのインターフェイス
+/// </summary>
+public interface IUnitValidationAttribute
+{
 }

@@ -11,7 +11,11 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 <# if (HasFlag(UnitGenOpts.JsonConverter)) { #>
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -87,6 +91,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     readonly <#= TypeName #> m_value = default;
     readonly UnitState m_state = UnitState.Undef;
+    readonly IList<string>? m_validateMessage = null;
 
 
     //
@@ -102,10 +107,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         (m_state, m_value) = (value.m_state, value.m_value);
 
-<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
-        // UnitGenOpts.ValidateAtGeneration
-        this.Validate();
-<# } #>
+        m_validateMessage = this.Validation();
     }
 
     /// <summary>Complete Constructor</summary>
@@ -121,10 +123,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             _ => (state, value)
         };
 
-<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
-        // UnitGenOpts.ValidateAtGeneration
-        this.Validate();
-<# } #>
+        m_validateMessage = this.Validation();
     }
 
 <# if (IsValueType) { #>
@@ -133,10 +132,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         (m_state, m_value) = (UnitState.Value, value);
 
-<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
-        // UnitGenOpts.ValidateAtGeneration
-        this.Validate();
-<# } #>
+        m_validateMessage = this.Validation();
     }
 <# } #>
 
@@ -149,10 +145,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             _ => (UnitState.Value, (<#= TypeName #>)value),
         };
 
-<# if (HasFlag(UnitGenOpts.ValidateAtGeneration)) { #>
-        // UnitGenOpts.ValidateAtGeneration
-        this.Validate();
-<# } #>
+        m_validateMessage = this.Validation();
     }
 
 
@@ -404,28 +397,37 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     // Validate
     //
 
-    /// <summary>Validate</summary>
-    public bool Validate() {
-        if (!InnerValidate())
-            return false;
+    /// <summary>IsValid</summary>
+    public bool IsValid()
+        => !m_validateMessage.Any();
 
-        try { 
-            CustomValidate(); 
-        } catch { 
-            return false;
-        }
-
-        return true;
+    /// <summary>Validation</summary>
+    private IList<string> Validation() {
+        var msg = ValidationWithUnitOfValidateAttribute();
+        ValidationWithCustomCode(ref msg);
+        return msg.AsReadOnly();
     }
 
-    /// <summary>InnerValidate</summary>
-    private bool InnerValidate()
+    /// <summary>ValidationWithUnitOfValidateAttribute</summary>
+    private List<string> ValidationWithUnitOfValidateAttribute()
     {
-        return true;
+        var msg = new List<string>();
+        var va = typeof(<#= Name #>).GetCustomAttributes<ValidationAttribute>();
+        foreach (var a in va)
+        {
+            if (a is IUnitValidationAttribute && !a.IsValid(this))
+            {
+                var context = new ValidationContext(this, null, null);
+                var result = a.GetValidationResult(this, context);
+                if (result!.ErrorMessage is not null)
+                    msg.Add(result.ErrorMessage);
+            }
+        }
+        return msg;
     }
 
-    /// <summary>CustomValidate</summary>
-    partial void CustomValidate();
+    /// <summary>ValidationWithCustomCode</summary>
+    partial void ValidationWithCustomCode(ref List<string> refMsg);
 
 <# if (TypeName == "Guid" || TypeName == "System.Guid") { #>
 

@@ -56,18 +56,13 @@
   <ItemGroup>
     <!-- Create nuget package as analyzer -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="..\LICENSE" Link="Resource\LICENSE" />
-    <None Include="..\README.md" Link="Resource\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resource\IUnitOf.cs" LogicalName="UnitOf.IUnitOf.cs" />
+    <EmbeddedResource Include="Resource\IUnit.cs" LogicalName="UnitOf.IUnitOf.cs" />
     <EmbeddedResource Include="Resource\UnitGenOpts.cs" LogicalName="UnitOf.UnitGenOpts.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
-    <EmbeddedResource Include="Resource\UnitOfAttribute.cs" LogicalName="UnitOf.UnitOfAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitAttribute.cs" LogicalName="UnitOf.UnitOfAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />
   </ItemGroup>
 
