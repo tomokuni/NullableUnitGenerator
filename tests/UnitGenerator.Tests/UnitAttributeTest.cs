@@ -92,7 +92,7 @@ public class UnitOfAttributeTest
         {
             Id = new VoIntRange(2),
             Id2 = new VoIntRange(3),
-            Id3 = new VoIntRange(4), 
+            Id3 = new VoIntRange(4),
         };
         var results = new List<ValidationResult>();
         ValidationContext context = new ValidationContext(model, null, null);
