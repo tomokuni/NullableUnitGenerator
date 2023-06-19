@@ -80,34 +80,27 @@ public enum UnitGenOpts
     MinMaxMethod = 0b0000_0000_0100_0000,
 
     /// <summary>
-    /// <b>Validate</b><br/>
-    /// Option to call Validate method from constructor<br/>
-    /// コンストラクタから Validate メソッドを呼び出すオプション
-    /// </summary>
-    ValidateAtGeneration = 0b0001_0000_0000_0000,
-
-    /// <summary>
     /// <b>JsonConverter</b>
     /// </summary>
-    JsonConverter = 0b0000_0000_0001_0000_0000_0000_0000_0000,
+    JsonConverter = 0b0000_0000_0000_0001_0000_0000_0000_0000,
 
     /// <summary>
     /// <b>JsonConverterDictionaryKey</b>
     /// </summary>
-    JsonConverterDictionaryKey = 0b0000_0000_0010_0000_0000_0000_0000_0000,
+    JsonConverterDictionaryKey = 0b0000_0000_0000_0010_0000_0000_0000_0000,
 
     /// <summary>
     /// <b>MessagePackFormatter</b>
     /// </summary>
-    MessagePackFormatter = 0b0000_0000_1000_0000_0000_0000_0000_0000,
+    MessagePackFormatter = 0b0000_0000_0000_0100_0000_0000_0000_0000,
 
     /// <summary>
     /// <b>DapperTypeHandler</b>
     /// </summary>
-    DapperTypeHandler = 0b0000_0001_0000_0000_0000_0000_0000_0000,
+    DapperTypeHandler = 0b0000_0000_0001_0000_0000_0000_0000_0000,
 
     /// <summary>
     /// <b>EntityFrameworkValueConverter</b>
     /// </summary>
-    EntityFrameworkValueConverter = 0b0000_0010_0000_0000_0000_0000_0000_0000,
+    EntityFrameworkValueConverter = 0b0000_0000_0010_0000_0000_0000_0000_0000,
 }

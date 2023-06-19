@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS8601  // Null 参照代入の可能性があります。
-
+﻿
 using System;
 
 namespace NullableUnitGenerator;

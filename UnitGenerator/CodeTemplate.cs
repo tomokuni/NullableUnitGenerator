@@ -86,7 +86,7 @@ using System.Reflection;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("> ");
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenOpts.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : ""));
-            this.Write("\r\n{\r\n    // Namespace : ");
+            this.Write(", IValidatableObject\r\n{\r\n    // Namespace : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace ?? "(null)"));
             this.Write("\r\n    // Name      : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -315,7 +315,7 @@ if (IsBuiltinNumericType) {
             this.Write(" AsPrimitive()\r\n        => Value;\r\n\r\n    /// <summary>return raw value</summary>\r" +
                     "\n    /// <returns>inner raw value</returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(@"  GetRawValue()
+            this.Write(@" GetRawValue()
         => m_value;
 
     /// <summary>return raw value</summary>
@@ -426,6 +426,26 @@ if (IsBuiltinNumericType) {
     //
     // Validate
     //
+
+    /// <summary>Validate</summary>
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        // Validationを実施
+        var context = new ValidationContext(this, null, null);
+        var validationAttribute = typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(@").GetCustomAttributes<ValidationAttribute>();
+        foreach (var v in validationAttribute)
+        {
+            if (v is IUnitValidationAttribute)
+            {
+                var result = v.GetValidationResult(this, context);
+                if (result != ValidationResult.Success)
+                    yield return result;
+            }
+        }
+    }
+
 
     /// <summary>IsValid</summary>
     public bool IsValid()

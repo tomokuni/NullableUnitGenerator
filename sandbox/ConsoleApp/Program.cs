@@ -102,7 +102,7 @@ namespace Sample
     public readonly partial struct UserId { }
 
 
-    [UnitOf(typeof(int), UGO.ValidateAtGeneration)]
+    [UnitOf(typeof(int))]
     public readonly partial struct SampleValidate
     {
         // impl here.
