@@ -3,8 +3,10 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 
 namespace NullableUnitGenerator;
 
@@ -185,23 +187,23 @@ public class UnitOfOasAttribute : Attribute
 /// Validation attribute to assert Range. 
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
-public class UnitRangeAttribute : RangeAttribute, IUnitValidationAttribute
+public class UnitOfRangeAttribute : RangeAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>
     /// <param name="minimum">The minimum value, inclusive</param>
     /// <param name="maximum">The maximum value, inclusive</param>
-    public UnitRangeAttribute(int minimum, int maximum) : base(minimum, maximum) { }
+    public UnitOfRangeAttribute(int minimum, int maximum) : base(minimum, maximum) { }
 
     /// <summary>Constructor</summary>
     /// <param name="minimum">The minimum value, inclusive</param>
     /// <param name="maximum">The maximum value, inclusive</param>
-    public UnitRangeAttribute(double minimum, double maximum) : base(minimum, maximum) { }
+    public UnitOfRangeAttribute(double minimum, double maximum) : base(minimum, maximum) { }
 
     /// <summary>Constructor</summary>
     /// <param name="type">The type of the range parameters. Must implement IComparable.</param>
     /// <param name="minimum">The minimum allowable value.</param>
     /// <param name="maximum">The maximum allowable value.</param>
-    public UnitRangeAttribute(Type type, string minimum, string maximum) : base(type, minimum, maximum) { }
+    public UnitOfRangeAttribute(Type type, string minimum, string maximum) : base(type, minimum, maximum) { }
 
     public override bool IsValid(object? value)
         => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
@@ -212,14 +214,100 @@ public class UnitRangeAttribute : RangeAttribute, IUnitValidationAttribute
 /// Validation attribute to assert StringLength. 
 /// </summary>
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
-public class UnitStringLengthAttribute : StringLengthAttribute, IUnitValidationAttribute
+public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>
     /// <param name="maximumLength"></param>
-    public UnitStringLengthAttribute(int maximumLength) : base(maximumLength) { }
+    public UnitOfStringLengthAttribute(int maximumLength) : base(maximumLength) { }
 
     public override bool IsValid(object? value)
         => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
 }
 
 
+/// <summary>
+/// Validate based on attribute of UnitOf definition.<br/>
+/// UnitOf 定義の属性に基づき検証を行する。
+/// </summary>
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfDefinedValidateAttribute : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        if (value == null)
+            return ValidationResult.Success;
+
+        // Validationを実施
+        var context = new ValidationContext(value, null, null);
+        var validationResults = value.GetType().GetCustomAttributes<ValidationAttribute>()
+            .Where(s => s is IUnitValidationAttribute)
+            .Select(s => s.GetValidationResult(this, context)!)
+            .Where(s => s != ValidationResult.Success);
+
+        if (!validationResults.Any())
+            return ValidationResult.Success;
+
+        var result = validationResults
+            .Select(s => new ValidationResult(s.ErrorMessage, s.MemberNames.Select(y => $"{validationContext.DisplayName}.{y}")));
+        var compositeResults = new CompositeValidationResult(string.Format("Validation for {0} failed!", new { validationContext.DisplayName }));
+        compositeResults.AddResults(result);
+        return compositeResults;
+    }
+}
+
+
+/// <summary>
+/// Validate based on attributes of the child object property.<br/>
+/// 子オブジェクトのプロパティの属性に基づき検証する。
+/// </summary>
+public class NestedValidateAttribute : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        if (value == null) 
+            return ValidationResult.Success;
+        
+        var results = new List<ValidationResult>();
+        var context = new ValidationContext(value, null, null);
+        // Validationを実施
+        Validator.TryValidateObject(value, context, results, true);
+
+        if (results.Count == 0)
+            return ValidationResult.Success;
+
+        var validationResults = results.Select(x => new ValidationResult(x.ErrorMessage, x.MemberNames.Select(y => $"{validationContext.DisplayName}.{y}")));
+        var compositeResults = new CompositeValidationResult(string.Format("Validation for {0} failed!", new { validationContext.DisplayName }));
+        compositeResults.AddResults(validationResults);
+        return compositeResults;
+    }
+}
+
+
+/// <summary>
+/// 複数のValidation結果を格納できる <see cref="ValidationResult" />
+/// </summary>
+public class CompositeValidationResult : ValidationResult
+{
+    /// <summary>
+    /// 複数のValidation結果
+    /// </summary>
+    public IEnumerable<ValidationResult> Results { get; } = new List<ValidationResult>();
+
+    public CompositeValidationResult(string errorMessage) : base(errorMessage) { }
+    public CompositeValidationResult(string errorMessage, IEnumerable<string> memberNames) : base(errorMessage, memberNames) { }
+    protected CompositeValidationResult(ValidationResult validationResult) : base(validationResult) { }
+    
+    /// <summary>
+    /// エラーを登録
+    /// </summary>
+    /// <param name="validationResult"></param>
+    public void AddResult(ValidationResult validationResult)
+        => (Results as IList<ValidationResult>)?.Add(validationResult);
+
+    /// <summary>
+    /// エラーを登録
+    /// </summary>
+    /// <param name="validationResults"></param>
+    public void AddResults(IEnumerable<ValidationResult> validationResults)
+        => (Results as List<ValidationResult>)?.AddRange(validationResults);
+}

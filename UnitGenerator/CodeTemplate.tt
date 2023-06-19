@@ -50,7 +50,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenOpts.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenOpts.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>, IValidatableObject
 {
     // Namespace : <#= Namespace ?? "(null)" #>
     // Name      : <#= Name #>
@@ -299,7 +299,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     /// <summary>return raw value</summary>
     /// <returns>inner raw value</returns>
-    public <#= TypeName #>  GetRawValue()
+    public <#= TypeName #> GetRawValue()
         => m_value;
 
     /// <summary>return raw value</summary>
@@ -396,6 +396,24 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     //
     // Validate
     //
+
+    /// <summary>Validate</summary>
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        // Validationを実施
+        var context = new ValidationContext(this, null, null);
+        var validationAttribute = typeof(<#= Name #>).GetCustomAttributes<ValidationAttribute>();
+        foreach (var v in validationAttribute)
+        {
+            if (v is IUnitValidationAttribute)
+            {
+                var result = v.GetValidationResult(this, context);
+                if (result != ValidationResult.Success)
+                    yield return result;
+            }
+        }
+    }
+
 
     /// <summary>IsValid</summary>
     public bool IsValid()

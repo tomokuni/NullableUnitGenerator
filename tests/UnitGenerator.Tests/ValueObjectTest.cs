@@ -265,7 +265,7 @@ public class ValueObjectTest
 }
 
 
-[UnitOf(typeof(int), UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.ComparisonOperator | UnitGenOpts.IComparable | UnitGenOpts.ImplicitOperator | UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.ValidateAtGeneration | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter | UnitGenOpts.JsonConverterDictionaryKey)]
+[UnitOf(typeof(int), UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.ComparisonOperator | UnitGenOpts.IComparable | UnitGenOpts.ImplicitOperator | UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter | UnitGenOpts.JsonConverterDictionaryKey)]
 public readonly partial struct VoInt
 {
     partial void ValidationWithCustomCode(ref List<string> refMsg)

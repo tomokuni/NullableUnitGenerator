@@ -88,27 +88,40 @@ public class UnitOfAttributeTest
     [Fact]
     public void Range_int()
     {
-        var a = new VoIntRange(4);
-        ValidationWithUnitOfValidateAttribute(a);
-
-        var b = new Entity()
+        var model = new Entity()
         {
-            Id = new VoIntRange(4),
+            Id = new VoIntRange(2),
+            Id2 = new VoIntRange(3),
+            Id3 = new VoIntRange(4), 
         };
-        b.Validate();
+        var results = new List<ValidationResult>();
+        ValidationContext context = new ValidationContext(model, null, null);
+        Validator.TryValidateObject(model, context, results, validateAllProperties: true);
+        Assert.True(results.Any());
     }
 
     public class Entity
     {
         [DisplayName("ID")]
-        [UnitRange(1, 2)]
+        //[UnitOfRange(1, 2)]
+        //[UnitOfDefinedValidate]
         public VoIntRange Id { get; set; }
+
+        [DisplayName("ID2")]
+        //[UnitOfRange(1, 2)]
+        //[UnitOfDefinedValidate]
+        public VoIntRange Id2 { get; set; }
+
+        [DisplayName("ID3")]
+        //[UnitOfRange(1, 2)]
+        //[UnitOfDefinedValidate]
+        public VoIntRange Id3 { get; set; }
     }
 
 }
 
 
 [UnitOf(typeof(int), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
-[UnitRange(5, 6)]
+[UnitOfRange(4, 5)]
 public readonly partial struct VoIntRange { }
 
