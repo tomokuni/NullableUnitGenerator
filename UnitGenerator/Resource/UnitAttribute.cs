@@ -213,7 +213,7 @@ public class UnitOfRangeAttribute : RangeAttribute, IUnitValidationAttribute
 /// <summary>
 /// Validation attribute to assert StringLength. 
 /// </summary>
-[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
 public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>
@@ -291,7 +291,8 @@ public class CompositeValidationResult : ValidationResult
     /// <summary>
     /// 複数のValidation結果
     /// </summary>
-    public IEnumerable<ValidationResult> Results { get; } = new List<ValidationResult>();
+    public IEnumerable<ValidationResult> Results => _result.AsReadOnly();
+    private List<ValidationResult> _result = new List<ValidationResult>();
 
     public CompositeValidationResult(string errorMessage) : base(errorMessage) { }
     public CompositeValidationResult(string errorMessage, IEnumerable<string> memberNames) : base(errorMessage, memberNames) { }
@@ -302,12 +303,12 @@ public class CompositeValidationResult : ValidationResult
     /// </summary>
     /// <param name="validationResult"></param>
     public void AddResult(ValidationResult validationResult)
-        => (Results as IList<ValidationResult>)?.Add(validationResult);
+        => _result.Add(validationResult);
 
     /// <summary>
     /// エラーを登録
     /// </summary>
     /// <param name="validationResults"></param>
     public void AddResults(IEnumerable<ValidationResult> validationResults)
-        => (Results as List<ValidationResult>)?.AddRange(validationResults);
+        => _result.AddRange(validationResults);
 }
