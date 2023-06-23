@@ -95,26 +95,26 @@ public class UnitOfAttributeTest
             Id3 = new VoIntRange(4),
         };
         var results = new List<ValidationResult>();
-        ValidationContext context = new ValidationContext(model, null, null);
+        var context = new ValidationContext(model, null, null);
         Validator.TryValidateObject(model, context, results, validateAllProperties: true);
-        Assert.True(results.Any());
+        Assert.True(results.Count() != 0);
     }
 
     public class Entity
     {
         [DisplayName("ID")]
-        //[UnitOfRange(1, 2)]
-        //[UnitOfDefinedValidate]
+        [UnitOfRange(1, 2)]
+        [UnitOfDefinedValidate]
         public VoIntRange Id { get; set; }
 
         [DisplayName("ID2")]
-        //[UnitOfRange(1, 2)]
-        //[UnitOfDefinedValidate]
+        [UnitOfRange(1, 2)]
+        [UnitOfDefinedValidate]
         public VoIntRange Id2 { get; set; }
 
         [DisplayName("ID3")]
-        //[UnitOfRange(1, 2)]
-        //[UnitOfDefinedValidate]
+        [UnitOfRange(1, 2)]
+        [UnitOfDefinedValidate]
         public VoIntRange Id3 { get; set; }
     }
 
