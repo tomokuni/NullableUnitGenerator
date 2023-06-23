@@ -18,7 +18,7 @@ public partial class CodeTemplate
     /// <param name="typeSymbol">type specified by the attribute</param>
     /// <param name="options">UnitGenOpts specified by the attribute</param>
     /// <param name="toStringFormat">ToStringFormat value specified by the attribute</param>
-    public CodeTemplate(string? ns, string name, ITypeSymbol typeSymbol, UnitGenOpts options, string? toStringFormat)
+    public CodeTemplate(string? ns, string name, ITypeSymbol typeSymbol, UnitGenerateOption options, string? toStringFormat)
     {
         Namespace = ns;
         Name = name;
@@ -64,7 +64,7 @@ public partial class CodeTemplate
     internal ITypeSymbol TypeSymbol { get; }
 
     /// <summary>UnitGenOpts specified by the attribute.</summary>
-    internal UnitGenOpts Options { get; }
+    internal UnitGenerateOption Options { get; }
 
     /// <summary>ToStringFormat value specified by the attribute.</summary>
     internal string? ToStringFormat { get; }
@@ -127,7 +127,7 @@ public partial class CodeTemplate
     /// <summary>HasArithmeticAddSubOperator</summary>
     internal bool HasArithmeticAddSubOperator
         => IsBuiltinNumericType
-           || (ContainsOperater("op_Addition") && ContainsOperater("op_Subtraction"));
+           || (ContainsOperater("op_Addition") && ContainsOperater("op_Subtraction") && TypeName != "DateTime");
 
     /// <summary>HasArithmeticMulDevModOperator</summary>
     internal bool HasArithmeticMulDevModOperator
@@ -156,7 +156,7 @@ public partial class CodeTemplate
 
 
     /// <summary>Specified UnitGenOpts value is included or not.</summary>
-    internal bool HasFlag(UnitGenOpts options)
+    internal bool HasFlag(UnitGenerateOption options)
         => Options.HasFlag(options);
 
 
@@ -196,7 +196,7 @@ public partial class CodeTemplate
     internal bool IsSupportUtf8Formatter()
         => TypeName switch
         {
-            "char" => true,
+            "char" => false,
             "short" => true,
             "int" => true,
             "long" => true,
@@ -210,6 +210,7 @@ public partial class CodeTemplate
             "bool" => true,
             "float" => true,
             "double" => true,
+            "decimal" => true,
             "DateTime" => true,
             "DateTimeOffset" => true,
             "DateOnly" => false,

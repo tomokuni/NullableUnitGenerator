@@ -7,28 +7,18 @@ namespace NullableUnitGenerator;
 /// NullableUnitGenerator の生成オプション
 /// </summary>
 [Flags]
-public enum UnitGenOpts
+public enum UnitGenerateOption
 {
     /// <summary>None</summary>
     None = 0,
 
     /// <summary>
     /// Maximum optional specification of Numeric types independent of other packages<br/>
-    /// If an error occurs with this option, remove the option that causes the error and specify it separately<br/><br/>
-    /// 他のパッケージに依存しない最大限のオプション指定<br/>
-    /// このオプションを指定してエラーが発生する場合は、エラーが発生するオプションを外して個別に指定する<br/><br/>
-    /// <b>MaxExtent</b> = ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod
+    /// 他のパッケージに依存しない最大限のオプション指定<br/><br/>
+    /// If an error occurs with this option, remove the option that causes the error and specify it separately<br/>
+    /// このオプションを指定してエラーが発生する場合は、エラーが発生するオプションを外して個別に指定する
     /// </summary>
-    MaxExtent = ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod,
-
-    /// <summary>
-    /// Maximum optional specification of DateTime type independent of other packages<br/>
-    /// If an error occurs with this option, remove the option that causes the error and specify it separately<br/><br/>
-    /// DateTime 系の型に対する、他のパッケージに依存しない最大限のオプション指定<br/>
-    /// このオプションを指定してエラーが発生する場合は、エラーが発生するオプションを外して個別に指定する<br/><br/>
-    /// <b>MaxExtentForDateTime</b> = ImplicitOperator | IComparable | ComparisonOperator | ParseMethod
-    /// </summary>
-    MaxExtentForDateTime = ImplicitOperator | IComparable | ComparisonOperator | ParseMethod,
+    GeneralOptions = ImplicitOperator | IComparable | ComparisonOperator | ArithmeticOperator | ValueArithmeticOperator | ParseMethod | MinMaxMethod,
 
     /// <summary>
     /// <b>ImplicitOperator</b><br/>
@@ -85,14 +75,9 @@ public enum UnitGenOpts
     JsonConverter = 0b0000_0000_0000_0001_0000_0000_0000_0000,
 
     /// <summary>
-    /// <b>JsonConverterDictionaryKey</b>
-    /// </summary>
-    JsonConverterDictionaryKey = 0b0000_0000_0000_0010_0000_0000_0000_0000,
-
-    /// <summary>
     /// <b>MessagePackFormatter</b>
     /// </summary>
-    MessagePackFormatter = 0b0000_0000_0000_0100_0000_0000_0000_0000,
+    MessagePackFormatter = 0b0000_0000_0000_0010_0000_0000_0000_0000,
 
     /// <summary>
     /// <b>DapperTypeHandler</b>

@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using MessagePack;
 using Xunit;
-using NullableUnitGenerator;
 using System.Reflection;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Xunit.Sdk;
 using static NullableUnitGenerator.Tests.ValueObjectTest;
 using UnitGenerator.Tests;
+using NullableUnitGenerator;
+using UGO = NullableUnitGenerator.UnitGenerateOption;
 
 namespace NullableUnitGenerator.Tests;
 
@@ -265,19 +266,10 @@ public class ValueObjectTest
 }
 
 
-[UnitOf(typeof(int), UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.ComparisonOperator | UnitGenOpts.IComparable | UnitGenOpts.ImplicitOperator | UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter | UnitGenOpts.JsonConverterDictionaryKey)]
+[UnitOf(typeof(int), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 public readonly partial struct VoInt
 {
     partial void ValidateInConstructor()
     {
     }
 }
-
-//[UnitOf(typeof(DateTime), UnitGenOpts.ParseMethod | UnitGenOpts.MinMaxMethod | UnitGenOpts.ArithmeticOperator | UnitGenOpts.ValueArithmeticOperator | UnitGenOpts.Comparable | UnitGenOpts.Validate | UnitGenOpts.JsonConverter | UnitGenOpts.MessagePackFormatter | UnitGenOpts.DapperTypeHandler | UnitGenOpts.EntityFrameworkValueConverter | UnitGenOpts.JsonConverterDictionaryKey)]
-//public readonly partial struct VoDateTime
-//{
-//    private partial void Validate()
-//    {
-//        _ = HasValue;
-//    }
-//}

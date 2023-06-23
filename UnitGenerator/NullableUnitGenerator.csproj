@@ -59,10 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resource\IUnit.cs" LogicalName="UnitOf.IUnitOf.cs" />
-    <EmbeddedResource Include="Resource\UnitAttribute.cs" LogicalName="UnitOf.UnitOfAttribute.cs" />
+    <EmbeddedResource Include="Resource\IUnit.cs" LogicalName="UnitOf.IUnit.cs" />
+    <EmbeddedResource Include="Resource\UnitAttribute.cs" LogicalName="UnitOf.UnitAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitExtension.cs" LogicalName="UnitOf.UnitExtension.cs" />
-    <EmbeddedResource Include="Resource\UnitGenOpts.cs" LogicalName="UnitOf.UnitGenOpts.cs" />
+    <EmbeddedResource Include="Resource\UnitGenerateOption.cs" LogicalName="UnitOf.UnitGenerateOption.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />
   </ItemGroup>
@@ -75,7 +75,7 @@
 
   <ItemGroup>
     <Compile Include="Generate.cs" />
-    <Compile Include="Resource\UnitGenOpts.cs" Link="UnitGenOpts.cs" />
+    <Compile Include="Resource\UnitGenerateOption.cs" Link="UnitGenerateOption.cs" />
   </ItemGroup>
 
   <ItemGroup>

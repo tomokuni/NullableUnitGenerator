@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using NullableUnitGenerator;
+using UGO = NullableUnitGenerator.UnitGenerateOption;
 
 namespace EntityFrameworkApp;
 
-[UnitOf(typeof(int),
-    UnitGenOpts.ParseMethod |
-    UnitGenOpts.EntityFrameworkValueConverter)]
+[UnitOf(typeof(int), UGO.ParseMethod | UGO.EntityFrameworkValueConverter)]
 public readonly partial struct UserId { }
 
 public class User

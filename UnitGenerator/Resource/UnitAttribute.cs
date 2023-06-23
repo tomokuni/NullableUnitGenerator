@@ -24,7 +24,7 @@ public class UnitOfAttribute : Attribute
     public Type Type { get; }
 
     /// <summary>UnitGenerater Options</summary>
-    public UnitGenOpts Options { get; }
+    public UnitGenerateOption Options { get; }
 
     /// <summary>ToStringFormat</summary>
     public string? ToStringFormat { get; }
@@ -38,7 +38,7 @@ public class UnitOfAttribute : Attribute
     /// <param name="toStringFormat"></param>
     public UnitOfAttribute(
         Type type,
-        UnitGenOpts options = UnitGenOpts.None,
+        UnitGenerateOption options = UnitGenerateOption.None,
         string? toStringFormat = null)
     {
         Type = type;
@@ -61,7 +61,7 @@ public partial class UnitOfAttribute<T> : UnitOfAttribute
     /// <param name="options"></param>
     /// <param name="toStringFormat"></param>
     public UnitOfAttribute(
-        UnitGenOpts options = UnitGenOpts.None,
+        UnitGenerateOption options = UnitGenerateOption.None,
         string? toStringFormat = null)
         : base(typeof(T), 
                options: options, 

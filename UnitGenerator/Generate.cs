@@ -52,13 +52,13 @@ public sealed class Generate : IIncrementalGenerator
         var ns = targetSymbol.ContainingNamespace;
         if (attrCtorArgs[0].Value is not ITypeSymbol typeSymbol)
             throw new Exception("require UnitOf attribute parameter [Type]");
-        var parsedOptions = Enum.ToObject(typeof(UnitGenOpts), (attrCtorArgs[1].Value ?? UnitGenOpts.None));
+        var parsedOptions = Enum.ToObject(typeof(UnitGenerateOption), (attrCtorArgs[1].Value ?? UnitGenerateOption.None));
 
         var template = new CodeTemplate(
             ns: ns.IsGlobalNamespace ? null : ns.ToDisplayString(), 
             name: targetSymbol.Name,
             typeSymbol: typeSymbol,
-            options: (UnitGenOpts)parsedOptions,
+            options: (UnitGenerateOption)parsedOptions,
             toStringFormat: attrCtorArgs[2].Value as string);
         var text = template.TransformText().Replace("\r\n", "\n");
 
@@ -78,10 +78,11 @@ public sealed class Generate : IIncrementalGenerator
     /// <param name="context"></param>
     private void GenerateInitialCode(IncrementalGeneratorPostInitializationContext context)
     {
-        AddCsResource("UnitOf.IUnitOf.cs");
-        AddCsResource("UnitOf.UnitGenOpts.cs");
+        AddCsResource("UnitOf.IUnit.cs");
+        AddCsResource("UnitOf.UnitAttribute.cs");
+        AddCsResource("UnitOf.UnitExtension.cs");
+        AddCsResource("UnitOf.UnitGenerateOption.cs");
         AddCsResource("UnitOf.UnitHelper.cs");
-        AddCsResource("UnitOf.UnitOfAttribute.cs");
         AddCsResource("UnitOf.UnitState.cs");
 
         //

@@ -6,7 +6,7 @@ using System.Reflection;
 using Xunit;
 
 using UnitGenerator.Tests;
-using UGO = NullableUnitGenerator.UnitGenOpts;
+using UGO = NullableUnitGenerator.UnitGenerateOption;
 
 namespace NullableUnitGenerator.Tests;
 
@@ -59,55 +59,50 @@ public class UnitOfAttributeTest
     public class Entity
     {
         [DisplayName("ID")]
-        [UnitOfRange(1, 2)]
-        [UnitOfOasValidate(ErrorMessage = "入力に誤りがあります")]
+        [UnitOfRange(1, 2), UnitOfOasValidate(ErrorMessage = "入力に誤りがあります")]
         public VoIntRange Id { get; set; }
 
         [DisplayName("ID2")]
-        [UnitOfRange(1, 2)]
-        [UnitOfOasValidate]
+        [UnitOfRange(1, 2), UnitOfOasValidate]
         public VoLongRange Id2 { get; set; }
 
         [DisplayName("ID3")]
-        [UnitOfRange(1, 2)]
-        [UnitOfOasValidate]
+        [UnitOfRange(1, 2), UnitOfOasValidate]
         public VoFloatRange Id3 { get; set; }
 
         [DisplayName("ID4")]
-        [UnitOfRange(1, 2)]
-        [UnitOfOasValidate]
+        [UnitOfRange(1, 2), UnitOfOasValidate]
         public VoDoubleRange Id4 { get; set; }
         
         [DisplayName("ID5")]
-        [UnitOfRange(1, 2)]
-        [UnitOfOasValidate]
+        [UnitOfRange(1, 2), UnitOfOasValidate]
         public VoDecimalRange Id5 { get; set; }
     }
 
 }
 
 
-[UnitOf(typeof(int), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOf(typeof(int), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
 [UnitOfOas("integer", range: "2-3")]
 public readonly partial struct VoIntRange { }
 
 
-[UnitOf(typeof(long), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOf(typeof(long), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
 [UnitOfOas("integer", range: "2-3")]
 public readonly partial struct VoLongRange { }
 
 
-[UnitOf(typeof(double), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOf(typeof(double), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
 [UnitOfOas("number", range: "2-3")]
 public readonly partial struct VoDoubleRange { }
 
 
-[UnitOf(typeof(float), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOf(typeof(float), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
 [UnitOfOas("number", range: "2-3")]
 public readonly partial struct VoFloatRange { }
 
 
-[UnitOf(typeof(decimal), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOf(typeof(decimal), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
 [UnitOfOas("number", range: "2-3")]
 public readonly partial struct VoDecimalRange { }
 

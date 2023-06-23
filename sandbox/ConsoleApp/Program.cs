@@ -8,12 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Diagnostics;
 using NullableUnitGenerator;
-using UGO = NullableUnitGenerator.UnitGenOpts;
-
-//var a = UGO.JsonConverterDictionaryKey;
-
-//var has = UGO.JsonConverterDictionaryKey.HasFlag(UGO.Validate);
-//Console.WriteLine(has);
+using UGO = NullableUnitGenerator.UnitGenerateOption;
 
 var json = JsonSerializer.Serialize(new Dictionary<Guid, string> { { Guid.NewGuid(), "hogemoge" } });
 
@@ -69,13 +64,13 @@ Console.WriteLine($"文字列化比較 : {sw.ElapsedMilliseconds}");
 [UnitOf(typeof(Guid), UGO.IComparable)]
 public readonly partial struct FooId { }
 
-[UnitOf(typeof(Ulid), UGO.IComparable | UGO.MessagePackFormatter | UGO.JsonConverter | UGO.JsonConverterDictionaryKey)]
+[UnitOf(typeof(Ulid), UGO.IComparable | UGO.MessagePackFormatter | UGO.JsonConverter)]
 public readonly partial struct BarId { }
 
 namespace Sample
 {
 
-    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.IComparable | UGO.ComparisonOperator | UGO.MinMaxMethod | UGO.JsonConverter | UGO.JsonConverterDictionaryKey)]
+    [UnitOf(typeof(int), UGO.ArithmeticOperator | UGO.ValueArithmeticOperator | UGO.IComparable | UGO.ComparisonOperator | UGO.MinMaxMethod | UGO.JsonConverter)]
     public readonly partial struct Hp
     {
         // public static Hp operator +(in Hp x, in Hp y) => new Hp(checked((int)(x.value + y.value)));
