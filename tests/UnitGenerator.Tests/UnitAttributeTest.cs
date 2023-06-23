@@ -11,113 +11,103 @@ using UGO = NullableUnitGenerator.UnitGenOpts;
 namespace NullableUnitGenerator.Tests;
 
 
-public static class ValidateExt
-{
-    public static IEnumerable<string> Validate<T>(this T obj) where T : class
-    {
-        var msg = new List<string>();
-        var props = typeof(T).GetProperties();
-        foreach (var prop in props)
-        {
-            foreach (var attr in prop.GetCustomAttributes())
-            {
-                if(attr is ValidationAttribute at && !at.IsValid(obj))
-                    msg.Add($"{prop.Name}:error");
-            }
-        }
-
-        return msg;
-    }
-
-}
-
 public class UnitOfAttributeTest
 {
-
-    ///// <summary>IsValidForAttribute</summary>
-    //private void ValidationWithUnitOfValidateAttribute<T>(T obj)
-    //{
-    //    var msg = new List<string>();
-    //
-    //    var vaa = typeof(VoBool).GetCustomAttribute<ValidationAttribute>();
-    //    var va = typeof(T).GetCustomAttributes<ValidationAttribute>();
-    //    foreach (var a in va)
-    //    {
-    //        if (!a.IsValid(obj))
-    //        {
-    //            var context = new ValidationContext(obj, null, null);
-    //            var result = a.GetValidationResult(obj, context);
-    //            if (result!.ErrorMessage is not null)
-    //                msg.Add(result.ErrorMessage);
-    //        }
-    //    }
-    //}
-
-    //private static void Validate(object obj)
-    //{
-    //    foreach (PropertyInfo prop in obj.GetType().GetProperties())
-    //    {
-    //        // 値
-    //        string? val = prop.GetValue(obj)?.ToString();
-    //        // DisplayName属性取得
-    //        DisplayNameAttribute? dispNameAttr = Attribute.GetCustomAttribute(prop, typeof(DisplayNameAttribute)) as DisplayNameAttribute;
-    //        var name = dispNameAttr?.DisplayName ?? prop.Name;
-    //        // Range属性取得
-    //        RangeAttribute? rangeAttr = Attribute.GetCustomAttribute(prop, typeof(RangeAttribute)) as RangeAttribute;
-    //        // StringLength属性取得
-    //        StringLengthAttribute? lenAttr = Attribute.GetCustomAttribute(prop, typeof(StringLengthAttribute)) as StringLengthAttribute;
-    //        // Required属性取得
-    //        RequiredAttribute? reqAttr = Attribute.GetCustomAttribute(prop, typeof(RequiredAttribute)) as RequiredAttribute;
-    //
-    //        // チェック処理
-    //        if (rangeAttr != null && !rangeAttr.IsValid(val))
-    //        {
-    //            Console.WriteLine(string.Format("{0}({1})の有効範囲は{2}～{3}です。", name, val, rangeAttr.Minimum, rangeAttr.Maximum));
-    //        }
-    //        if (lenAttr != null && !lenAttr.IsValid(val))
-    //        {
-    //            Console.WriteLine(string.Format("{0}({1})は最大桁数{2}桁です。", name, val, lenAttr.MaximumLength));
-    //        }
-    //        if (reqAttr != null && !reqAttr.IsValid(val))
-    //        {
-    //            Console.WriteLine(string.Format("{0}は必須項目です。", name));
-    //        }
-    //    }
-    //}
-
     [Fact]
     public void Range_int()
     {
         var model = new Entity()
         {
-            Id = new VoIntRange(2),
-            Id2 = new VoIntRange(3),
-            Id3 = new VoIntRange(4),
+            Id = new VoIntRange(1),
+            Id2 = new VoLongRange(1L),
+            Id3 = new VoFloatRange(1.0f),
+            Id4 = new VoDoubleRange(1.0),
+            Id5 = new VoDecimalRange(1m),
         };
         var results = new List<ValidationResult>();
-        var context = new ValidationContext(model, null, null);
-        Validator.TryValidateObject(model, context, results, validateAllProperties: true);
-        Assert.True(results.Count() != 0);
+        var context = new ValidationContext(model);
+        Validator.TryValidateObject(model, context, results, true);
+        Assert.Equal(5, results.Count());
+
+        var model2 = new Entity()
+        {
+            Id = new VoIntRange(2),
+            Id2 = new VoLongRange(2L),
+            Id3 = new VoFloatRange(2.0f),
+            Id4 = new VoDoubleRange(2.0),
+            Id5 = new VoDecimalRange(2m),
+        };
+        var results2 = new List<ValidationResult>();
+        var context2 = new ValidationContext(model2);
+        Validator.TryValidateObject(model2, context2, results2, true);
+        Assert.Empty(results2);
+
+        var model3 = new Entity()
+        {
+            Id = new VoIntRange(3),
+            Id2 = new VoLongRange(3L),
+            Id3 = new VoFloatRange(3.0f),
+            Id4 = new VoDoubleRange(3.0),
+            Id5 = new VoDecimalRange(3m),
+        };
+        var results3 = new List<ValidationResult>();
+        var context3 = new ValidationContext(model3);
+        Validator.TryValidateObject(model3, context3, results3, true);
+        Assert.Equal(5, results3.Count());
     }
 
     public class Entity
     {
         [DisplayName("ID")]
         [UnitOfRange(1, 2)]
+        [UnitOfOasValidate(ErrorMessage = "入力に誤りがあります")]
         public VoIntRange Id { get; set; }
 
         [DisplayName("ID2")]
         [UnitOfRange(1, 2)]
-        public VoIntRange Id2 { get; set; }
+        [UnitOfOasValidate]
+        public VoLongRange Id2 { get; set; }
 
         [DisplayName("ID3")]
         [UnitOfRange(1, 2)]
-        public VoIntRange Id3 { get; set; }
+        [UnitOfOasValidate]
+        public VoFloatRange Id3 { get; set; }
+
+        [DisplayName("ID4")]
+        [UnitOfRange(1, 2)]
+        [UnitOfOasValidate]
+        public VoDoubleRange Id4 { get; set; }
+        
+        [DisplayName("ID5")]
+        [UnitOfRange(1, 2)]
+        [UnitOfOasValidate]
+        public VoDecimalRange Id5 { get; set; }
     }
 
 }
 
 
 [UnitOf(typeof(int), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOfOas("integer", range: "2-3")]
 public readonly partial struct VoIntRange { }
+
+
+[UnitOf(typeof(long), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOfOas("integer", range: "2-3")]
+public readonly partial struct VoLongRange { }
+
+
+[UnitOf(typeof(double), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOfOas("number", range: "2-3")]
+public readonly partial struct VoDoubleRange { }
+
+
+[UnitOf(typeof(float), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOfOas("number", range: "2-3")]
+public readonly partial struct VoFloatRange { }
+
+
+[UnitOf(typeof(decimal), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
+[UnitOfOas("number", range: "2-3")]
+public readonly partial struct VoDecimalRange { }
 

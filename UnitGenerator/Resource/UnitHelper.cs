@@ -1,14 +1,14 @@
-﻿#pragma warning disable IDE0079 // 不要な抑制を削除します
-#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
-#pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace NullableUnitGenerator;
+
+#pragma warning disable IDE0079 // 不要な抑制を削除します
+#pragma warning disable CS8669  // Null 許容参照型の注釈は、'#nullable' 注釈のコンテキスト内のコードでのみ使用する必要があります。自動生成されたコードには、ソースに明示的な '#nullable' ディレクティブが必要です。
+#pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 
 /// <summary>
