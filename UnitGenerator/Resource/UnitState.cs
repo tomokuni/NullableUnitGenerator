@@ -6,7 +6,6 @@ namespace NullableUnitGenerator;
 /// <summary>
 /// Value Status
 /// </summary>
-[Flags]
 public enum UnitState
 {
     /// <summary>Undefined State</summary>

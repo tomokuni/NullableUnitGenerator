@@ -22,7 +22,7 @@
 
     <!-- NuGet -->
     <PackageId>NullableUnitGenerator</PackageId>
-    <Description>C# Source Generator to create value-object that support null and undefined values.  Forked from UnitGenerator.</Description>
+    <Description>Source Generator to create ValueObject that support Null and Empty (Undefind) values.  Forked from UnitGenerator.</Description>
     <PackageReleaseNotes>beta</PackageReleaseNotes>
     <PackageVersion>$(Version)</PackageVersion>
     <Company>Estable</Company>

@@ -40,7 +40,8 @@ namespace <#= Namespace #>;
 
 
 /// <summary>
-/// <#= Name #> is TernaryType ValueObject<br/>
+/// <#= Name #> is ValueObject that support Null and Empty(Undefind) values.<br/>
+/// <#= Name #> は Null と Empty(Unddefind) 値をサポートする ValueObject です。<br/><br/>
 /// Primitive type is <#= TypeName #> (<#= TypeNameFull #>)
 /// </summary>
 <# if (HasFlag(UnitGenerateOption.MessagePackFormatter)) { #>

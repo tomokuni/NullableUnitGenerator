@@ -57,7 +57,10 @@ using System.Reflection;
  } 
             this.Write("\r\n\r\n/// <summary>\r\n/// ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" is TernaryType ValueObject<br/>\r\n/// Primitive type is ");
+            this.Write(" is ValueObject that support Null and Empty(Undefind) values.<br/>\r\n/// ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(" は Null と Empty(Unddefind) 値をサポートする ValueObject です。<br/><br/>\r\n/// Primitive type" +
+                    " is ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" (");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
