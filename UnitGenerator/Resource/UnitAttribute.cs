@@ -3,10 +3,12 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace NullableUnitGenerator;
 
@@ -86,19 +88,10 @@ public class UnitOfOasAttribute : Attribute
     public string? Title { get; }
 
     /// <summary>For OpenApiSchema.Minimum</summary>
-    public decimal? Minimum { get; }
-
-    /// <summary>For OpenApiSchema.ExclusiveMinimum</summary>
-    public bool? ExclusiveMinimum { get; }
+    public string? Minimum { get; }
 
     /// <summary>For OpenApiSchema.Maximum</summary>
-    public decimal? Maximum { get; }
-
-    /// <summary>For OpenApiSchema.ExclusiveMaximum</summary>
-    public bool? ExclusiveMaximum { get; }
-
-    /// <summary>For OpenApiSchema.MultipleOf</summary>
-    public decimal? MultipleOf { get; }
+    public string? Maximum { get; }
 
     /// <summary>For OpenApiSchema.MinLength</summary>
     public int? MinLength { get; }
@@ -108,35 +101,31 @@ public class UnitOfOasAttribute : Attribute
 
     /// <summary>For OpenApiSchema.Pattern</summary>
     public string? Pattern { get; }
-
-    /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool Nullable { get; }
-
+    
     /// <summary>For OpenApiSchema.Example</summary>
     public object? Example { get; }
 
     /// <summary>For OpenApiSchema.Description</summary>
     public string? Description { get; }
 
+    /// <summary>For OpenApiSchema.Nullable</summary>
+    public bool Nullable { get; }
+
+    /// <summary>For conversion to and from Json strings</summary>
+    public string? ParseString { get; }
+
     /// <summary>
-    /// https://swagger.io/docs/specification/data-models/data-types/<br/>
-    /// minimum, maximum, and multipleOf are decimal values, and minLength and maxLength are int values<br/>
-    /// minimum, maximum, multipleOf は decimalの値、minLength, maxLength は int型の値を指定する
+    /// Attributes for OpenApiDataType definitions or constraints<br/>
+    /// OpenApiDataType 定義 または 制約用の属性
     /// </summary>
-    /// <param name="type">string, number, integer, boolean, array, object</param>
-    /// <param name="format">type:string:(-, date, time, date-time, password, byte, email, uuid, uri, hostname, ipv4, ipv6), type:number:(-, float, double), type:integer:(-, int32, int64)</param>
-    /// <param name="title"></param>
-    /// <param name="minimum">Parse to decimal</param>
-    /// <param name="exclusiveMinimum">boolean</param>
-    /// <param name="maximum">Parse to decimal</param>
-    /// <param name="exclusiveMaximum">boolean</param>
-    /// <param name="multipleOf">Parse to decimal</param>
-    /// <param name="minLength">Parse to int</param>
-    /// <param name="maxLength">Parse to int</param>
-    /// <param name="pattern">regex pattern</param>
-    /// <param name="nullable">boolean</param>
-    /// <param name="example">example</param>
-    /// <param name="description">description</param>
+    /// <param name="type">Type Format set by OpenApiDataType. <br/>date, time, date-time, phone, email, uri as string and have format constraint. <br/><br/>string, number, integer, boolean, date, time, date-time, phone, email, uri</param>
+    /// <param name="title">Title set by OpenApiDataType.</param>
+    /// <param name="range">Minimam and Maximam set by OpenApiDataType. <br/><br/>Parse to minimum and maximum values as decimal type.<br/>For number and integer.<br/><b>format : </b>min-max<br/><b>example : </b>11-222</param>
+    /// <param name="length">MinLength and MaxLength set by OpenApiDataType .<br/><br/>Parse to minimum and maximum length as int type.<br/>For string.<br/><b>format : </b>min-max or fix<br/><b>example : </b>1-2 or 3</param>
+    /// <param name="regex">Pattern set by OpenApiDataType. <br/><br/>For string.</param>
+    /// <param name="example">example set by OpenApiDataType.</param>
+    /// <param name="description">description set by OpenApiDataType.</param>
+    /// <param name="parseString">For conversion to and from Json strings.</param>
     /// <remarks>
     /// https://swagger.io/docs/specification/data-models/data-types/<br/>
     /// Types:<br/>
@@ -149,34 +138,196 @@ public class UnitOfOasAttribute : Attribute
     /// </remarks>
     public UnitOfOasAttribute(
         string type,
-        string? format = null,
         string? title = null,
-        object? minimum = null,
-        bool exclusiveMaximum = false,
-        object? maximum = null,
-        bool exclusiveMinimum = false,
-        object? multipleOf = null,
-        object? minLength = null,
-        object? maxLength = null,
-        string? pattern = null,
-        bool nullable = true,
+        string? range = null,
+        string? length = null,
+        string? regex = null,
         object? example = null,
-        string? description = null)
+        string? description = null,
+        string? parseString = null)
     {
-        Type = type;
-        Format = format;
         Title = title;
-        Minimum = (minimum is null) ? null : (decimal)minimum;
-        ExclusiveMinimum = exclusiveMinimum;
-        Maximum = (maximum is null) ? null : (decimal)maximum;
-        ExclusiveMaximum = exclusiveMaximum;
-        MultipleOf = (multipleOf is null) ? null : (decimal)multipleOf;
-        MinLength = (minLength is null) ? null : (int)minLength;
-        MaxLength = (maxLength is null) ? null : (int)maxLength;
-        Pattern = pattern;
-        Nullable = nullable;
+        Pattern = regex;
         Example = example;
         Description = description;
+        Nullable = true;
+        ParseString = parseString;
+
+        // type, format
+        (Type, Format) = type switch
+        {
+            "string" => ("string", null),
+            "number" => ("number", null),
+            "integer" => ("integer", null),
+            "boolean" => ("boolean", null),
+            "date" => ("date", null),
+            "time" => ("time", null),
+            "date-time" => ("date-time", null),
+            "phone" => ("phone", null),
+            "email" => ("email", null),
+            "uri" => ("uri", null),
+            _ => ("string", (string?)null)
+        };
+
+        // range
+        if (range is null)
+        {
+            Minimum = null;
+            Maximum = null;
+        }
+        else if (Regex.IsMatch(range, @"^\d+-\d+$"))
+        {
+            var splitRange = range.Split('-');
+            Minimum = splitRange[0];
+            Maximum = splitRange[1];
+        }
+        else
+            throw new ArgumentException($"renge {range} is invalid value.");
+
+        // length
+        if (length is null)
+        {
+            MinLength = null;
+            MaxLength = null;
+        }
+        else if (Regex.IsMatch(length, @"^\d+$"))
+        {
+            MinLength = null;
+            MaxLength = int.Parse(length);
+        }
+        else if (Regex.IsMatch(length, @"^\d+-\d+$"))
+        {
+            var splitLength = length.Split('-')!;
+            MinLength = int.Parse(splitLength[0]);
+            MaxLength = int.Parse(splitLength[1]);
+        }
+        else
+            throw new ArgumentException($"length {range} is invalid value.");
+    }
+
+}
+
+
+/// <summary>
+/// Validate based on UnitOfOasAttribute of UnitOf definition.<br/>
+/// UnitOf定義のUnitOfOas属性に基づいて検証する。
+/// </summary>
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfValidateBaseOnUnitOfOasAttribute : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        // 検証不要なら、Success
+        if (value is null)
+            return ValidationResult.Success;
+        if (value is not IUnitOf u)
+            return ValidationResult.Success;
+        if (!u.HasValue)
+            return ValidationResult.Success;
+
+        var type = value.GetType();
+        var attr = value.GetType().GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
+        if (attr is null)
+            return ValidationResult.Success;
+
+        // Validationを実施
+        var msg = "";
+        var val = u.Value;
+        switch (attr.Type)
+        {
+            case "string":
+                msg = ValidateLength(val.ToString().Length, attr.MinLength, attr.MaxLength);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            case "number":
+                msg = ValidateLength(val.ToString().Length, attr.MinLength, attr.MaxLength);
+                break;
+            case "integer":
+                msg = ValidateLength(val.ToString().Length, attr.MinLength, attr.MaxLength);
+                break;
+            case "boolean":
+                break;
+            case "date":
+                msg = ValidateRange(val, typeof(DateOnly), attr.MinLength, attr.MaxLength);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            case "time":
+                msg = ValidateRange(val, typeof(TimeOnly), attr.MinLength, attr.MaxLength);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            case "date-time":
+                msg = ValidateRange(val, typeof(DateTime), attr.MinLength, attr.MaxLength);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            case "phone":
+                msg = ValidatePhoneNumber(val);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            case "email":
+                msg = ValidateEmailAddress(val);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            case "uri":
+                msg = ValidateEmailAddress(val);
+                msg = ValidateRegularExpression(val, attr.Pattern);
+                break;
+            default:
+                return ValidationResult.Success;
+        }
+
+        //if (!validationResults.Any())
+        //    return ValidationResult.Success;
+
+        //var result = validationResults
+        //    .Select(s => new ValidationResult(s.ErrorMessage, s.MemberNames.Select(y => $"{validationContext.DisplayName}.{y}")));
+        //var compositeResults = new CompositeValidationResult(string.Format("Validation for {0} failed!", new { validationContext.DisplayName }));
+        //compositeResults.AddResults(result);
+        //return compositeResults;
+    }
+
+    private static ValidationResult ValidateLength(int vLen, int? minLen, int? maxLen)
+    {
+        var ctx = new ValidationContext(vLen, null, null);
+        return (minLen, maxLen) switch
+        {
+            (not null, not null)
+                => new StringLengthAttribute(maxLen.Value) { MinimumLength = minLen.Value }.GetValidationResult(vLen, ctx),
+            (null, not null)
+                => new StringLengthAttribute(maxLen.Value).GetValidationResult(vLen, ctx),
+            _ => ValidationResult.Success,
+        };
+    }
+
+    private static ValidationResult ValidateRange(object val, Type type, string? min, string? max)
+    {
+        var ctx = new ValidationContext(val, null, null);
+        return new RangeAttribute(type, min, max).GetValidationResult(val, ctx);
+    }
+
+    private static ValidationResult ValidatePhoneNumber(object val)
+    {
+        var ctx = new ValidationContext(val, null, null);
+        return new PhoneAttribute().GetValidationResult(val, ctx);
+    }
+
+    private static ValidationResult ValidateEmailAddress(object val)
+    {
+        var ctx = new ValidationContext(val, null, null);
+        return new EmailAddressAttribute().GetValidationResult(val, ctx);
+    }
+
+    private static ValidationResult ValidateUrl(object val)
+    {
+        var ctx = new ValidationContext(val, null, null);
+        return new UrlAttribute().GetValidationResult(val, ctx);
+    }
+
+    private static ValidationResult ValidateRegularExpression(object val, string? pattern)
+    {
+        var ctx = new ValidationContext(val, null, null);
+        var res = new RegularExpressionAttribute(pattern).GetValidationResult(val, ctx);
+        res.ErrorMessage = res.ErrorMessage;
+        return res;
     }
 }
 
@@ -225,35 +376,35 @@ public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidatio
 }
 
 
-/// <summary>
-/// Validate based on attribute of UnitOf definition.<br/>
-/// UnitOf 定義の属性に基づき検証を行する。
-/// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
-public class UnitOfDefinedValidateAttribute : ValidationAttribute
-{
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-    {
-        if (value == null)
-            return ValidationResult.Success;
-
-        // Validationを実施
-        var context = new ValidationContext(value, null, null);
-        var validationResults = value.GetType().GetCustomAttributes<ValidationAttribute>()
-            .Where(s => s is IUnitValidationAttribute)
-            .Select(s => s.GetValidationResult(this, context)!)
-            .Where(s => s != ValidationResult.Success);
-
-        if (!validationResults.Any())
-            return ValidationResult.Success;
-
-        var result = validationResults
-            .Select(s => new ValidationResult(s.ErrorMessage, s.MemberNames.Select(y => $"{validationContext.DisplayName}.{y}")));
-        var compositeResults = new CompositeValidationResult(string.Format("Validation for {0} failed!", new { validationContext.DisplayName }));
-        compositeResults.AddResults(result);
-        return compositeResults;
-    }
-}
+///// <summary>
+///// Validate based on attribute of UnitOf definition.<br/>
+///// UnitOf 定義の属性に基づき検証を行する。
+///// </summary>
+//[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
+//public class UnitOfDefinedValidateAttribute : ValidationAttribute
+//{
+//    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+//    {
+//        if (value == null)
+//            return ValidationResult.Success;
+//
+//        // Validationを実施
+//        var context = new ValidationContext(value, null, null);
+//        var validationResults = value.GetType().GetCustomAttributes<ValidationAttribute>()
+//            .Where(s => s is IUnitValidationAttribute)
+//            .Select(s => s.GetValidationResult(this, context)!)
+//            .Where(s => s != ValidationResult.Success);
+//
+//        if (!validationResults.Any())
+//            return ValidationResult.Success;
+//
+//        var result = validationResults
+//            .Select(s => new ValidationResult(s.ErrorMessage, s.MemberNames.Select(y => $"{validationContext.DisplayName}.{y}")));
+//        var compositeResults = new CompositeValidationResult(string.Format("Validation for {0} failed!", new { validationContext.DisplayName }));
+//        compositeResults.AddResults(result);
+//        return compositeResults;
+//    }
+//}
 
 
 /// <summary>
