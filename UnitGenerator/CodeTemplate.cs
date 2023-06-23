@@ -86,7 +86,7 @@ using System.Reflection;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("> ");
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenOpts.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : ""));
-            this.Write(", IValidatableObject\r\n{\r\n    // Namespace : ");
+            this.Write("\r\n{\r\n    // Namespace : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace ?? "(null)"));
             this.Write("\r\n    // Name      : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -142,17 +142,17 @@ using System.Reflection;
  } 
             this.Write("\r\n\r\n    //\r\n    // backing field\r\n    //\r\n\r\n    readonly ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n    reado" +
-                    "nly IList<string>? m_validateMessage = null;\r\n\r\n\r\n    //\r\n    // Constructor\r\n  " +
-                    "  //\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
+            this.Write(" m_value = default;\r\n    readonly UnitState m_state = UnitState.Undef;\r\n\r\n\r\n    /" +
+                    "/\r\n    // Constructor\r\n    //\r\n\r\n    /// <summary>Complete Constructor</summary>" +
+                    "\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("()\r\n    { }\r\n\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (value.m_state, value.m_value);\r\n\r\n " +
-                    "       m_validateMessage = this.Validation();\r\n    }\r\n\r\n    /// <summary>Complet" +
-                    "e Constructor</summary>\r\n    public ");
+                    "       ValidateInConstructor();\r\n    }\r\n\r\n    /// <summary>Complete Constructor<" +
+                    "/summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in UnitState state, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
@@ -162,15 +162,15 @@ using System.Reflection;
  if (!IsValueType) { 
             this.Write("            (_, null) => (state, default),\r\n");
  } 
-            this.Write("            _ => (state, value)\r\n        };\r\n\r\n        m_validateMessage = this.V" +
-                    "alidation();\r\n    }\r\n\r\n");
+            this.Write("            _ => (state, value)\r\n        };\r\n\r\n        ValidateInConstructor();\r\n" +
+                    "    }\r\n\r\n");
  if (IsValueType) { 
             this.Write("    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" value)\r\n    {\r\n        (m_state, m_value) = (UnitState.Value, value);\r\n\r\n       " +
-                    " m_validateMessage = this.Validation();\r\n    }\r\n");
+                    " ValidateInConstructor();\r\n    }\r\n");
  } 
             this.Write("\r\n    /// <summary>Complete Constructor</summary>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -182,7 +182,7 @@ using System.Reflection;
             this.Write(@")value),
         };
 
-        m_validateMessage = this.Validation();
+        ValidateInConstructor();
     }
 
 
@@ -427,59 +427,8 @@ if (IsBuiltinNumericType) {
     // Validate
     //
 
-    /// <summary>Validate</summary>
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        // Validationを実施
-        var context = new ValidationContext(this, null, null);
-        var validationAttribute = typeof(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@").GetCustomAttributes<ValidationAttribute>();
-        foreach (var v in validationAttribute)
-        {
-            if (v is IUnitValidationAttribute)
-            {
-                var result = v.GetValidationResult(this, context);
-                if (result != ValidationResult.Success)
-                    yield return result;
-            }
-        }
-    }
-
-
-    /// <summary>IsValid</summary>
-    public bool IsValid()
-        => !m_validateMessage.Any();
-
-    /// <summary>Validation</summary>
-    private IList<string> Validation() {
-        var msg = ValidationWithUnitOfValidateAttribute();
-        ValidationWithCustomCode(ref msg);
-        return msg.AsReadOnly();
-    }
-
-    /// <summary>ValidationWithUnitOfValidateAttribute</summary>
-    private List<string> ValidationWithUnitOfValidateAttribute()
-    {
-        var msg = new List<string>();
-        var va = typeof(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@").GetCustomAttributes<ValidationAttribute>();
-        foreach (var a in va)
-        {
-            if (a is IUnitValidationAttribute && !a.IsValid(this))
-            {
-                var context = new ValidationContext(this, null, null);
-                var result = a.GetValidationResult(this, context);
-                if (result!.ErrorMessage is not null)
-                    msg.Add(result.ErrorMessage);
-            }
-        }
-        return msg;
-    }
-
-    /// <summary>ValidationWithCustomCode</summary>
-    partial void ValidationWithCustomCode(ref List<string> refMsg);
+    /// <summary>ValidateInConstructor</summary>
+    partial void ValidateInConstructor();
 
 ");
  if (TypeName == "Guid" || TypeName == "System.Guid") { 

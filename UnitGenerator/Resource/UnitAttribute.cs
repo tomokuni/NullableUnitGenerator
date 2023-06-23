@@ -160,13 +160,13 @@ public class UnitOfOasAttribute : Attribute
             "number" => ("number", null),
             "integer" => ("integer", null),
             "boolean" => ("boolean", null),
-            "date" => ("date", null),
-            "time" => ("time", null),
-            "date-time" => ("date-time", null),
-            "phone" => ("phone", null),
-            "email" => ("email", null),
-            "uri" => ("uri", null),
-            _ => ("string", (string?)null)
+            "date" => ("string", "date"),
+            "time" => ("string", "time"),
+            "date-time" => ("string", "date-time"),
+            "phone" => ("string", "phone"),
+            "email" => ("string", "email"),
+            "uri" => ("string", "uri"),
+            _ => ("string", null)
         };
 
         // range
@@ -219,11 +219,11 @@ public class UnitOfValidateBaseOnUnitOfOasAttribute : ValidationAttribute
     {
         // 検証不要なら、Success
         if (value is null)
-            return ValidationResult.Success;
+            return ValidationResult.Success!;
         if (value is not IUnitOf u)
-            return ValidationResult.Success;
+            return ValidationResult.Success!;
         if (!u.HasValue)
-            return ValidationResult.Success;
+            return ValidationResult.Success!;
 
         var type = value.GetType();
         var attr = value.GetType().GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
@@ -231,49 +231,53 @@ public class UnitOfValidateBaseOnUnitOfOasAttribute : ValidationAttribute
             return ValidationResult.Success;
 
         // Validationを実施
-        var msg = "";
-        var val = u.Value;
+        ValidationResult msg;
+        var val = u.GetRawValueAsObject();
         switch (attr.Type)
         {
             case "string":
-                msg = ValidateLength(val.ToString().Length, attr.MinLength, attr.MaxLength);
+                msg = ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
             case "number":
-                msg = ValidateLength(val.ToString().Length, attr.MinLength, attr.MaxLength);
+                msg = ValidateRange(val, typeof(decimal), attr.Minimum, attr.Maximum);
+                msg = ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength);
                 break;
             case "integer":
-                msg = ValidateLength(val.ToString().Length, attr.MinLength, attr.MaxLength);
+                msg = ValidateRange(val, typeof(long), attr.Minimum, attr.Maximum);
+                msg = ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength);
                 break;
             case "boolean":
                 break;
             case "date":
-                msg = ValidateRange(val, typeof(DateOnly), attr.MinLength, attr.MaxLength);
+                msg = ValidateRange(val, typeof(DateOnly), attr.Minimum, attr.Maximum);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
             case "time":
-                msg = ValidateRange(val, typeof(TimeOnly), attr.MinLength, attr.MaxLength);
+                msg = ValidateRange(val, typeof(TimeOnly), attr.Minimum, attr.Maximum);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
             case "date-time":
-                msg = ValidateRange(val, typeof(DateTime), attr.MinLength, attr.MaxLength);
+                msg = ValidateRange(val, typeof(DateTime), attr.Minimum, attr.Maximum);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
             case "phone":
                 msg = ValidatePhoneNumber(val);
+                msg = ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
             case "email":
                 msg = ValidateEmailAddress(val);
+                msg = ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
             case "uri":
-                msg = ValidateEmailAddress(val);
+                msg = ValidateUrl(val);
+                msg = ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength);
                 msg = ValidateRegularExpression(val, attr.Pattern);
                 break;
-            default:
-                return ValidationResult.Success;
         }
+        return ValidationResult.Success;
 
         //if (!validationResults.Any())
         //    return ValidationResult.Success;
@@ -285,59 +289,78 @@ public class UnitOfValidateBaseOnUnitOfOasAttribute : ValidationAttribute
         //return compositeResults;
     }
 
-    private static ValidationResult ValidateLength(int vLen, int? minLen, int? maxLen)
+    private static ValidationResult ValidateLength(object? val, int? minLen, int? maxLen)
     {
-        var ctx = new ValidationContext(vLen, null, null);
+        if (val is null || maxLen is null || (minLen is null && maxLen is null))
+            return ValidationResult.Success!;
+
+        var ctx = new ValidationContext(val);
         return (minLen, maxLen) switch
         {
             (not null, not null)
-                => new StringLengthAttribute(maxLen.Value) { MinimumLength = minLen.Value }.GetValidationResult(vLen, ctx),
+                => new StringLengthAttribute(maxLen.Value) { MinimumLength = minLen.Value }.GetValidationResult(val, ctx)!,
             (null, not null)
-                => new StringLengthAttribute(maxLen.Value).GetValidationResult(vLen, ctx),
-            _ => ValidationResult.Success,
+                => new StringLengthAttribute(maxLen.Value).GetValidationResult(val, ctx)!,
+            _ => ValidationResult.Success!,
         };
     }
 
-    private static ValidationResult ValidateRange(object val, Type type, string? min, string? max)
+    private static ValidationResult ValidateRange(object? val, Type type, string? min, string? max)
     {
-        var ctx = new ValidationContext(val, null, null);
-        return new RangeAttribute(type, min, max).GetValidationResult(val, ctx);
+        if (val is null || string.IsNullOrWhiteSpace(min) || string.IsNullOrWhiteSpace(max))
+            return ValidationResult.Success!;
+
+        var ctx = new ValidationContext(val);
+        return new RangeAttribute(type, min, max).GetValidationResult(val, ctx)!;
     }
 
-    private static ValidationResult ValidatePhoneNumber(object val)
+    private static ValidationResult ValidateRegularExpression(object? val, string? pattern)
     {
-        var ctx = new ValidationContext(val, null, null);
-        return new PhoneAttribute().GetValidationResult(val, ctx);
-    }
+        if (val is null || string.IsNullOrWhiteSpace(pattern))
+            return ValidationResult.Success!;
 
-    private static ValidationResult ValidateEmailAddress(object val)
-    {
-        var ctx = new ValidationContext(val, null, null);
-        return new EmailAddressAttribute().GetValidationResult(val, ctx);
-    }
-
-    private static ValidationResult ValidateUrl(object val)
-    {
-        var ctx = new ValidationContext(val, null, null);
-        return new UrlAttribute().GetValidationResult(val, ctx);
-    }
-
-    private static ValidationResult ValidateRegularExpression(object val, string? pattern)
-    {
-        var ctx = new ValidationContext(val, null, null);
-        var res = new RegularExpressionAttribute(pattern).GetValidationResult(val, ctx);
+        var ctx = new ValidationContext(val);
+        var res = new RegularExpressionAttribute(pattern).GetValidationResult(val, ctx)!;
         res.ErrorMessage = res.ErrorMessage;
         return res;
+    }
+
+    private static ValidationResult ValidatePhoneNumber(object? val)
+    {
+        if (val is null)
+            return ValidationResult.Success!;
+
+        var ctx = new ValidationContext(val);
+        return new PhoneAttribute().GetValidationResult(val, ctx)!;
+    }
+
+    private static ValidationResult ValidateEmailAddress(object? val)
+    {
+        if (val is null)
+            return ValidationResult.Success!;
+
+        var ctx = new ValidationContext(val);
+        return new EmailAddressAttribute().GetValidationResult(val, ctx)!;
+    }
+
+    private static ValidationResult ValidateUrl(object? val)
+    {
+        if (val is null)
+            return ValidationResult.Success!;
+
+        var ctx = new ValidationContext(val);
+        return new UrlAttribute().GetValidationResult(val, ctx)!;
     }
 }
 
 
 
 
-/// <summary>
+
+// <summary>
 /// Validation attribute to assert Range. 
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UnitOfRangeAttribute : RangeAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>
@@ -364,7 +387,7 @@ public class UnitOfRangeAttribute : RangeAttribute, IUnitValidationAttribute
 /// <summary>
 /// Validation attribute to assert StringLength. 
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Struct, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidationAttribute
 {
     /// <summary>Constructor</summary>

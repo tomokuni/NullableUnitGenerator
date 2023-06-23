@@ -104,17 +104,14 @@ public class UnitOfAttributeTest
     {
         [DisplayName("ID")]
         [UnitOfRange(1, 2)]
-        [UnitOfDefinedValidate]
         public VoIntRange Id { get; set; }
 
         [DisplayName("ID2")]
         [UnitOfRange(1, 2)]
-        [UnitOfDefinedValidate]
         public VoIntRange Id2 { get; set; }
 
         [DisplayName("ID3")]
         [UnitOfRange(1, 2)]
-        [UnitOfDefinedValidate]
         public VoIntRange Id3 { get; set; }
     }
 
@@ -122,6 +119,5 @@ public class UnitOfAttributeTest
 
 
 [UnitOf(typeof(int), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.DapperTypeHandler)]
-[UnitOfRange(4, 5)]
 public readonly partial struct VoIntRange { }
 

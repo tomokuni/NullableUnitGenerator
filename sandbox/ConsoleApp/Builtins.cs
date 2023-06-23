@@ -39,63 +39,63 @@ public readonly partial struct VoBool { }
 
 
 [UnitOf(typeof(char), UGO.MaxExtent | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("string", format: "uint8")]
+[UnitOfOas("string")]
 public readonly partial struct VoChar { }
 
 
 [UnitOf(typeof(byte), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "int8")]
+[UnitOfOas("integer")]
 public readonly partial struct VoByte { }
 
 
 
 [UnitOf(typeof(sbyte), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "uint8")]
+[UnitOfOas("integer")]
 public readonly partial struct VoSbyte { }
 
 
 [UnitOf(typeof(short), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "int16")]
+[UnitOfOas("integer")]
 public readonly partial struct VoShort { }
 
 
 [UnitOf(typeof(ushort), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "uint16")]
+[UnitOfOas("integer")]
 public readonly partial struct VoUshort { }
 
 
 [UnitOf(typeof(int), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "int32")]
+[UnitOfOas("integer")]
 public readonly partial struct VoInt { }
 
 
 [UnitOf(typeof(uint), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "uint32")]
+[UnitOfOas("integer")]
 public readonly partial struct VoUint { }
 
 
 [UnitOf(typeof(long), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "int64")]
+[UnitOfOas("integer")]
 public readonly partial struct VoLong { }
 
 
 [UnitOf(typeof(ulong), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("integer", format: "uint64")]
+[UnitOfOas("integer")]
 public readonly partial struct VoUlong { }
 
 
 [UnitOf(typeof(float), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("number", format: "float")]
+[UnitOfOas("number")]
 public readonly partial struct VoFloat { }
 
 
 [UnitOf(typeof(double), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("number", format: "double")]
+[UnitOfOas("number")]
 public readonly partial struct VoDouble { }
 
 
 [UnitOf(typeof(decimal), UGO.MaxExtent | UGO.JsonConverter | UGO.JsonConverterDictionaryKey | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("number", format: "decimal")]
+[UnitOfOas("number")]
 public readonly partial struct VoDecimal { }
 
 

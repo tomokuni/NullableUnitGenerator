@@ -106,7 +106,7 @@ namespace Sample
     public readonly partial struct SampleValidate
     {
         // impl here.
-        partial void ValidationWithCustomCode(ref List<string> refMsg)
+        partial void ValidateInConstructor()
         {
             if (m_value > 9999) throw new Exception("Invalid value range: " + m_value);
         }

@@ -23,7 +23,7 @@ public static class NullableUnitGeneratorExtensions
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
-    internal static SwaggerGenOptions MapTypeUnitOfOas(this SwaggerGenOptions options)
+    public static SwaggerGenOptions MapTypeUnitOfOas(this SwaggerGenOptions options)
     {
         // UnitOfOas 属性が付与されたクラスと属性を取得
         var ta = UnitHelper.GetTypeAndAttributes<UnitOfOasAttribute>();
@@ -40,7 +40,7 @@ public static class NullableUnitGeneratorExtensions
     /// </summary>
     /// <param name="attr"></param>
     /// <returns></returns>
-    internal static OpenApiSchema ToOpenApiSchema(this UnitOfOasAttribute attr)
+    public static OpenApiSchema ToOpenApiSchema(this UnitOfOasAttribute attr)
     {
         IOpenApiAny exampleAny = attr.Example switch
         {
@@ -54,11 +54,8 @@ public static class NullableUnitGeneratorExtensions
         {
             Type = attr.Type,
             Format = attr.Format,
-            Minimum = attr.Minimum,
-            ExclusiveMinimum = attr.ExclusiveMinimum,
-            Maximum = attr.Maximum,
-            ExclusiveMaximum = attr.ExclusiveMaximum,
-            MultipleOf = attr.MultipleOf,
+            Minimum = attr.Minimum is null ? null : decimal.Parse(attr.Minimum),
+            Maximum = attr.Maximum is null ? null : decimal.Parse(attr.Maximum),
             MinLength = attr.MinLength,
             MaxLength = attr.MaxLength,
             Pattern = attr.Pattern,
