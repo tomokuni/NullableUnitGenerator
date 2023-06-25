@@ -17,56 +17,63 @@ namespace NullableUnitGenerator;
 /// </summary>
 public static class UnitValidate
 {
-
-    public static IEnumerable<ValidationResult> ValidateObject(object? val, UnitOfOasAttribute attr, ValidationContext ctx)
+    /// <summary>
+    /// Validate objects based on UnitOfOasAttribute.<br/>
+    /// UnitOfOasAttribute に基づいてオブジェクトの検証を行う。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="attribute">Object of UnitOfOasAttribute.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, Enumerable.Empty.<para>When validation is invalid, an IEnumerater of<see ref="ValidationResult"/>.</para></returns>
+    public static IEnumerable<ValidationResult> ValidateObject(object? value, UnitOfOasAttribute attribute, ValidationContext validationContext)
     {
-        if (val is null)
+        if (value is null)
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
         var results = new List<ValidationResult>();
-        switch (attr.Type)
+        switch (attribute.Type)
         {
             case "string":
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
             case "integer":
-                results.Add(ValidateRange(val, attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
+                results.Add(ValidateRange(value, attribute.Minimum, attribute.Maximum, validationContext));
+                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
                 break;
             case "number":
-                results.Add(ValidateRange(val, attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
+                results.Add(ValidateRange(value, attribute.Minimum, attribute.Maximum, validationContext));
+                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
                 break;
             case "boolean":
                 break;
             case "date":
-                results.Add(ValidateRange(val, typeof(DateOnly), attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidateRange(value, typeof(DateOnly), attribute.Minimum, attribute.Maximum, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
             case "time":
-                results.Add(ValidateRange(val, typeof(TimeOnly), attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidateRange(value, typeof(TimeOnly), attribute.Minimum, attribute.Maximum, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
             case "datetime":
-                results.Add(ValidateRange(val, typeof(DateTime), attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidateRange(value, typeof(DateTime), attribute.Minimum, attribute.Maximum, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
             case "phone":
-                results.Add(ValidatePhoneNumber(val, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidatePhoneNumber(value, validationContext));
+                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
             case "email":
-                results.Add(ValidateEmailAddress(val, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidateEmailAddress(value, validationContext));
+                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
             case "uri":
-                results.Add(ValidateUrl(val, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
+                results.Add(ValidateUrl(value, validationContext));
+                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
+                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
                 break;
         }
 
@@ -78,84 +85,134 @@ public static class UnitValidate
     }
 
 
-
-    public static ValidationResult ValidateLength(object? val, int? minLen, int? maxLen, ValidationContext ctx)
+    /// <summary>
+    /// Validate the length of the string.<br/>
+    /// 文字列の長さを検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="minLen">Minimum length</param>
+    /// <param name="maxLen">Maximum length</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidateLength(object? value, int? minLen, int? maxLen, ValidationContext validationContext)
     {
-        if (val is null || maxLen is null || (minLen is null && maxLen is null))
+        if (value is null || maxLen is null || (minLen is null && maxLen is null))
             return ValidationResult.Success!;
 
         return (minLen, maxLen) switch
         {
             (not null, not null)
-                => new StringLengthAttribute(maxLen.Value) { MinimumLength = minLen.Value }.GetValidationResult(val, ctx)!,
+                => new StringLengthAttribute(maxLen.Value) { MinimumLength = minLen.Value }.GetValidationResult(value, validationContext)!,
             (null, not null)
-                => new StringLengthAttribute(maxLen.Value).GetValidationResult(val, ctx)!,
+                => new StringLengthAttribute(maxLen.Value).GetValidationResult(value, validationContext)!,
             _ => ValidationResult.Success!,
         };
     }
 
 
-
-    public static ValidationResult ValidateRange(object? val, string? min, string? max, ValidationContext ctx)
+    /// <summary>
+    /// Validate the range of the value.<br/>
+    /// 値の範囲を検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="min">Minimum value</param>
+    /// <param name="max">Maximum value</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidateRange(object? value, string? min, string? max, ValidationContext validationContext)
     {
-        if (val is null)
+        if (value is null)
             return ValidationResult.Success!;
 
-        var type = val.GetType();
-        return ValidateRange(val, type, min, max, ctx);
+        var type = value.GetType();
+        return ValidateRange(value, type, min, max, validationContext);
     }
 
 
-
-    public static ValidationResult ValidateRange(object? val, Type type, string? min, string? max, ValidationContext ctx)
+    /// <summary>
+    /// Validate the range of the value.<br/>
+    /// 値の範囲を検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="type">Type of validation target</param>
+    /// <param name="min">Minimum value</param>
+    /// <param name="max">Maximum value</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidateRange(object? value, Type type, string? min, string? max, ValidationContext validationContext)
     {
-        if (val is null || string.IsNullOrWhiteSpace(min) || string.IsNullOrWhiteSpace(max))
+        if (value is null || string.IsNullOrWhiteSpace(min) || string.IsNullOrWhiteSpace(max))
             return ValidationResult.Success!;
 
-        var value = Convert.ChangeType(val, type);
-        return new RangeAttribute(type, min, max).GetValidationResult(value, ctx)!;
+        var val = Convert.ChangeType(value, type);
+        return new RangeAttribute(type, min, max).GetValidationResult(val, validationContext)!;
     }
 
 
-
-    public static ValidationResult ValidateRegularExpression(object? val, string? pattern, ValidationContext ctx)
+    /// <summary>
+    /// Validate the value with a regular expression.<br/>
+    /// 正規表現で値を検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="pattern">Regular expression</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidateRegularExpression(object? value, string? pattern, ValidationContext validationContext)
     {
-        if (val is null || string.IsNullOrWhiteSpace(pattern))
+        if (value is null || string.IsNullOrWhiteSpace(pattern))
             return ValidationResult.Success!;
 
-        var res = new RegularExpressionAttribute(pattern).GetValidationResult(val, ctx)!;
+        var res = new RegularExpressionAttribute(pattern).GetValidationResult(value, validationContext)!;
         res.ErrorMessage = res.ErrorMessage;
         return res;
     }
 
 
-
-    public static ValidationResult ValidatePhoneNumber(object? val, ValidationContext ctx)
+    /// <summary>
+    /// Validate that the value is in telephone number format.<br/>
+    /// 値が電話番号形式であることを検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidatePhoneNumber(object? value, ValidationContext validationContext)
     {
-        if (val is null)
+        if (value is null)
             return ValidationResult.Success!;
 
-        return new PhoneAttribute().GetValidationResult(val, ctx)!;
+        return new PhoneAttribute().GetValidationResult(value, validationContext)!;
     }
 
 
-
-    public static ValidationResult ValidateEmailAddress(object? val, ValidationContext ctx)
+    /// <summary>
+    /// Validate that the value is in Email address format.<br/>
+    /// 値がEmailアドレス形式であることを検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidateEmailAddress(object? value, ValidationContext validationContext)
     {
-        if (val is null)
+        if (value is null)
             return ValidationResult.Success!;
 
-        return new EmailAddressAttribute().GetValidationResult(val, ctx)!;
+        return new EmailAddressAttribute().GetValidationResult(value, validationContext)!;
     }
 
 
-
-    public static ValidationResult ValidateUrl(object? val, ValidationContext ctx)
+    /// <summary>
+    /// Validate that the value is in Url format.<br/>
+    /// 値がUrl形式であることを検証する。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    public static ValidationResult ValidateUrl(object? value, ValidationContext validationContext)
     {
-        if (val is null)
+        if (value is null)
             return ValidationResult.Success!;
 
-        return new UrlAttribute().GetValidationResult(val, ctx)!;
+        return new UrlAttribute().GetValidationResult(value, validationContext)!;
     }
 
 }
@@ -171,10 +228,13 @@ public class CompositeValidationResult : ValidationResult
     /// 複数のValidation結果
     /// </summary>
     public IEnumerable<ValidationResult> Results => _result.AsReadOnly();
-    private List<ValidationResult> _result = new List<ValidationResult>();
+    private readonly List<ValidationResult> _result = new ();
 
+    /// <summary>Constractor</summary>
     public CompositeValidationResult(string errorMessage) : base(errorMessage) { }
+    /// <summary>Constractor</summary>
     public CompositeValidationResult(string errorMessage, IEnumerable<string> memberNames) : base(errorMessage, memberNames) { }
+    /// <summary>Constractor</summary>
     protected CompositeValidationResult(ValidationResult validationResult) : base(validationResult) { }
 
     /// <summary>

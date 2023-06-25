@@ -1,12 +1,11 @@
-﻿namespace NullableUnitGenerator;
-
-#if !UGO_OPENAPI_DISABLE
-
+﻿#if !UGO_OPENAPI_DISABLE
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
+
+namespace NullableUnitGenerator;
 
 
 /// <summary>

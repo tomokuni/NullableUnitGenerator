@@ -111,9 +111,8 @@ public static class UnitHelper
     public static string ToSnakeCase(string str, string delimiter = "_")
     {
         var s0 = ToCamelCase(str);
-        var s1 = Regex.Replace(s0, @"([a-z])([A-Z0-9])", ("$1" + delimiter + "$2"));
-        var s2 = Regex.Replace(s1, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2"));
-        return s2.ToLower();
+        var s1 = Regex.Replace(s0, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2"));
+        return s1.ToLower();
     }
 
 }

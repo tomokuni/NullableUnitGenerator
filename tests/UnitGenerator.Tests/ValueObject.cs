@@ -1,13 +1,4 @@
-﻿#pragma warning disable CA1822	// メンバーを static に設定します
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using MessagePack;
+﻿using System;
 using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 

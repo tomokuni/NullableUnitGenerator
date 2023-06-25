@@ -1,10 +1,8 @@
-﻿#pragma warning disable CA1822	// メンバーを static に設定します
-
-using System;
+﻿using System;
 using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 
-namespace ConsoleApp.Others;
+namespace ConsoleApp.ValueObject.Others;
 
 
 [UnitOf(typeof(Guid), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]

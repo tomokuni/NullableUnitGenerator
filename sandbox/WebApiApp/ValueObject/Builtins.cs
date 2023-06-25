@@ -1,37 +1,8 @@
-﻿#pragma warning disable CA1822	// メンバーを static に設定します
-
-using System.Runtime.CompilerServices;
-
-using NullableUnitGenerator;
+﻿using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 
-namespace ConsoleApp.Builtins;
+namespace WebApiApp.ValueObject.Builtins;
 
-/// <param name="type">string, number, integer, boolean, ...</param>
-/// <param name="format">type:number:(-, float, double), type:integer:(-, int32, int64)</param>
-/// <param name="minimum">Parse to decimal</param>
-/// <param name="exclusiveMinimum"></param>
-/// <param name="maximum">Parse to decimal</param>
-/// <param name="exclusiveMaximum"></param>
-/// <param name="multipleOf">Parse to decimal</param>
-/// <param name="minLength">Parse to int</param>
-/// <param name="maxLength">Parse to int</param>
-/// <param name="pattern"></param>
-/// <param name="nullable"></param>
-/// <param name="example"></param>
-//public UnitOfOasAttribute(
-//    string type,
-//    string? format = null,
-//    object? maximum = null,
-//    bool exclusiveMinimum = false,
-//    object? minimum = null,
-//    bool exclusiveMaximum = false,
-//    object? multipleOf = null,
-//    object? maxLength = null,
-//    object? minLength = null,
-//    string? pattern = null,
-//    object? example = null,
-//    bool nullable = true)
 
 [UnitOf(typeof(bool), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 [UnitOfOas("boolean", example:"true")]

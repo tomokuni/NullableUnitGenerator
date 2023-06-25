@@ -122,7 +122,6 @@ public class UnitOfOasAttribute : Attribute
     /// <param name="regex">Pattern set by OpenApiDataType. <br/><br/>For string.</param>
     /// <param name="example">example set by OpenApiDataType.</param>
     /// <param name="description">description set by OpenApiDataType.</param>
-    /// <param name="parseString">For conversion to and from Json strings.</param>
     /// <remarks>
     /// https://swagger.io/docs/specification/data-models/data-types/<br/>
     /// Types:<br/>
@@ -210,19 +209,27 @@ public class UnitOfOasAttribute : Attribute
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UnitOfOasValidateAttribute : ValidationAttribute
 {
-    protected override ValidationResult? IsValid(object? value, ValidationContext ctx)
+    /// <summary>
+    /// Protected virtual method to override and implement validation logic.<br />
+    /// バリデーションロジックをオーバーライドして実装するための保護された仮想メソッド。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    /// <exception cref="InvalidOperationException"> is thrown if the current attribute is malformed.</exception>
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // 検証不要なら、Success
         if (value is not IValidatableObject v)
             return ValidationResult.Success!;
 
         // Validationを実施
-        var results = v.Validate(ctx);
+        var results = v.Validate(validationContext);
         if (!results.Any())
             return ValidationResult.Success;
-        
-        var compositeResults = new CompositeValidationResult(ErrorMessage, results.First().MemberNames);
-        //var compositeResults = new CompositeValidationResult($"Validation for {ctx.DisplayName} failed!", results.First().MemberNames);
+
+        var msg = ErrorMessage ?? $"Validation for {validationContext.DisplayName} failed!";
+        var compositeResults = new CompositeValidationResult(msg, results.First().MemberNames);
         compositeResults.AddResults(results);
         return compositeResults;
     }
@@ -231,43 +238,71 @@ public class UnitOfOasValidateAttribute : ValidationAttribute
 
 
 
-// <summary>
-/// Validation attribute to assert Range. 
+/// <summary>
+/// Validation attribute to assert Range.  Used for specifying a range constraint.<br />
+/// Range をアサートするバリデーション属性。 範囲制約の指定に使用する。
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UnitOfRangeAttribute : RangeAttribute, IUnitValidationAttribute
 {
-    /// <summary>Constructor</summary>
+    /// <summary>
+    /// Constructor that takes integer minimum and maximum values.<br />
+    /// int型の最小値と最大値を取るコンストラクタ。
+    /// </summary>
     /// <param name="minimum">The minimum value, inclusive</param>
     /// <param name="maximum">The maximum value, inclusive</param>
     public UnitOfRangeAttribute(int minimum, int maximum) : base(minimum, maximum) { }
 
-    /// <summary>Constructor</summary>
+    /// <summary>
+    /// Constructor that takes double minimum and maximum values.<br />
+    /// double型の最小値と最大値をとるコンストラクタです。
+    /// </summary>
     /// <param name="minimum">The minimum value, inclusive</param>
     /// <param name="maximum">The maximum value, inclusive</param>
     public UnitOfRangeAttribute(double minimum, double maximum) : base(minimum, maximum) { }
 
-    /// <summary>Constructor</summary>
+    /// <summary>
+    /// Constructor that allows for specifying range for arbitrary types. The minimum and maximum strings will be converted to the target type.<br />
+    /// 任意の型の範囲を指定できるコンストラクタ。最小値と最大値の文字列は、対象の型に変換されます。
+    /// </summary>
     /// <param name="type">The type of the range parameters. Must implement IComparable.</param>
     /// <param name="minimum">The minimum allowable value.</param>
     /// <param name="maximum">The maximum allowable value.</param>
     public UnitOfRangeAttribute(Type type, string minimum, string maximum) : base(type, minimum, maximum) { }
 
+    /// <summary>
+    /// Returns true if the value falls between min and max, inclusive.<br />
+    /// 値が min と max の間にある場合、true を返す。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <returns><c>true</c> means the <paramref name="value"/> is valid</returns>
+    /// <exception cref="InvalidOperationException"> is thrown if the current attribute is malformed.</exception>
     public override bool IsValid(object? value)
         => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
 }
 
 
 /// <summary>
-/// Validation attribute to assert StringLength. 
+/// Validation attribute to assert String Length.   Used for specifying a string length constraint.<br />
+/// 文字列の長さを保証するバリデーション属性。  文字列の長さの制約を指定するために使用します。
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidationAttribute
 {
-    /// <summary>Constructor</summary>
+    /// <summary>
+    /// Constructor that accepts the maximum length of the string.<br />
+    /// 文字列の最大長を受け付けるコンストラクタ。
+    /// </summary>
     /// <param name="maximumLength"></param>
     public UnitOfStringLengthAttribute(int maximumLength) : base(maximumLength) { }
 
+    /// <summary>
+    /// Returns true if the value falls <paramref name="value"/> is valid.<br />
+    /// <paramref name="value"/>の値が有効であれば真を返す。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <returns><c>true</c> means the <paramref name="value"/> is valid.</returns>
+    /// <exception cref="InvalidOperationException"> is thrown if the current attribute is malformed.</exception>
     public override bool IsValid(object? value)
         => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
 }
@@ -279,6 +314,14 @@ public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidatio
 /// </summary>
 public class NestedValidateAttribute : ValidationAttribute
 {
+    /// <summary>
+    /// Protected virtual method to override and implement validation logic.<br />
+    /// バリデーションロジックをオーバーライドして実装するための保護された仮想メソッド。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
+    /// <exception cref="InvalidOperationException"> is thrown if the current attribute is malformed.</exception>
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (value == null) 

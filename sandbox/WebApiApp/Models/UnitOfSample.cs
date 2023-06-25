@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Text.Json.Serialization;
-using ConsoleApp.Builtins;
-using ConsoleApp.Others;
+using WebApiApp.ValueObject.Builtins;
+using WebApiApp.ValueObject.Others;
 
 namespace WebApiApp.Models;
 
@@ -56,9 +56,6 @@ public record UnitOfSample
 
     /// <summary></summary>
     public VoGuid VoGuid { get; set; }
-
-    /// <summary></summary>
-    public VoUlid VoUlid { get; set; }
 
     /// <summary></summary>
     public VoDatetime VoDatetime { get; set; }

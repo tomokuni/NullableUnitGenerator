@@ -1,5 +1,5 @@
-﻿using ConsoleApp.Builtins;
-using ConsoleApp.Others;
+﻿using WebApiApp.ValueObject.Builtins;
+using WebApiApp.ValueObject.Others;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -39,7 +39,6 @@ public class DummyVoSample
             VoDecimal = 14.4m,
             VoString = "15",
             VoGuid = VoGuid.NewVoGuid(),
-            VoUlid = VoUlid.NewVoUlid(),
             VoDatetime = DateTime.Now,
             VoDateonly = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
             VoTimeonly = new TimeOnly(DateTime.Now.TimeOfDay.Ticks),
@@ -73,7 +72,6 @@ public class DummyVoSample
             VoDecimal = VoDecimal.NullValue,
             VoString = VoString.NullValue,
             VoGuid = VoGuid.NullValue,
-            VoUlid = VoUlid.NullValue,
             VoDatetime = VoDatetime.NullValue,
             VoDateonly = VoDateonly.NullValue,
             VoTimeonly = VoTimeonly.NullValue,
@@ -107,7 +105,6 @@ public class DummyVoSample
             VoDecimal = VoDecimal.UndefValue,
             VoString = VoString.UndefValue,
             VoGuid = VoGuid.UndefValue,
-            VoUlid = VoUlid.UndefValue,
             VoDatetime = VoDatetime.UndefValue,
             VoDateonly = VoDateonly.UndefValue,
             VoTimeonly = VoTimeonly.UndefValue,
@@ -141,7 +138,6 @@ public class DummyVoSample
             VoDecimal = VoDecimal.DefaultValueOfValueState  ,
             VoString = VoString.DefaultValueOfValueState  ,
             VoGuid = VoGuid.DefaultValueOfValueState  ,
-            VoUlid = VoUlid.DefaultValueOfValueState  ,
             VoDatetime = VoDatetime.DefaultValueOfValueState  ,
             VoDateonly = VoDateonly.DefaultValueOfValueState  ,
             VoTimeonly = VoTimeonly.DefaultValueOfValueState  ,

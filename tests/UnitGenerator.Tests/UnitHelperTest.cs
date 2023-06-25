@@ -194,10 +194,10 @@ public class UnitHelperTest
             { "ISODateTIME", "iso_date_time" },
             { "IOStreamFILE", "io_stream_file" },
             { "IoSTREAMFile", "io_stream_file" },
-            { "IOStream2FILE", "io_stream_2_file" },
-            { "IoSTREAM2File", "io_stream_2_file" },
-            { "IoSTREAMFile2", "io_stream_file_2" },
-            { "TELNO1", "telno_1" },
+            { "IOStream2FILE", "io_stream2_file" },
+            { "IoSTREAM2File", "io_stream2_file" },
+            { "IoSTREAMFile2", "io_stream_file2" },
+            { "TELNO1", "telno1" },
             { "1TELNO", "1_telno" },
         };
 

@@ -64,9 +64,9 @@ using System.Reflection;
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull));
             this.Write(")\r\n/// </summary>\r\n");
  if (HasFlag(UnitGenerateOption.MessagePackFormatter)) { 
-            this.Write("[MessagePackFormatter(typeof(");
+            this.Write("#if !UGO_MESSAGEPACK_DISABLE\r\n[MessagePackFormatter(typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write("MessagePackFormatter))]\r\n");
+            this.Write("MessagePackFormatter))]\r\n#endif\r\n");
  } 
  if (HasFlag(UnitGenerateOption.JsonConverter)) { 
             this.Write("[JsonConverter(typeof(");

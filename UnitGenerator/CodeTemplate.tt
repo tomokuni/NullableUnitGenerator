@@ -43,7 +43,9 @@ namespace <#= Namespace #>;
 /// Primitive type is <#= TypeName #> (<#= TypeNameFull #>)
 /// </summary>
 <# if (HasFlag(UnitGenerateOption.MessagePackFormatter)) { #>
+#if !UGO_MESSAGEPACK_DISABLE
 [MessagePackFormatter(typeof(<#= Name #>MessagePackFormatter))]
+#endif
 <# } #>
 <# if (HasFlag(UnitGenerateOption.JsonConverter)) { #>
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
