@@ -65,8 +65,9 @@
     <EmbeddedResource Include="Resource\UnitGenerateOption.cs" LogicalName="UnitOf.UnitGenerateOption.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />
+    <EmbeddedResource Include="Resource\UnitValidate.cs" LogicalName="UnitOf.UnitValidate.cs" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Include="Helper\CodeDomShims.cs" />
     <Compile Include="Helper\DiagnosticDescriptors.cs" />

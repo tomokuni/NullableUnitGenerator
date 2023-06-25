@@ -84,7 +84,8 @@ public sealed class Generate : IIncrementalGenerator
         AddCsResource("UnitOf.UnitGenerateOption.cs");
         AddCsResource("UnitOf.UnitHelper.cs");
         AddCsResource("UnitOf.UnitState.cs");
-
+        AddCsResource("UnitOf.UnitValidate.cs");
+        
         //
         // ローカル関数
         //

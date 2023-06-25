@@ -33,9 +33,7 @@ namespace NullableUnitGenerator
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 ");
@@ -89,7 +87,7 @@ using System.Reflection;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("> ");
             this.Write(this.ToStringHelper.ToStringWithCulture(HasFlag(UnitGenerateOption.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : ""));
-            this.Write("\r\n{\r\n    // Namespace : ");
+            this.Write(", IValidatableObject\r\n{\r\n    // Namespace : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace ?? "(null)"));
             this.Write("\r\n    // Name      : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
@@ -413,6 +411,22 @@ if (IsBuiltinNumericType) {
 
     /// <summary>ValidateInConstructor</summary>
     partial void ValidateInConstructor();
+
+    /// <summary>Validate</summary>
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!HasValue)
+            return Enumerable.Empty<ValidationResult>();
+        var attr = typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(@").GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
+        if (attr is null)
+            return Enumerable.Empty<ValidationResult>();
+
+        // Validationを実施
+        var results = UnitValidate.ValidateObject(GetRawValue(), attr, validationContext);
+        return results;
+    }
 
 ");
  if (TypeName == "Guid" || TypeName == "System.Guid") { 

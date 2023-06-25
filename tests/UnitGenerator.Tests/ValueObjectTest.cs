@@ -22,6 +22,8 @@ public class ValueObjectTest
     [Fact]
     public void VoBool_Equal()
     {
+        var a = typeof(VoBool).GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
+
         var vo = new VoBool[] { default, new((bool?)null), new(default(bool)), new(false), new(true) };
 
         //

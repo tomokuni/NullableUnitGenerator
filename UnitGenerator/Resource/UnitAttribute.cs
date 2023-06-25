@@ -111,9 +111,6 @@ public class UnitOfOasAttribute : Attribute
     /// <summary>For OpenApiSchema.Nullable</summary>
     public bool Nullable { get; }
 
-    /// <summary>For conversion to and from Json strings</summary>
-    public string? ParseString { get; }
-
     /// <summary>
     /// Attributes for OpenApiDataType definitions or constraints<br/>
     /// OpenApiDataType 定義 または 制約用の属性
@@ -143,15 +140,13 @@ public class UnitOfOasAttribute : Attribute
         string? length = null,
         string? regex = null,
         object? example = null,
-        string? description = null,
-        string? parseString = null)
+        string? description = null)
     {
         Title = title;
         Pattern = regex;
         Example = example;
         Description = description;
         Nullable = true;
-        ParseString = parseString;
 
         // type, format
         (Type, Format) = type switch
@@ -182,7 +177,7 @@ public class UnitOfOasAttribute : Attribute
             Maximum = splitRange[1];
         }
         else
-            throw new ArgumentException($"renge {range} is invalid value.");
+            throw new ArgumentException($"renge {range} is invalid value. format is [^\\d+-\\d+$]");
 
         // length
         if (length is null)
@@ -202,7 +197,7 @@ public class UnitOfOasAttribute : Attribute
             MaxLength = int.Parse(splitLength[1]);
         }
         else
-            throw new ArgumentException($"length {range} is invalid value.");
+            throw new ArgumentException($"length {range} is invalid value. format is [^\\d+$|^\\d+-\\d+$]");
     }
 
 }
@@ -218,142 +213,20 @@ public class UnitOfOasValidateAttribute : ValidationAttribute
     protected override ValidationResult? IsValid(object? value, ValidationContext ctx)
     {
         // 検証不要なら、Success
-        if (value is null)
+        if (value is not IValidatableObject v)
             return ValidationResult.Success!;
-        if (value is not IUnitOf u)
-            return ValidationResult.Success!;
-        if (!u.HasValue)
-            return ValidationResult.Success!;
-
-        var attr = value.GetType().GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
-        if (attr is null)
-            return ValidationResult.Success;
 
         // Validationを実施
-        var results = new List<ValidationResult>();
-        var val = u.GetRawValueAsObject();
-        switch (attr.Type)
-        {
-            case "string":
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-            case "integer":
-                results.Add(ValidateRange(val, attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                break;
-            case "number":
-                results.Add(ValidateRange(val, attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                break;
-            case "boolean":
-                break;
-            case "date":
-                results.Add(ValidateRange(val, typeof(DateOnly), attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-            case "time":
-                results.Add(ValidateRange(val, typeof(TimeOnly), attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-            case "date-time":
-                results.Add(ValidateRange(val, typeof(DateTime), attr.Minimum, attr.Maximum, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-            case "phone":
-                results.Add(ValidatePhoneNumber(val, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-            case "email":
-                results.Add(ValidateEmailAddress(val, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-            case "uri":
-                results.Add(ValidateUrl(val, ctx));
-                results.Add(ValidateLength(val.ToString(), attr.MinLength, attr.MaxLength, ctx));
-                results.Add(ValidateRegularExpression(val, attr.Pattern, ctx));
-                break;
-        }
-
-        results = results.Where(s => s != ValidationResult.Success).ToList();
+        var results = v.Validate(ctx);
         if (!results.Any())
             return ValidationResult.Success;
-
-        var compositeResults = new CompositeValidationResult($"Validation for {ctx.DisplayName} failed!", results[0].MemberNames);
+        
+        var compositeResults = new CompositeValidationResult(ErrorMessage, results.First().MemberNames);
+        //var compositeResults = new CompositeValidationResult($"Validation for {ctx.DisplayName} failed!", results.First().MemberNames);
         compositeResults.AddResults(results);
         return compositeResults;
     }
-
-    private static ValidationResult ValidateLength(object? val, int? minLen, int? maxLen, ValidationContext ctx)
-    {
-        if (val is null || maxLen is null || (minLen is null && maxLen is null))
-            return ValidationResult.Success!;
-
-        return (minLen, maxLen) switch
-        {
-            (not null, not null)
-                => new StringLengthAttribute(maxLen.Value) { MinimumLength = minLen.Value }.GetValidationResult(val, ctx)!,
-            (null, not null)
-                => new StringLengthAttribute(maxLen.Value).GetValidationResult(val, ctx)!,
-            _ => ValidationResult.Success!,
-        };
-    }
-
-    private static ValidationResult ValidateRange(object? val, string? min, string? max, ValidationContext ctx)
-    {
-        if (val is null)
-            return ValidationResult.Success!;
-
-        var type = val.GetType();
-        return ValidateRange(val, type, min, max, ctx);
-    }
-
-    private static ValidationResult ValidateRange(object? val, Type type, string? min, string? max, ValidationContext ctx)
-    {
-        if (val is null || string.IsNullOrWhiteSpace(min) || string.IsNullOrWhiteSpace(max))
-            return ValidationResult.Success!;
-
-        var value = Convert.ChangeType(val, type);
-        return new RangeAttribute(type, min, max).GetValidationResult(value, ctx)!;
-    }
-
-    private static ValidationResult ValidateRegularExpression(object? val, string? pattern, ValidationContext ctx)
-    {
-        if (val is null || string.IsNullOrWhiteSpace(pattern))
-            return ValidationResult.Success!;
-
-        var res = new RegularExpressionAttribute(pattern).GetValidationResult(val, ctx)!;
-        res.ErrorMessage = res.ErrorMessage;
-        return res;
-    }
-
-    private static ValidationResult ValidatePhoneNumber(object? val, ValidationContext ctx)
-    {
-        if (val is null)
-            return ValidationResult.Success!;
-
-        return new PhoneAttribute().GetValidationResult(val, ctx)!;
-    }
-
-    private static ValidationResult ValidateEmailAddress(object? val, ValidationContext ctx)
-    {
-        if (val is null)
-            return ValidationResult.Success!;
-
-        return new EmailAddressAttribute().GetValidationResult(val, ctx)!;
-    }
-
-    private static ValidationResult ValidateUrl(object? val, ValidationContext ctx)
-    {
-        if (val is null)
-            return ValidationResult.Success!;
-
-        return new UrlAttribute().GetValidationResult(val, ctx)!;
-    }
 }
-
 
 
 
@@ -424,35 +297,4 @@ public class NestedValidateAttribute : ValidationAttribute
         compositeResults.AddResults(validationResults);
         return compositeResults;
     }
-}
-
-
-/// <summary>
-/// 複数のValidation結果を格納できる <see cref="ValidationResult" />
-/// </summary>
-public class CompositeValidationResult : ValidationResult
-{
-    /// <summary>
-    /// 複数のValidation結果
-    /// </summary>
-    public IEnumerable<ValidationResult> Results => _result.AsReadOnly();
-    private List<ValidationResult> _result = new List<ValidationResult>();
-
-    public CompositeValidationResult(string errorMessage) : base(errorMessage) { }
-    public CompositeValidationResult(string errorMessage, IEnumerable<string> memberNames) : base(errorMessage, memberNames) { }
-    protected CompositeValidationResult(ValidationResult validationResult) : base(validationResult) { }
-    
-    /// <summary>
-    /// エラーを登録
-    /// </summary>
-    /// <param name="validationResult"></param>
-    public void AddResult(ValidationResult validationResult)
-        => _result.Add(validationResult);
-
-    /// <summary>
-    /// エラーを登録
-    /// </summary>
-    /// <param name="validationResults"></param>
-    public void AddResults(IEnumerable<ValidationResult> validationResults)
-        => _result.AddRange(validationResults);
 }

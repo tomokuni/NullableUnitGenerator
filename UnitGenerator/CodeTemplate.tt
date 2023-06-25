@@ -11,9 +11,7 @@
 #pragma warning disable CS8632	// '#nullable' 注釈コンテキスト内のコードでのみ、Null 許容参照型の注釈を使用する必要があります。
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 <# if (HasFlag(UnitGenerateOption.JsonConverter)) { #>
@@ -51,7 +49,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOption.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>
+public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOption.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>, IValidatableObject
 {
     // Namespace : <#= Namespace ?? "(null)" #>
     // Name      : <#= Name #>
@@ -383,6 +381,20 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     /// <summary>ValidateInConstructor</summary>
     partial void ValidateInConstructor();
+
+    /// <summary>Validate</summary>
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!HasValue)
+            return Enumerable.Empty<ValidationResult>();
+        var attr = typeof(<#= Name #>).GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
+        if (attr is null)
+            return Enumerable.Empty<ValidationResult>();
+
+        // Validationを実施
+        var results = UnitValidate.ValidateObject(GetRawValue(), attr, validationContext);
+        return results;
+    }
 
 <# if (TypeName == "Guid" || TypeName == "System.Guid") { #>
 

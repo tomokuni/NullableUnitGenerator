@@ -27,7 +27,7 @@ public class UnitOfAttributeTest
         var results = new List<ValidationResult>();
         var context = new ValidationContext(model);
         Validator.TryValidateObject(model, context, results, true);
-        Assert.Equal(5, results.Count());
+        Assert.Equal(5, results.Count);
 
         var model2 = new Entity()
         {
@@ -53,7 +53,7 @@ public class UnitOfAttributeTest
         var results3 = new List<ValidationResult>();
         var context3 = new ValidationContext(model3);
         Validator.TryValidateObject(model3, context3, results3, true);
-        Assert.Equal(5, results3.Count());
+        Assert.Equal(5, results3.Count);
     }
 
     public class Entity
