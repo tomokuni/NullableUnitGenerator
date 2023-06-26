@@ -45,9 +45,9 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Restore
-      run: dotnet restore --locked-mode
-    - name: Release Build & Pack
+    - name: Build
+      run: dotnet build -c Release
+    - name: Pack
       run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=${REF_NAME#*v}
     - name: Upload Build Assets
       uses: actions/upload-artifact@v3.1.2
