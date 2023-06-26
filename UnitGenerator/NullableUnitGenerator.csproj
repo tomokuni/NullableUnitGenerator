@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.79</Version>
+    <Version>0.0.2.80</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <Deterministic>true</Deterministic>
     <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
-    <IsRoslynComponent>true</IsRoslynComponent>
+    <IsRoslynComponent>false</IsRoslynComponent>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     
@@ -34,23 +34,25 @@
     <RepositoryType>git</RepositoryType>
     <IsPackable>true</IsPackable>
     <Title>NullableUnitGenerator</Title>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackAsTool>false</PackAsTool>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>False</PackAsTool>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-    <PackageReadmeFile>../README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>7</WarningLevel>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <WarningLevel>7</WarningLevel>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
