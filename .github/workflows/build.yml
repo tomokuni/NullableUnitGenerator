@@ -72,8 +72,8 @@ jobs:
         tag_name: ${{ env.REF_NAME }}
         files: nupkgs/*.nupkg
 
-  publish:
-    name: Publish to GitHub Package and NuGet
+  publishGitHub:
+    name: Publish to GitHub Package
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -90,6 +90,20 @@ jobs:
       run: dotnet nuget push "nupkgs/*.nupkg" --skip-duplicate --source ${GPR_URL} --api-key ${{ secrets.GITHUB_TOKEN }}
       env:
         GPR_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+  publishNuGet:
+    name: Publish to NuGet
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup .NET SDK # detected from global.json
+      uses: actions/setup-dotnet@v3.0.3
+
+    - name: Download Build Assets
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: packages
+        path: nupkgs/
 
     - name: Publish to NuGet
       run: dotnet nuget push "nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
