@@ -56,7 +56,7 @@ jobs:
         path: nupkgs/
   
   upload:
-    name: Upload to GitHub Releases
+    name: Publish to GitHub Releases
     needs: [build]
     runs-on: ubuntu-latest
     steps:
