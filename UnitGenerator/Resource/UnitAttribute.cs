@@ -115,7 +115,7 @@ public class UnitOfOasAttribute : Attribute
     /// Attributes for OpenApiDataType definitions or constraints<br/>
     /// OpenApiDataType 定義 または 制約用の属性
     /// </summary>
-    /// <param name="type">Type Format set by OpenApiDataType. <br/>date, time, date-time, phone, email, uri as string and have format constraint. <br/><br/>string, integer, number, boolean, date, time, date-time, phone, email, uri</param>
+    /// <param name="type">Type Format set by OpenApiDataType. <br/>date, time, datetime, phone, email, uri as string and have format constraint. <br/><br/>string, integer, number, boolean, date, time, datetime, phone, email, uri</param>
     /// <param name="title">Title set by OpenApiDataType.</param>
     /// <param name="range">Minimam and Maximam set by OpenApiDataType. <br/><br/>Parse to minimum and maximum values as decimal type.<br/>For number and integer.<br/><b>format : </b>min-max<br/><b>example : </b>11-222</param>
     /// <param name="length">MinLength and MaxLength set by OpenApiDataType .<br/><br/>Parse to minimum and maximum length as int type.<br/>For string.<br/><b>format : </b>min-max or fix<br/><b>example : </b>1-2 or 3</param>
@@ -125,7 +125,7 @@ public class UnitOfOasAttribute : Attribute
     /// <remarks>
     /// https://swagger.io/docs/specification/data-models/data-types/<br/>
     /// Types:<br/>
-    /// ・string:  format : (-, date(2017-07-21), time(17:32:28), date-time(2017-07-21T17:32:28Z), password, byte(base64-encoded characters), binary, email, uuid, uri, hostname, ipv4, ipv6)<br/>
+    /// ・string:  format : (-, date(2017-07-21), time(17:32:28), datetime(2017-07-21T17:32:28Z), password, byte(base64-encoded characters), binary, email, uuid, uri, hostname, ipv4, ipv6)<br/>
     /// ・number:  format : (-, float, double)<br/>
     /// ・integer: format : (-, int32, int64)<br/>
     /// ・boolean<br/>
@@ -156,7 +156,7 @@ public class UnitOfOasAttribute : Attribute
             "boolean" => ("boolean", null),
             "date" => ("string", "date"),
             "time" => ("string", "time"),
-            "date-time" => ("string", "date-time"),
+            "datetime" => ("string", "date-time"),
             "phone" => ("string", "phone"),
             "email" => ("string", "email"),
             "uri" => ("string", "uri"),

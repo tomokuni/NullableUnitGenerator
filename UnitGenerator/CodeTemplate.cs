@@ -101,6 +101,8 @@ using System.Reflection;
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameFull ?? "(null)"));
             this.Write("\r\n    // TypeNameNullable : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable ?? "(null)"));
+            this.Write("\r\n    // MetadataTypeName : ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(MetadataTypeName ?? "(null)"));
             this.Write("\r\n    // IsValueType : ");
             this.Write(this.ToStringHelper.ToStringWithCulture(IsValueType));
             this.Write("\r\n    // IsArray     : ");
@@ -1137,7 +1139,32 @@ if (IsSupportUtf8Formatter()) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n    {\r\n        /// <summary>Parse</summary>\r\n        public override ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" Parse(object value)\r\n            => new ");
+            this.Write(" Parse(object value)\r\n        {\r\n            if (value is null)\r\n                " +
+                    "return new ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(")null);\r\n\r\n");
+ if (TypeName == "string") { 
+            this.Write("            return new ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(")value);\r\n");
+ } else if (IsArray) { 
+            this.Write("            return new ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("((");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(")value);\r\n");
+ } else { 
+            this.Write("            return new ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write("(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(".Parse(value.ToString()));\r\n");
+ } 
+            this.Write("       }\r\n        //    => new ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("((");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));

@@ -61,6 +61,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     // TypeName         : <#= TypeName ?? "(null)" #>
     // TypeNameFull     : <#= TypeNameFull ?? "(null)" #>
     // TypeNameNullable : <#= TypeNameNullable ?? "(null)" #>
+    // MetadataTypeName : <#= MetadataTypeName ?? "(null)" #>
     // IsValueType : <#= IsValueType #>
     // IsArray     : <#= IsArray #>
     // IsUlid      : <#= IsUlid #>
@@ -972,7 +973,19 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         /// <summary>Parse</summary>
         public override <#= Name #> Parse(object value)
-            => new <#= Name #>((<#= TypeNameNullable #>)value);
+        {
+            if (value is null)
+                return new <#= Name #>((<#= TypeNameNullable #>)null);
+
+<# if (TypeName == "string") { #>
+            return new <#= Name #>((<#= TypeNameNullable #>)value);
+<# } else if (IsArray) { #>
+            return new <#= Name #>((<#= TypeNameNullable #>)value);
+<# } else { #>
+            return new <#= Name #>(<#= TypeName #>.Parse(value.ToString()));
+<# } #>
+       }
+        //    => new <#= Name #>((<#= TypeNameNullable #>)value);
 
         /// <summary>SetValue</summary>
         public override void SetValue(System.Data.IDbDataParameter parameter, <#= Name #> value)

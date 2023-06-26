@@ -28,6 +28,7 @@ public partial class CodeTemplate
 
         TypeName = typeSymbol.GetTypeName();
         TypeNameFull = typeSymbol.GetTypeNameFull();
+        MetadataTypeName = TypeSymbol.MetadataName;
 
         TypeMenberNames = TypeSymbol.GetMembers().Select(x => x.Name).Distinct().ToList();
 
@@ -78,8 +79,8 @@ public partial class CodeTemplate
     /// <summary>Type full name string.</summary>
     internal string TypeNameFull { get; }
 
-    ///// <summary>type specified by the attribute.</summary>
-    //internal Type Type { get; }
+    /// <summary>Metadata type name string.</summary>
+    internal string MetadataTypeName { get; }
 
 
     /// <summary>Nullable type display string.</summary>
