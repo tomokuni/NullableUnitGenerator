@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.78</Version>
+    <Version>0.0.2.79</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -25,9 +25,9 @@
     <Description>Source Generator to create ValueObject that support Null and Empty (Undefind) values.  Forked from UnitGenerator.</Description>
     <PackageReleaseNotes>beta</PackageReleaseNotes>
     <PackageVersion>$(Version)</PackageVersion>
-    <Company>Estable</Company>
+    <Company></Company>
     <Authors>SEKIYA.T</Authors>
-    <Copyright>© Estable Ltd.</Copyright>
+    <Copyright>SEKIYA.T</Copyright>
     <PackageTags>sourcegenerator;valueobject;nullable;undefined;empty</PackageTags>
     <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
     <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
@@ -40,7 +40,7 @@
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>../README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
@@ -56,6 +56,10 @@
   <ItemGroup>
     <!-- Create nuget package as analyzer -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
