@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.84</Version>
+    <Version>0.0.2.87</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -69,6 +69,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Helper\CodeDomShims.cs" />
+    <Compile Include="Helper\DiagnosticDescriptors.cs" />
+    <Compile Include="Helper\Extensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Resource\IUnit.cs" LogicalName="UnitOf.IUnit.cs" />
     <EmbeddedResource Include="Resource\UnitAttribute.cs" LogicalName="UnitOf.UnitAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitExtension.cs" LogicalName="UnitOf.UnitExtension.cs" />
@@ -76,17 +82,6 @@
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />
     <EmbeddedResource Include="Resource\UnitValidate.cs" LogicalName="UnitOf.UnitValidate.cs" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Include="Helper\CodeDomShims.cs" />
-    <Compile Include="Helper\DiagnosticDescriptors.cs" />
-    <Compile Include="Helper\Extensions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Generate.cs" />
-    <Compile Include="Resource\UnitGenerateOption.cs" Link="UnitGenerateOption.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -100,10 +95,17 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Generate.cs" />
+    <Compile Include="Resource\UnitGenerateOption.cs" Link="UnitGenerateOption.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
+    <AdditionalFiles Include="AnalyzerReleases\AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases\AnalyzerReleases.Unshipped.md" />
+  </ItemGroup>    
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   

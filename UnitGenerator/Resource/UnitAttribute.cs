@@ -111,6 +111,13 @@ public class UnitOfOasAttribute : Attribute
     /// <summary>For OpenApiSchema.Nullable</summary>
     public bool Nullable { get; }
 
+    /// <summary>Constructor arguments</summary>
+    public string? ConstructorArguments { get; }
+
+    /// <summary>Argument type of the constructor</summary>
+    public string ArgType { get; }
+
+
     /// <summary>
     /// Attributes for OpenApiDataType definitions or constraints<br/>
     /// OpenApiDataType 定義 または 制約用の属性
@@ -141,6 +148,9 @@ public class UnitOfOasAttribute : Attribute
         object? example = null,
         string? description = null)
     {
+        ConstructorArguments = $"type={type}, title={title}, range={range}, length={length}, regex={regex}, example={example}, description={description}";
+        ArgType = type;
+
         Title = title;
         Pattern = regex;
         Example = example;
@@ -169,14 +179,14 @@ public class UnitOfOasAttribute : Attribute
             Minimum = null;
             Maximum = null;
         }
-        else if (Regex.IsMatch(range, @"^\d+-\d+$"))
+        else if (Regex.IsMatch(range, @"^.+~.+$"))
         {
-            var splitRange = range.Split('-');
+            var splitRange = range.Split('~');
             Minimum = splitRange[0];
             Maximum = splitRange[1];
         }
         else
-            throw new ArgumentException($"renge {range} is invalid value. format is [^\\d+-\\d+$]");
+            throw new ArgumentException(@$"renge {range} is invalid value. format is [^.+~.+$]");
 
         // length
         if (length is null)
@@ -189,14 +199,14 @@ public class UnitOfOasAttribute : Attribute
             MinLength = null;
             MaxLength = int.Parse(length);
         }
-        else if (Regex.IsMatch(length, @"^\d+-\d+$"))
+        else if (Regex.IsMatch(length, @"^\d+~\d+$"))
         {
-            var splitLength = length.Split('-')!;
+            var splitLength = length.Split('~')!;
             MinLength = int.Parse(splitLength[0]);
             MaxLength = int.Parse(splitLength[1]);
         }
         else
-            throw new ArgumentException($"length {range} is invalid value. format is [^\\d+$|^\\d+-\\d+$]");
+            throw new ArgumentException(@$"length {length} is invalid value. format is [^\d+$|^\d+~\d+$]");
     }
 
 }

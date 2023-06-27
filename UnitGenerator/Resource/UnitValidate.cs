@@ -31,54 +31,21 @@ public static class UnitValidate
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
-        var results = new List<ValidationResult>();
-        switch (attribute.Type)
+        var validationResult = new List<ValidationResult?>
         {
-            case "string":
-                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-            case "integer":
-                results.Add(ValidateRange(value, attribute.Minimum, attribute.Maximum, validationContext));
-                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
-                break;
-            case "number":
-                results.Add(ValidateRange(value, attribute.Minimum, attribute.Maximum, validationContext));
-                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
-                break;
-            case "boolean":
-                break;
-            case "date":
-                results.Add(ValidateRange(value, typeof(DateOnly), attribute.Minimum, attribute.Maximum, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-            case "time":
-                results.Add(ValidateRange(value, typeof(TimeOnly), attribute.Minimum, attribute.Maximum, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-            case "datetime":
-                results.Add(ValidateRange(value, typeof(DateTime), attribute.Minimum, attribute.Maximum, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-            case "phone":
-                results.Add(ValidatePhoneNumber(value, validationContext));
-                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-            case "email":
-                results.Add(ValidateEmailAddress(value, validationContext));
-                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-            case "uri":
-                results.Add(ValidateUrl(value, validationContext));
-                results.Add(ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext));
-                results.Add(ValidateRegularExpression(value, attribute.Pattern, validationContext));
-                break;
-        }
+            attribute.ArgType switch
+            {
+                "phone" => ValidatePhoneNumber(value, validationContext),
+                "email" => ValidateEmailAddress(value, validationContext),
+                "uri" => ValidateUrl(value, validationContext),
+                _ => ValidationResult.Success
+            },
+            attribute.Maximum   is not null ? ValidateRange(value, value.GetType(), attribute.Minimum, attribute.Maximum, validationContext) : ValidationResult.Success,
+            attribute.MaxLength is not null ? ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext) : ValidationResult.Success,
+            attribute.Pattern   is not null ? ValidateRegularExpression(value, attribute.Pattern, validationContext) : ValidationResult.Success,
+        }.Where(s => s != ValidationResult.Success).Cast<ValidationResult>();
 
-        var validationResult = results.Where(s => s != ValidationResult.Success);
-        if (!results.Any())
+        if (!validationResult.Any())
             return Enumerable.Empty<ValidationResult>();
 
         return validationResult;
@@ -163,7 +130,6 @@ public static class UnitValidate
             return ValidationResult.Success!;
 
         var res = new RegularExpressionAttribute(pattern).GetValidationResult(value, validationContext)!;
-        res.ErrorMessage = res.ErrorMessage;
         return res;
     }
 

@@ -73,46 +73,4 @@ public static class UnitHelper
         return char.ToUpper(w[0]) + w[1..];
     }
     static readonly Regex regexPascalize = new(@"(^[A-Z][A-Z0-9]*|[A-Z][A-Z0-9]+)($|[A-Z][a-z0-9])");
-
-
-    /// <summary>
-    /// 文字列をパスカルケースに変換する
-    /// </summary>
-    /// <param name="str">変換元文字列</param>
-    /// <returns>パスカルケースの文字列</returns>
-    public static string ToPascalCase(string str)
-    {
-        var words = str
-            .Split(new[] { "_", "-", " " }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(Pascalize)
-            .ToArray();
-        return string.Join(string.Empty, words);
-    }
-
-
-    /// <summary>
-    /// 文字列をキャメルケースに変換する
-    /// </summary>
-    /// <param name="str">変換元文字列</param>
-    /// <returns>キャメルケースの文字列</returns>
-    public static string ToCamelCase(string str)
-    {
-        var pascal = ToPascalCase(str);
-        return char.ToLower(pascal[0]) + pascal[1..];
-    }
-
-
-    /// <summary>
-    /// 文字列をスネークケースに変換する
-    /// </summary>
-    /// <param name="str">変換元文字列</param>
-    /// <param name="delimiter">区切り文字</param>
-    /// <returns>スネークケースの文字列</returns>
-    public static string ToSnakeCase(string str, string delimiter = "_")
-    {
-        var s0 = ToCamelCase(str);
-        var s1 = Regex.Replace(s0, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2"));
-        return s1.ToLower();
-    }
-
 }

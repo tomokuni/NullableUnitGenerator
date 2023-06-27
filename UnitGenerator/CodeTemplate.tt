@@ -926,6 +926,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
                 writer.WritePropertyName(buffer.Slice(0, written));
             else
                 writer.WritePropertyName(value.m_value.ToString());
+<# } else if (IsDateTime) { #>
+            writer.WritePropertyName(value.m_value.ToString("yyyy-MM-dd"));
 <# } else if (IsDateOnly) { #>
             writer.WritePropertyName(value.m_value.ToString("yyyy-MM-dd"));
 <# } else if (IsTimeOnly) { #>

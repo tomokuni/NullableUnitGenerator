@@ -1072,6 +1072,8 @@ if (IsSupportUtf8Formatter()) {
             else
                 writer.WritePropertyName(value.m_value.ToString());
 ");
+ } else if (IsDateTime) { 
+            this.Write("            writer.WritePropertyName(value.m_value.ToString(\"yyyy-MM-dd\"));\r\n");
  } else if (IsDateOnly) { 
             this.Write("            writer.WritePropertyName(value.m_value.ToString(\"yyyy-MM-dd\"));\r\n");
  } else if (IsTimeOnly) { 

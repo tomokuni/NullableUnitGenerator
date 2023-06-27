@@ -95,6 +95,10 @@ public partial class CodeTemplate
     internal bool IsArray
         => TypeSymbol.TypeKind == TypeKind.Array;
 
+    /// <summary>Is the type name DateTime.</summary>
+    internal bool IsDateTime
+        => TypeName == "DateTime";
+
     /// <summary>Is the type name DateOnly.</summary>
     internal bool IsDateOnly
         => TypeName == "DateOnly";
