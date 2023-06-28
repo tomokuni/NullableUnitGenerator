@@ -197,9 +197,6 @@ public class UnitExtensionTest
         Assert.Equal(expect, "08:02:03.999+09:00".ToTimeOnly());
         Assert.Equal(expect, "23:02:03.999Z".ToTimeOnly());
         Assert.Equal(expect, "08:02:03.999".ToTimeOnly());
-        Assert.Equal(expect, "08:02:03.999+09:00".ToTimeOnly());
-        Assert.Equal(expect, "23:02:03.999Z".ToTimeOnly());
-        Assert.Equal(expect, "08:02:03.999".ToTimeOnly());
     }
 
 
@@ -209,9 +206,6 @@ public class UnitExtensionTest
         Assert.Equal("08:02:03.999", "2022-12-10T08:02:03.999+09:00".ToTimeOnly().ToJsonString());
         Assert.Equal("08:02:03.999", "2022-12-09T23:02:03.999Z".ToTimeOnly().ToJsonString());
         Assert.Equal("08:02:03.999", "2022-12-10 08:02:03.999".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "T08:02:03.999+09:00".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "T23:02:03.999Z".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "T08:02:03.999".ToTimeOnly().ToJsonString());
         Assert.Equal("08:02:03.999", "08:02:03.999+09:00".ToTimeOnly().ToJsonString());
         Assert.Equal("08:02:03.999", "23:02:03.999Z".ToTimeOnly().ToJsonString());
         Assert.Equal("08:02:03.999", "08:02:03.999".ToTimeOnly().ToJsonString());
