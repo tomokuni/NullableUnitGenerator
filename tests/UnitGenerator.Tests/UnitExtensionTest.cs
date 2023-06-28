@@ -194,9 +194,9 @@ public class UnitExtensionTest
         Assert.Equal(expect, "2022-12-10T08:02:03.999+09:00".ToTimeOnly());
         Assert.Equal(expect, "2022-12-09T23:02:03.999Z".ToTimeOnly());
         Assert.Equal(expect, "2022-12-10 08:02:03.999".ToTimeOnly());
-        Assert.Equal(expect, "T08:02:03.999+09:00".ToTimeOnly());
-        Assert.Equal(expect, "T23:02:03.999Z".ToTimeOnly());
-        Assert.Equal(expect, "T08:02:03.999".ToTimeOnly());
+        Assert.Equal(expect, "08:02:03.999+09:00".ToTimeOnly());
+        Assert.Equal(expect, "23:02:03.999Z".ToTimeOnly());
+        Assert.Equal(expect, "08:02:03.999".ToTimeOnly());
         Assert.Equal(expect, "08:02:03.999+09:00".ToTimeOnly());
         Assert.Equal(expect, "23:02:03.999Z".ToTimeOnly());
         Assert.Equal(expect, "08:02:03.999".ToTimeOnly());
