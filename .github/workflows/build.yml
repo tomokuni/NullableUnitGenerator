@@ -16,6 +16,8 @@ jobs:
   buildtest:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Tokyo' # タイムゾーン指定
     steps:
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
