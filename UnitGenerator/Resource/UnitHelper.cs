@@ -60,17 +60,4 @@ public static class UnitHelper
         }
     }
 
-
-    /// <summary>
-    /// 文字列をパスカルケースに変換する
-    /// </summary>
-    /// <param name="str"></param>
-    /// <returns></returns>
-    public static string Pascalize(string str)
-    {
-        var w = regexPascalize.Replace(str, 
-            m => char.ToUpper(m.Groups[1].Value[0]) + m.Groups[1].Value[1..].ToLower() + m.Groups[2].Value);
-        return char.ToUpper(w[0]) + w[1..];
-    }
-    static readonly Regex regexPascalize = new(@"(^[A-Z][A-Z0-9]*|[A-Z][A-Z0-9]+)($|[A-Z][a-z0-9])");
 }

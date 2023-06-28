@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Threading;
 
-using Microsoft.CSharp.RuntimeBinder;
+using NullableUnitGenerator.Extensions;
 
 using Xunit;
 
@@ -150,21 +148,24 @@ public class UnitExtensionTest
 
         expect = new DateTime(2022, 12, 10, 10, 2, 3).AddMicroseconds(999999.9);
         Assert.Equal(expect, "2022-12-10T10:02:03.9999999+09:00".ToDateTime());
+
+        expect = new DateTime(2022, 12, 10);
+        Assert.Equal(expect, "2022-12-10+09:00".ToDateTime());
     }
 
 
-    [Fact]
-    public void ToJsonString_DateTime()
+  [Fact]
+    public void ToIsoString_DateTime()
     {
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10T10:02:03.999+09:00".ToDateTime().ToJsonString());
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10T10:02:03.999".ToDateTime().ToJsonString());
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10T01:02:03.999Z".ToDateTime().ToJsonString());
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10 10:02:03.999".ToDateTime().ToJsonString());
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022/12/10T10:02:03.999+09:00".ToDateTime().ToJsonString());
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022/12/10T01:02:03.999Z".ToDateTime().ToJsonString());
-        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022/12/10 10:02:03.999".ToDateTime().ToJsonString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10T10:02:03.999+09:00".ToDateTime().ToIsoString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10T10:02:03.999".ToDateTime().ToIsoString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10T01:02:03.999Z".ToDateTime().ToIsoString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022-12-10 10:02:03.999".ToDateTime().ToIsoString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022/12/10T10:02:03.999+09:00".ToDateTime().ToIsoString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022/12/10T01:02:03.999Z".ToDateTime().ToIsoString());
+        Assert.Equal("2022-12-10T10:02:03.999+09:00", "2022/12/10 10:02:03.999".ToDateTime().ToIsoString());
 
-        Assert.Equal("2022-12-10T10:02:03.9999999+09:00", "2022-12-10T10:02:03.9999999+09:00".ToDateTime().ToJsonString());
+        Assert.Equal("2022-12-10T10:02:03.9999999+09:00", "2022-12-10T10:02:03.9999999+09:00".ToDateTime().ToIsoString());
     }
 
 
@@ -179,11 +180,15 @@ public class UnitExtensionTest
 
 
     [Fact]
-    public void ToJsonString_DateOnly()
+    public void ToIsoString_DateOnly()
     {
-        Assert.Equal("2022-12-10", "2022 -12-10T10:02:03.999+09:00".ToDateOnly().ToJsonString());
-        Assert.Equal("2022-12-10", "2022-12-10T01:02:03.999Z".ToDateOnly().ToJsonString());
-        Assert.Equal("2022-12-10", "2022-12-10 10:02:03.999".ToDateOnly().ToJsonString());
+        Assert.Equal("2022-12-10", "2022 -12-10T10:02:03.999+09:00".ToDateOnly().ToIsoString());
+        Assert.Equal("2022-12-10", "2022-12-10T01:02:03.999Z".ToDateOnly().ToIsoString());
+        Assert.Equal("2022-12-10", "2022-12-10 10:02:03.999".ToDateOnly().ToIsoString());
+
+        Assert.Equal("2022-12-10+09:00", "2022-12-10T10:02:03.999+09:00".ToDateOnly().ToIsoString(withOffset: true));
+        Assert.Equal("2022-12-10+09:00", "2022-12-10T01:02:03.999Z".ToDateOnly().ToIsoString(withOffset: true));
+        Assert.Equal("2022-12-10+09:00", "2022-12-10 10:02:03.999".ToDateOnly().ToIsoString(withOffset: true));
     }
 
 
@@ -194,9 +199,6 @@ public class UnitExtensionTest
         Assert.Equal(expect, "2022-12-10T08:02:03.999+09:00".ToTimeOnly());
         Assert.Equal(expect, "2022-12-09T23:02:03.999Z".ToTimeOnly());
         Assert.Equal(expect, "2022-12-10 08:02:03.999".ToTimeOnly());
-        Assert.Equal(expect, "T08:02:03.999+09:00".ToTimeOnly());
-        Assert.Equal(expect, "T23:02:03.999Z".ToTimeOnly());
-        Assert.Equal(expect, "T08:02:03.999".ToTimeOnly());
         Assert.Equal(expect, "08:02:03.999+09:00".ToTimeOnly());
         Assert.Equal(expect, "23:02:03.999Z".ToTimeOnly());
         Assert.Equal(expect, "08:02:03.999".ToTimeOnly());
@@ -204,17 +206,21 @@ public class UnitExtensionTest
 
 
     [Fact]
-    public void ToJsonString_TimeOnly()
+    public void ToIsoString_TimeOnly()
     {
-        Assert.Equal("08:02:03.999", "2022-12-10T08:02:03.999+09:00".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "2022-12-09T23:02:03.999Z".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "2022-12-10 08:02:03.999".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "T08:02:03.999+09:00".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "T23:02:03.999Z".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "T08:02:03.999".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "08:02:03.999+09:00".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "23:02:03.999Z".ToTimeOnly().ToJsonString());
-        Assert.Equal("08:02:03.999", "08:02:03.999".ToTimeOnly().ToJsonString());
+        Assert.Equal("08:02:03.999", "2022-12-10T08:02:03.999+09:00".ToTimeOnly().ToIsoString());
+        Assert.Equal("08:02:03.999", "2022-12-09T23:02:03.999Z".ToTimeOnly().ToIsoString());
+        Assert.Equal("08:02:03.999", "2022-12-10 08:02:03.999".ToTimeOnly().ToIsoString());
+        Assert.Equal("08:02:03.999", "08:02:03.999+09:00".ToTimeOnly().ToIsoString());
+        Assert.Equal("08:02:03.999", "23:02:03.999Z".ToTimeOnly().ToIsoString());
+        Assert.Equal("08:02:03.999", "08:02:03.999".ToTimeOnly().ToIsoString());
+
+        Assert.Equal("08:02:03.999+09:00", "2022-12-10T08:02:03.999+09:00".ToTimeOnly().ToIsoString(withOffset: true));
+        Assert.Equal("08:02:03.999+09:00", "2022-12-09T23:02:03.999Z".ToTimeOnly().ToIsoString(withOffset: true));
+        Assert.Equal("08:02:03.999+09:00", "2022-12-10 08:02:03.999".ToTimeOnly().ToIsoString(withOffset: true));
+        Assert.Equal("08:02:03.999+09:00", "08:02:03.999+09:00".ToTimeOnly().ToIsoString(withOffset: true));
+        Assert.Equal("08:02:03.999+09:00", "23:02:03.999Z".ToTimeOnly().ToIsoString(withOffset: true));
+        Assert.Equal("08:02:03.999+09:00", "08:02:03.999".ToTimeOnly().ToIsoString(withOffset: true));
     }
 
 
@@ -241,49 +247,74 @@ public class UnitExtensionTest
 
 
     [Fact]
-    public void ToJsonString_TimeSpan()
+    public void ToHmsString_TimeSpan()
     {
-        Assert.Equal("00:00:00", "0".ToTimeSpan().ToJsonString());
-        Assert.Equal("00:00:00", "-0".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.00:00:00", "1".ToTimeSpan().ToJsonString());
-        Assert.Equal("-1.00:00:00", "-1".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.02:00:00", "1.2".ToTimeSpan().ToJsonString());
-        Assert.Equal("02:03:00", "2:3".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.02:03:00", "1.2:3".ToTimeSpan().ToJsonString());
-        Assert.Equal("02:03:04", "2:3:4".ToTimeSpan().ToJsonString());
-        Assert.Equal("02:03:00.9", "2:3:.9".ToTimeSpan().ToJsonString());
-        Assert.Equal("02:03:04.9", "2:3:4.9".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.02:03:04", "1.2:3:4".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.02:03:00.9", "1.2:3:.9".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.02:03:04.9", "1.2:3:4.9".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.02:03:04.9999999", "1.02:03:04.9999999".ToTimeSpan().ToJsonString());
-        Assert.Equal("-1.02:03:04.9999999", "-1.02:03:04.9999999".ToTimeSpan().ToJsonString());
-        Assert.Equal("2.02:03:04.9999999", "50:03:04.9999999".ToTimeSpan().ToJsonString());
-        Assert.Equal("1.00:00:00", "24:00:00".ToTimeSpan().ToJsonString());
-        Assert.Equal("02:00:00", "2::".ToTimeSpan().ToJsonString());
-        Assert.Equal("00:03:00", ":3:".ToTimeSpan().ToJsonString());
-        Assert.Equal("00:00:04", "::4".ToTimeSpan().ToJsonString());
-        Assert.Equal("-02:00:00", "-2::".ToTimeSpan().ToJsonString());
-        Assert.Equal("-00:03:00", "-:3:".ToTimeSpan().ToJsonString());
-        Assert.Equal("-00:00:04", "-::4".ToTimeSpan().ToJsonString());
+        Assert.Equal("00:00:00", "0".ToTimeSpan().ToHmsString());
+        Assert.Equal("00:00:00", "-0".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.00:00:00", "1".ToTimeSpan().ToHmsString());
+        Assert.Equal("-1.00:00:00", "-1".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:00:00", "1.2".ToTimeSpan().ToHmsString());
+        Assert.Equal("02:03:00", "2:3".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:03:00", "1.2:3".ToTimeSpan().ToHmsString());
+        Assert.Equal("02:03:04", "2:3:4".ToTimeSpan().ToHmsString());
+        Assert.Equal("02:03:00.9", "2:3:.9".ToTimeSpan().ToHmsString());
+        Assert.Equal("02:03:04.9", "2:3:4.9".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:03:04", "1.2:3:4".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:03:00", "1.2:3:".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:03:00.9", "1.2:3:.9".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:03:04.9", "1.2:3:4.9".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.02:03:04.9999999", "1.02:03:04.9999999".ToTimeSpan().ToHmsString());
+        Assert.Equal("-1.02:03:04.9999999", "-1.02:03:04.9999999".ToTimeSpan().ToHmsString());
+        Assert.Equal("2.02:03:04.9999999", "50:03:04.9999999".ToTimeSpan().ToHmsString());
+        Assert.Equal("1.00:00:00", "24:00:00".ToTimeSpan().ToHmsString());
+        Assert.Equal("02:00:00", "2:0:".ToTimeSpan().ToHmsString());
+        Assert.Equal("00:03:00", "0:3:".ToTimeSpan().ToHmsString());
+        Assert.Equal("00:00:04", "0:0:4".ToTimeSpan().ToHmsString());
+        Assert.Equal("-02:00:00", "-2:0:".ToTimeSpan().ToHmsString());
+        Assert.Equal("-00:03:00", "-0:3:".ToTimeSpan().ToHmsString());
+        Assert.Equal("-00:00:04", "-0:0:4".ToTimeSpan().ToHmsString());
 
-        Assert.Equal("00:00:00", "0".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("00:00:00", "-0".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("24:00:00", "1".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("-24:00:00", "-1".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("26:00:00", "1.2".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("02:03:00", "2:3".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("26:03:00", "1.2:3".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("02:03:04", "2:3:4".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("02:03:00.9", "2:3:.9".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("02:03:04.9", "2:3:4.9".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("26:03:04", "1.2:3:4".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("26:03:00.9", "1.2:3:.9".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("26:03:04.9", "1.2:3:4.9".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("26:03:04.9999999", "1.02:03:04.9999999".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("-26:03:04.9999999", "-1.02:03:04.9999999".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("50:03:04.9999999", "50:03:04.9999999".ToTimeSpan().ToJsonString(enableDay: false));
-        Assert.Equal("24:00:00", "24:00:00".ToTimeSpan().ToJsonString(enableDay: false));
+        Assert.Equal("00:00:00", "0".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("00:00:00", "-0".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("24:00:00", "1".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("-24:00:00", "-1".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:00:00", "1.2".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:00", "2:3".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:00", "1.2:3".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:04", "2:3:4".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:00.9", "2:3:.9".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:00", "2:3:".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:04.9", "2:3:4.9".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:04", "1.2:3:4".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:00.9", "1.2:3:.9".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:04.9", "1.2:3:4.9".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:04.9999999", "1.02:03:04.9999999".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("-26:03:04.9999999", "-1.02:03:04.9999999".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("50:03:04.9999999", "50:03:04.9999999".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("24:00:00", "24:00:00".ToTimeSpan().ToHmsString(enableDay: false));
+
+        Assert.Equal("00:00:00", "P0D".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("24:00:00", "P1D".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:00:00", "P1DT2H".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:00", "PT2H3M".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:00", "P1DT2H3M".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:04", "PT2H3M4S".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("02:03:00", "PT2H3M".ToTimeSpan().ToHmsString(enableDay: false));
+        Assert.Equal("26:03:04", "P1DT2H3M4S".ToTimeSpan().ToHmsString(enableDay: false));
+    }
+
+
+    [Fact]
+    public void ToIsoString_TimeSpan()
+    {
+        Assert.Equal("PT0S", "P0D".ToTimeSpan().ToIsoString());
+        Assert.Equal("P1D", "P1D".ToTimeSpan().ToIsoString());
+        Assert.Equal("P1DT2H", "P1DT2H".ToTimeSpan().ToIsoString());
+        Assert.Equal("PT2H3M", "PT2H3M".ToTimeSpan().ToIsoString());
+        Assert.Equal("P1DT2H3M", "P1DT2H3M".ToTimeSpan().ToIsoString());
+        Assert.Equal("PT2H3M4S", "PT2H3M4S".ToTimeSpan().ToIsoString());
+        Assert.Equal("PT2H3M", "PT2H3M".ToTimeSpan().ToIsoString());
+        Assert.Equal("P1DT2H3M4S", "P1DT2H3M4S".ToTimeSpan().ToIsoString());
     }
 
 }

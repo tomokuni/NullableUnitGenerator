@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.87</Version>
+    <Version>0.0.2.89</Version>
 
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
@@ -78,6 +78,7 @@
     <EmbeddedResource Include="Resource\IUnit.cs" LogicalName="UnitOf.IUnit.cs" />
     <EmbeddedResource Include="Resource\UnitAttribute.cs" LogicalName="UnitOf.UnitAttribute.cs" />
     <EmbeddedResource Include="Resource\UnitExtension.cs" LogicalName="UnitOf.UnitExtension.cs" />
+    <EmbeddedResource Include="Resource\UnitExtension.OpenApi.cs" LogicalName="UnitOf.UnitExtension.OpenApi.cs" />
     <EmbeddedResource Include="Resource\UnitGenerateOption.cs" LogicalName="UnitOf.UnitGenerateOption.cs" />
     <EmbeddedResource Include="Resource\UnitHelper.cs" LogicalName="UnitOf.UnitHelper.cs" />
     <EmbeddedResource Include="Resource\UnitState.cs" LogicalName="UnitOf.UnitState.cs" />

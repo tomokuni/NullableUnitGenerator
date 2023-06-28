@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
 
-#if !UGO_OPENAPI_DISABLE
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-#endif
-
-namespace NullableUnitGenerator;
+namespace NullableUnitGenerator.Extensions;
 
 
 /// <summary>
@@ -17,58 +11,19 @@ namespace NullableUnitGenerator;
 /// </summary>
 public static class NullableUnitGeneratorExtensions
 {
-#if !UGO_OPENAPI_DISABLE
-    // UnitOfOpenApiDataType属性を元に、SwaggerGenOptions に OpenApiSchema を設定する。
 
     /// <summary>
-    /// UnitOfOas 属性を探索し、SwaggerGenOptions に Schema 情報として登録する
+    /// 単語をパスカルケースに変換する
     /// </summary>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    public static SwaggerGenOptions MapTypeUnitOfOas(this SwaggerGenOptions options)
+    /// <param name="str">変換元の単語</param>
+    /// <returns>変換後の単語</returns>
+    public static string Pascalize(string str)
     {
-        // UnitOfOas 属性が付与されたクラスと属性を取得
-        var ta = UnitHelper.GetTypeAndAttributes<UnitOfOasAttribute>();
-        foreach (var (type, attr) in ta)
-        {
-            options.MapType(type, attr.ToOpenApiSchema);
-        }
-        return options;
+        var w = regexPascalize.Replace(str,
+            m => char.ToUpper(m.Groups[1].Value[0]) + m.Groups[1].Value[1..].ToLower() + m.Groups[2].Value);
+        return char.ToUpper(w[0]) + w[1..];
     }
-
-
-    /// <summary>
-    /// UnitOfOas 属性を元に、OpenApiSchema オブジェクトに変換する。
-    /// </summary>
-    /// <param name="attr"></param>
-    /// <returns></returns>
-    public static OpenApiSchema ToOpenApiSchema(this UnitOfOasAttribute attr)
-    {
-        IOpenApiAny exampleAny = attr.Example switch
-        {
-            null => new OpenApiNull(),
-            int integer => new OpenApiInteger(integer),
-            double floating => new OpenApiDouble(floating),
-            var e => new OpenApiString(e.ToString()),
-        };
-
-        var schema = new OpenApiSchema
-        {
-            Type = attr.Type,
-            Format = attr.Format,
-            Minimum = attr.Minimum is null ? null : decimal.Parse(attr.Minimum),
-            Maximum = attr.Maximum is null ? null : decimal.Parse(attr.Maximum),
-            MinLength = attr.MinLength,
-            MaxLength = attr.MaxLength,
-            Pattern = attr.Pattern,
-            Example = exampleAny,
-            Nullable = attr.Nullable,
-        };
-
-        return schema;
-    }
-#endif
-
+    static readonly Regex regexPascalize = new(@"(^[A-Z][A-Z0-9]*|[A-Z][A-Z0-9]+)($|[A-Z][a-z0-9])");
 
 
     /// <summary>
@@ -80,7 +35,7 @@ public static class NullableUnitGeneratorExtensions
     {
         var words = str
             .Split(new[] { "_", "-", " " }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(UnitHelper.Pascalize)
+            .Select(Pascalize)
             .ToArray();
         return string.Join(string.Empty, words);
     }
@@ -107,15 +62,16 @@ public static class NullableUnitGeneratorExtensions
     public static string ToSnakeCase(this string str, string delimiter = "_")
     {
         var s0 = ToCamelCase(str);
-        var s1 = Regex.Replace(s0, @"([a-z0-9])([A-Z])", ("$1" + delimiter + "$2"));
+        var s1 = regexSnakeSplit.Replace(s0, ("$1" + delimiter + "$2"));
         return s1.ToLower();
     }
+    static readonly Regex regexSnakeSplit = new(@"([a-z0-9])([A-Z])");
 
 
     /// <summary>
-    /// 文字列を日時に変換する。
+    /// ISO8601拡張 の日時文字列を DateTimeOffset に変換する
     /// </summary>
-    /// <param name="datetimeString">変換元の日時文字列</param>
+    /// <param name="datetimeString">変換元の日時</param>
     /// <returns>変換後の日時</returns>
     public static DateTimeOffset ToDateTimeOffset(this string datetimeString)
         => TimeZoneInfo.ConvertTime(DateTimeOffset.Parse(datetimeString), TimeZoneInfo.Local);
@@ -123,110 +79,148 @@ public static class NullableUnitGeneratorExtensions
 
 
     /// <summary>
-    /// 日時をISO8601文字列に変換する
+    /// ISO8601拡張 の日時文字列を DateTime に変換する
     /// </summary>
-    /// <param name="datetimeoffset">変換元の日時</param>
-    /// <returns>変換後の日時</returns>
-    public static string ToJsonString(this DateTimeOffset datetimeoffset)
-        => datetimeoffset.ToString("yyyy-MM-ddTHH:MM:ss.FFFFFFFzzz");
-
-
-    /// <summary>
-    /// 文字列を日時に変換する。
-    /// </summary>
-    /// <param name="datetimeString">変換元の日時文字列</param>
+    /// <param name="datetimeString">変換元の日時</param>
     /// <returns>変換後の日時</returns>
     public static DateTime ToDateTime(this string datetimeString)
-        => ToDateTimeOffset(datetimeString).DateTime;
-
-
-    /// <summary>
-    /// 日時をISO8601文字列に変換する
-    /// </summary>
-    /// <param name="datetime">変換元の日時</param>
-    /// <returns>変換後の日時</returns>
-    public static string ToJsonString(this DateTime datetime)
-        => new DateTime(datetime.Ticks, datetime.Kind == DateTimeKind.Unspecified ? DateTimeKind.Local : datetime.Kind)
-            .ToString("yyyy-MM-ddThh:mm:ss.FFFFFFFzzz");
-
-
-    /// <summary>
-    /// 文字列を日付に変換する。
-    /// </summary>
-    /// <param name="dateString">変換元の日時文字列</param>
-    /// <returns>変換後の日付</returns>
-    public static DateOnly ToDateOnly(this string dateString)
-        => DateOnly.FromDateTime(ToDateTime(dateString));
-
-
-    /// <summary>
-    /// 日付をISO8601文字列に変換する
-    /// </summary>
-    /// <param name="date">変換元の日付</param>
-    /// <returns>変換後の日付</returns>
-    public static string ToJsonString(this DateOnly date)
-        => date.ToString("yyyy-MM-dd");
-
-
-    /// <summary>
-    /// 文字列を時刻に変換する。
-    /// </summary>
-    /// <param name="timeString">変換元の日時文字列</param>
-    /// <returns>変換後の時刻</returns>
-    public static TimeOnly ToTimeOnly(this string timeString)
-        => TimeOnly.FromDateTime(ToDateTime(timeString));
-
-
-    /// <summary>
-    /// 時刻をISO8601文字列に変換する
-    /// </summary>
-    /// <param name="time">変換元の時刻</param>
-    /// <returns>変換後の時刻</returns>
-    public static string ToJsonString(this TimeOnly time)
-        => time.ToString("hh:mm:ss.FFFFFFF");
+        => datetimeString.ToDateTimeOffset().DateTime;
 
 
     /// <summary>
     /// 文字列を TimeSpan に変換する。
-    ///    1 number  => d | d.h                         "0" to "1.00:00:00" | "1.2"  to "1.02:00:00"
-    ///    2 numbers => h:m | d.h:m                     "2:3" to "02:03:00" | "1.2:3" to "1.02:03:00"
-    ///    3 numbers => h:m:s | h:m:.f | h:m:s.f        "2:3:4" to "02:03:04" | "2:3:.9" to "02:03:00.9" | "2:3:4.9" to "02:03:04.9"
-    ///               | d.h:m:s | d.h:m:.f |d.h:m:s.f   "1.2:3:4" to "1.02:03:04" | "1.2:3:.9" to "1.02:03:00.9" | "1.2:3:4.9" to "1.02.03:04.9"
     /// </summary>
     /// <param name="timespanString">変換元の時刻文字列</param>
     /// <returns>変換後の TimeSpan</returns>
     public static TimeSpan ToTimeSpan(this string timespanString)
     {
-        var trim = timespanString.Trim();
-        var isNegative = trim.StartsWith("-"); // "-1:2:3" is true
-        if (isNegative)
-            trim = trim[1..];
-        var s = trim.Split(':');
-        var s0 = s[0].Split('.').Select(s => long.Parse(s));
+        if (string.IsNullOrWhiteSpace(timespanString.Trim()))
+            return TimeSpan.Zero;
 
-        int days = s[0].Contains(".") ? int.Parse(s[0].Split('.')[0]) : (s.Length == 1 ? int.Parse("0" + s[0]) : 0);
-        int hours = s[0].Contains(".") ? int.Parse(s[0].Split('.')[1]) : (s.Length >= 2 ? int.Parse("0" + s[0]) : 0);
-        int minutes = s.Length >= 2 ? int.Parse("0" + s[1]) : 0;
-        int seconds = s.Length >= 3 ? (s[2].Contains(".") ? int.Parse("0" + s[2].Split('.')[0]) : int.Parse("0" + s[2])) : 0;
-        int nanoseconds = s.Length >= 3 ? (s[2].Contains(".") ? int.Parse(s[2].Split('.')[1].PadRight(7,'0')) : 0) : 0;
-
-        var ts = new TimeSpan(days, hours, minutes, seconds) + new TimeSpan(nanoseconds);
-        if (isNegative)
-            ts = ts.Negate();
-        return ts;
+        if (timespanString.Trim().StartsWith("P"))
+            return ToTimeSpanFromIsoDurationString(timespanString);
+        return ToTimeSpanFromTimeSpanString(timespanString);
     }
+
+    /// <summary>
+    /// ISO8601 の期間文字列を TimeSpan に変換する。<br/><br/>
+    ///    <b>P[n]Y[n]M[n]DT[n]H[n]M[n]S</b><br/>
+    ///    最初の1文字目は、"Period" を表す P。<br/>
+    ///    次に数字＋年月日の間隔指定子を記述。 年月日を指定しない場合は、省略。<br/>
+    ///    年月日と時間の間にはTを記述。 ※Tは、時間コンポーネントの先行時間指定子。<br/>
+    ///    次に数字＋時分秒の間隔指定子を記述。<br/>
+    /// </summary>
+    /// <param name="timespanString">変換元の時刻文字列</param>
+    /// <returns>変換後の TimeSpan</returns>
+    public static TimeSpan ToTimeSpanFromIsoDurationString(string timespanString)
+        => XmlConvert.ToTimeSpan(timespanString);
 
 
     /// <summary>
-    /// TimeSpan を文字列に変換する
+    /// 文字列を TimeSpan に変換する。<br/>
+    ///    1 number  => d | d.h <br/>                       "0" to "1.00:00:00" | "1.2"  to "1.02:00:00"<br/>
+    ///    2 numbers => h:m | d.h:m <br/>                   "2:3" to "02:03:00" | "1.2:3" to "1.02:03:00"<br/>
+    ///    3 numbers => h:m:s | h:m:.f | h:m:s.f | d.h:m:s | d.h:m:.f |d.h:m:s.f <br/>      "2:3:4" to "02:03:04" | "2:3:.9" to "02:03:00.9" | "2:3:4.9" to "02:03:04.9"
+    ///               "1.2:3:4" to "1.02:03:04" | "1.2:3:.9" to "1.02:03:00.9" | "1.2:3:4.9" to "1.02.03:04.9"
+    /// </summary>
+    /// <param name="timespanString">変換元の時刻文字列</param>
+    /// <returns>変換後の TimeSpan</returns>
+    /// <exception cref="FormatException">書式エラー</exception>
+    public static TimeSpan ToTimeSpanFromTimeSpanString(string timespanString)
+    {
+        if (string.IsNullOrWhiteSpace(timespanString))
+            return TimeSpan.Zero;
+
+        var trim = timespanString.Trim();
+        if (!regexTimeSpan.IsMatch(trim))
+            throw new FormatException($"The string '{trim}' is not a valid TimeSpan value.");
+
+        var isNegative = trim.StartsWith("-"); // "-1:2:3" is true
+        var hms = isNegative ? trim[1..].Split(':') : trim.Split(':');
+        var dh = hms[0].Contains(".") ? hms[0].Split('.') : (hms.Length >= 2) ? new[] { "", hms[0] } : new[] { hms[0], "" };
+        var m = hms.Length >= 2 ? hms[1] : "";
+        var sf = hms.Length >= 3 ? (hms[2].Contains(".") ? hms[2].Split('.') : new[] { hms[2], "" }) : new[] { "", "" };
+
+        var intD = int.Parse("0" + dh[0]);
+        var intH = int.Parse("0" + dh[1]);
+        var intM = int.Parse("0" + m);
+        var intS = int.Parse("0" + sf[0]);
+        var intTick = int.Parse("0" + sf[1].ToString().PadRight(7, '0'));
+
+        var ts = new TimeSpan(intD, intH, intM, intS) + new TimeSpan(intTick);
+        return isNegative ? ts.Negate() : ts;
+    }
+    static readonly Regex regexTimeSpan = new(@"^-?\d+(\.\d+)?$|^-?\d+(\.\d+)?:\d+$|^-?\d+(\.\d+)?:\d+:(\d+|\.\d+|\d+\.\d+)?$");
+
+
+    /// <summary>
+    /// ISO8601拡張 の日付文字列を DateOnly に変換する
+    /// </summary>
+    /// <param name="dateString">変換元の日時文字列</param>
+    /// <returns>変換後の日付</returns>
+    public static DateOnly ToDateOnly(this string dateString)
+        => DateOnly.FromDateTime(dateString.ToDateTime());
+
+
+    /// <summary>
+    /// ISO8601拡張 の時刻文字列を TimeOnly に変換する
+    /// </summary>
+    /// <param name="timeString">変換元の時刻文字列</param>
+    /// <returns>変換後の時刻</returns>
+    public static TimeOnly ToTimeOnly(this string timeString)
+        => TimeOnly.FromDateTime(timeString.ToDateTime());
+
+
+    /// <summary>
+    /// 日時をISO8601拡張文字列に変換する
+    /// </summary>
+    /// <param name="datetime">変換元の日時</param>
+    /// <returns>変換後の日時</returns>
+    public static string ToIsoString(this DateTime datetime)
+        => new DateTime(datetime.Ticks, datetime.Kind == DateTimeKind.Unspecified ? DateTimeKind.Local : datetime.Kind)
+            .ToString("yyyy-MM-ddThh:mm:ss.FFFFFFFzzz");
+
+
+    /// <summary>
+    /// 日付をISO8601拡張文字列に変換する
+    /// </summary>
+    /// <param name="date">変換元の日付</param>
+    /// <param name="withOffset">TimeZoneOffsetを付加するか</param>
+    /// <returns>変換後の日付</returns>
+    public static string ToIsoString(this DateOnly date, bool withOffset = false)
+        => date.ToString("yyyy-MM-dd") + (withOffset ? new DateTime(0, DateTimeKind.Local).ToString("zzz") : "");
+
+
+    /// <summary>
+    /// 時刻をISO8601拡張文字列に変換する
+    /// </summary>
+    /// <param name="time">変換元の時刻</param>
+    /// <param name="withOffset">TimeZoneOffsetを付加するか</param>
+    /// <returns>変換後の時刻</returns>
+    public static string ToIsoString(this TimeOnly time, bool withOffset = false)
+        => time.ToString("hh:mm:ss.FFFFFFF") + (withOffset ? new DateTime(0, DateTimeKind.Local).ToString("zzz") : "");
+
+
+    /// <summary>
+    /// TimeSpan を TimeSpan 文字列に変換する
     /// </summary>
     /// <param name="timespan">変換元の TimeSpan</param>
-    /// <param name="enableDay">日の出力方法： true: d.hh 形式で出力、 false: 時間の積算形式で出力</param>
+    /// <param name="enableDay">日の出力方法： true: 日付を含む d.hh 形式で出力、 false: 時間の積算形式 [hh] で出力</param>
     /// <returns>変換後の TimeSpan文字列</returns>
-    public static string ToJsonString(this TimeSpan timespan, bool enableDay = true)
+    public static string ToHmsString(this TimeSpan timespan, bool enableDay = true)
         => enableDay
             ? $"{timespan.Ticks:'';'-';''}{timespan.Days:0'.';0'.';''}{timespan:hh':'mm':'ss'.'FFFFFFF}".TrimEnd('.')
             : $"{(int)timespan.TotalHours:00}{timespan:':'mm':'ss'.'FFFFFFF}".TrimEnd('.');
 
+
+    /// <summary>
+    /// TimeSpan を ISO8601 Duration 文字列に変換する
+    /// </summary>
+    /// <param name="timespan">変換元の TimeSpan</param>
+    /// <returns>変換後の Duration 文字列</returns>
+    public static string ToIsoString(this TimeSpan timespan)
+    {
+        return XmlConvert.ToString(timespan);
+    }
 }
 

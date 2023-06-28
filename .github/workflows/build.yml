@@ -16,6 +16,8 @@ jobs:
   buildtest:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Tokyo' # タイムゾーン指定
     steps:
     - uses: actions/checkout@v3.5.0
     - name: Setup .NET ${{ env.DOTNET_VERSION }}
@@ -30,6 +32,7 @@ jobs:
       run: dotnet test -c Release --no-build
 
     - name: Create Package Test
+      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       run: dotnet pack UnitGenerator/NullableUnitGenerator.csproj --configuration Release --no-restore --output nupkgs -p:Version=0.0.0.0
 
     - name: Create Package
