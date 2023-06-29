@@ -1,14 +1,13 @@
-﻿using System;
+﻿#if !UGO_OPENAPI_DISABLE
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-#if !UGO_OPENAPI_DISABLE
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-#endif
 
 namespace NullableUnitGenerator;
 
@@ -18,14 +17,15 @@ namespace NullableUnitGenerator;
 /// </summary>
 public static class NullableUnitGeneratorExtensions
 {
-#if !UGO_OPENAPI_DISABLE
+    // Set OpenApiSchema to SwaggerGenOptions based on the UnitOfOpenApiDataType attribute.
     // UnitOfOpenApiDataType属性を元に、SwaggerGenOptions に OpenApiSchema を設定する。
 
     /// <summary>
-    /// UnitOfOas 属性を探索し、SwaggerGenOptions に Schema 情報として登録する
+    /// Search for UnitOfOas attribute and register it as Schema information in SwaggerGenOptions.<br/>
+    /// UnitOfOas 属性を探索し、SwaggerGenOptions に Schema 情報として登録する。<br/>
     /// </summary>
-    /// <param name="options"></param>
-    /// <returns></returns>
+    /// <param name="options">SwaggerGenOptions</param>
+    /// <returns>SwaggerGenOptions</returns>
     public static SwaggerGenOptions MapTypeUnitOfOas(this SwaggerGenOptions options)
     {
         // UnitOfOas 属性が付与されたクラスと属性を取得
@@ -39,10 +39,11 @@ public static class NullableUnitGeneratorExtensions
 
 
     /// <summary>
-    /// UnitOfOas 属性を元に、OpenApiSchema オブジェクトに変換する。
+    /// Convert to an OpenApiSchema object based on the UnitOfOas attribute.
+    /// UnitOfOas 属性を元に、OpenApiSchema オブジェクトに変換する。<br/>
     /// </summary>
-    /// <param name="attr"></param>
-    /// <returns></returns>
+    /// <param name="attr">UnitOfOasAttribute</param>
+    /// <returns>OpenApiSchema</returns>
     public static OpenApiSchema ToOpenApiSchema(this UnitOfOasAttribute attr)
     {
         IOpenApiAny exampleAny = attr.Example switch
@@ -68,7 +69,7 @@ public static class NullableUnitGeneratorExtensions
 
         return schema;
     }
-#endif
 
 }
+#endif
 

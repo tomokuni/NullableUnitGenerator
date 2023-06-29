@@ -31,11 +31,11 @@ public class UnitOfAttribute : Attribute
 
 
     /// <summary>
-    /// コンストラクタ
+    /// Constructor
     /// </summary>
-    /// <param name="type"></param>
-    /// <param name="options"></param>
-    /// <param name="toStringFormat"></param>
+    /// <param name="type">primitive type</param>
+    /// <param name="options">UnitGenerater Options</param>
+    /// <param name="toStringFormat">ToStringFormat</param>
     public UnitOfAttribute(
         Type type,
         UnitGenerateOption options = UnitGenerateOption.None,
@@ -56,10 +56,10 @@ public class UnitOfAttribute : Attribute
 public partial class UnitOfAttribute<T> : UnitOfAttribute
 {
     /// <summary>
-    /// コンストラクタ
+    /// Constructor
     /// </summary>
-    /// <param name="options"></param>
-    /// <param name="toStringFormat"></param>
+    /// <param name="options">UnitGenerater Options</param>
+    /// <param name="toStringFormat">ToStringFormat</param>
     public UnitOfAttribute(
         UnitGenerateOption options = UnitGenerateOption.None,
         string? toStringFormat = null)

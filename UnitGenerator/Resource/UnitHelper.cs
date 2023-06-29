@@ -18,7 +18,8 @@ namespace NullableUnitGenerator;
 public static class UnitHelper
 {
     /// <summary>
-    /// &lt;T&gt;属性が付与されたクラス型と属性情報を取得する
+    /// &lt;T&gt; Get the class type and attribute information to which the attribute is assigned.<br/>
+    /// &lt;T&gt;属性が付与されたクラス型と属性情報を取得する。<br/>
     /// </summary>
     /// <returns></returns>
     public static IEnumerable<(Type type, T attr)> GetTypeAndAttributes<T>() where T : Attribute
@@ -32,10 +33,11 @@ public static class UnitHelper
 
 
     /// <summary>
-    /// 引数のオブジェクトからプロパティを取得し、Undef値以外を dynamic (ExpandoObject) 型に変換
+    /// Convert to object (dynamic as ExpandoObject) that does not contain Undef value properties.<br/>
+    /// Undef値のプロパティを含まないオブジェクト（dynamic as ExpandoObject）に変換する。<br/>
     /// </summary>
-    /// <param name="modelClass"></param>
-    /// <returns></returns>
+    /// <param name="modelClass">Source Objects</param>
+    /// <returns>Objects that do not contain Undef value properties<br/>Undef値のプロパティを含まないオブジェクト</returns>
     public static dynamic ExcludeUndef(object modelClass)
     {
         if (modelClass is IDictionary<string, dynamic> d)
