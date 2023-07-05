@@ -2,7 +2,7 @@
 using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 
-namespace ConsoleApp.ValueObject.Others;
+namespace Sandbox.ValueObject.Others;
 
 
 [UnitOf(typeof(Guid), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]

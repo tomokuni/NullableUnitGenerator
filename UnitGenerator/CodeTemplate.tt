@@ -91,8 +91,8 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     // backing field
     //
 
-    readonly <#= TypeName #> m_value = default;
-    readonly UnitState m_state = UnitState.Undef;
+    private readonly <#= TypeName #> _value = default;
+    private readonly UnitState _state = UnitState.Undef;
 
 
     //
@@ -106,7 +106,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(in <#= Name #> value)
     {
-        (m_state, m_value) = (value.m_state, value.m_value);
+        (_state, _value) = (value._state, value._value);
 
         ValidateInConstructor();
     }
@@ -114,7 +114,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(in UnitState state, in <#= TypeName #> value = default)
     {
-        (m_state, m_value) = (state, value) switch
+        (_state, _value) = (state, value) switch
         {
             (UnitState.Undef, _) => (state, default),
             (UnitState.Null, _) => (state, default),
@@ -131,7 +131,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(in <#= TypeName #> value)
     {
-        (m_state, m_value) = (UnitState.Value, value);
+        (_state, _value) = (UnitState.Value, value);
 
         ValidateInConstructor();
     }
@@ -140,7 +140,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>Complete Constructor</summary>
     public <#= Name #>(in <#= TypeNameNullable #> value)
     {
-        (m_state, m_value) = value switch
+        (_state, _value) = value switch
         {
             null => (UnitState.Null, default),
             _ => (UnitState.Value, (<#= TypeName #>)value),
@@ -249,27 +249,27 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary><see langword="true"/> if undefined; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if undefined</returns>
     public bool IsUndef
-        => m_state == UnitState.Undef;
+        => _state == UnitState.Undef;
 
     /// <summary><see langword="true"/> if null; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if null</returns>
     public bool IsNull
-        => m_state == UnitState.Null;
+        => _state == UnitState.Null;
 
     /// <summary><see langword="true"/> if undefined or null; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if null or undefined</returns>
     public bool IsUndefOrNull
-        => m_state != UnitState.Value;
+        => _state != UnitState.Value;
 
     /// <summary><see langword="true"/> if null or hasValue; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if null or hasValue</returns>
     public bool IsNullOrHasValue
-        => m_state != UnitState.Undef;
+        => _state != UnitState.Undef;
 
     /// <summary><see langword="true"/> if not undefined and not null; otherwise.</summary>
     /// <returns><b><see langword="true"/></b> : if hasValuel</returns>
     public bool HasValue
-        => m_state == UnitState.Value;
+        => _state == UnitState.Value;
 
     /// <summary>return value state.</summary>
     /// <returns>
@@ -278,7 +278,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <b>Value</b>
     /// </returns>
     public UnitState State
-        => m_state;
+        => _state;
 
 
     //
@@ -301,12 +301,12 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>return raw value</summary>
     /// <returns>inner raw value</returns>
     public <#= TypeName #> GetRawValue()
-        => m_value;
+        => _value;
 
     /// <summary>return raw value</summary>
     /// <returns>inner raw value</returns>
     public object GetRawValueAsObject()
-        => m_value;
+        => _value;
 
     /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
     /// <returns>
@@ -314,7 +314,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <b>defaultValue</b> : otherwise
     /// </returns>
     public <#= TypeName #> GetOr(in <#= TypeName #> defaultValue)
-        => HasValue ? m_value : defaultValue;
+        => HasValue ? _value : defaultValue;
 
 <# if (IsValueType) { #>
     /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
@@ -323,14 +323,14 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <b>defaultValue</b> : otherwise
     /// </returns>
     public <#= TypeNameNullable #> GetOr(in <#= TypeNameNullable #> defaultValue)
-        => HasValue ? m_value : defaultValue;
+        => HasValue ? _value : defaultValue;
 <# } #>
 
     /// <inheritdoc cref="Value" />
     public <#= TypeName #> GetOrThrow()
-        => (m_state, m_value) switch
+        => (_state, _value) switch
         {
-            (UnitState.Value, _) => m_value,
+            (UnitState.Value, _) => _value,
             (UnitState.Null, _) => throw new InvalidOperationException($"Value is {UnitState.Null}."),
             _ => throw new InvalidOperationException($"Value is {UnitState.Undef}."),
         };
@@ -341,7 +341,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <returns><b><see langword="true"/> and out parameter value</b> : if HasValue is true,</returns>
     public bool TryGet(out <#= TypeName #> value, in <#= TypeName #> defaultValue = default)
     {
-        value = HasValue ? m_value : defaultValue;
+        value = HasValue ? _value : defaultValue;
         return HasValue;
     }
 
@@ -352,11 +352,11 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     /// <inheritdoc/>
     public override int GetHashCode()
-        => (m_state, m_value).GetHashCode();
+        => (_state, _value).GetHashCode();
 
     /// <inheritdoc/>
     public int GetHashCode(<#= Name #> obj)
-        => (obj.m_state, obj.m_value).GetHashCode();
+        => (obj._state, obj._value).GetHashCode();
 
 
     //
@@ -367,15 +367,15 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <returns>The current string.</returns>
     public override string ToString()
 <# if (ToStringFormat == null) { #>
-        => HasValue ? $"{m_value}" : (IsNull ? sNull : sUndef);
+        => HasValue ? $"{_value}" : (IsNull ? sNull : sUndef);
 <# } else { #>
-        => HasValue ? string.Format("<#= ToStringFormat #>", m_value) : (IsNull ? sNull : sUndef);
+        => HasValue ? string.Format("<#= ToStringFormat #>", _value) : (IsNull ? sNull : sUndef);
 <# } #>
 
     /// <summary>Returns this instance of System.String with the conversion specified by format.</summary>
     /// <returns>The specified string value.</returns>
     public string ToString(string format)
-        => HasValue ? ((dynamic)m_value).ToString(format) : (IsNull ? sNull : sUndef);
+        => HasValue ? ((dynamic)_value).ToString(format) : (IsNull ? sNull : sUndef);
 
 
     //
@@ -395,8 +395,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
-        var results = UnitValidate.ValidateObject(GetRawValue(), attr, validationContext);
-        return results;
+        return UnitValidate.ValidateObject(GetRawValue(), attr, validationContext);
     }
 
 <# if (TypeName == "Guid" || TypeName == "System.Guid") { #>
@@ -440,19 +439,19 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator true</summary>
     public static <#= TypeName #> operator true(<#= Name #> x)
         => x.HasValue
-           ? x.m_value
+           ? x._value
            : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator false</summary>
     public static <#= TypeName #> operator false(<#= Name #> x)
         => x.HasValue
-           ? !x.m_value
+           ? !x._value
            : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator !</summary>
     public static <#= TypeName #> operator !(<#= Name #> x)
         => x.HasValue
-           ? !x.m_value
+           ? !x._value
            : x.IsUndef ? UndefValue : NullValue;
 
 <# } #>
@@ -513,9 +512,9 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <inheritdoc/>
     public bool Equals(<#= Name #> other)
 <# if (IsValueType) { #>
-        => m_state.Equals(other.m_state) && m_value.Equals(other.m_value);
+        => _state.Equals(other._state) && _value.Equals(other._value);
 <# } else { #>
-        => m_state.Equals(other.m_state) && (m_value?.Equals(other.m_value) ?? other.m_value is null);
+        => _state.Equals(other._state) && (_value?.Equals(other._value) ?? other._value is null);
 <# } #>
 
     /// <inheritdoc/>
@@ -558,7 +557,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// </returns>
     public int CompareTo(<#= Name #> other)
         => HasValue && other.HasValue
-           ? m_value.CompareTo(other.m_value)
+           ? _value.CompareTo(other._value)
            : 0;
 <# } else { #>
         // <#= TypeName #> is types that do not support method CompareTo
@@ -577,25 +576,25 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator &gt; (GreaterThan)</summary>
     public static bool operator >(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? x.m_value > y.m_value
+           ? x._value > y._value
            : false;
 
     /// <summary>operator &lt; (LessThan)</summary>
     public static bool operator <(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? x.m_value < y.m_value
+           ? x._value < y._value
            : false;
 
     /// <summary>operator &gt;= (GreaterThanOrEqual)</summary>
     public static bool operator >=(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? x.m_value >= y.m_value
+           ? x._value >= y._value
            : false;
 
     /// <summary>operator &lt;= (LessThanOrEqual)</summary>
     public static bool operator <=(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? x.m_value <= y.m_value
+           ? x._value <= y._value
            : false;
 <# } else { #>
         // <#= TypeName #> is types that do not support operater > (GreaterThan)
@@ -617,13 +616,13 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator + (Addition)</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + y.m_value)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value + y._value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator - (Subtraction)</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - y.m_value)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value - y._value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 <# } else { #>
         // <#= TypeName #> is types that do not support operater + (Addition)
@@ -634,19 +633,19 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator * (Multiply)</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value * y.m_value)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value * y._value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator / (Division)</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value / y.m_value)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value / y._value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>operator % (Modulus)</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value % y.m_value)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value % y._value)))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 <# } else { #>
         // <#= TypeName #> is types that do not support operater * (Multiply)
@@ -667,13 +666,13 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator ++ (Increment)</summary>
     public static <#= Name #> operator ++(in <#= Name #> x)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + 1)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value + 1)))
            : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator -- (Decrement)</summary>
     public static <#= Name #> operator --(in <#= Name #> x)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - 1)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value - 1)))
            : x.IsUndef ? UndefValue : NullValue;
 <# } else { #>
         // <#= TypeName #> is types that do not support operater ++ (Increment)
@@ -684,13 +683,13 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator + (Addition)</summary>
     public static <#= Name #> operator +(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value + y)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value + y)))
            : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator - (Subtraction)</summary>
     public static <#= Name #> operator -(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value - y)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value - y)))
            : x.IsUndef ? UndefValue : NullValue;
 <# } else { #>
         // <#= TypeName #> is types that do not support operater + (Addition)
@@ -701,19 +700,19 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>operator * (Multiply)</summary>
     public static <#= Name #> operator *(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value * y)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value * y)))
            : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator / (Division)</summary>
     public static <#= Name #> operator /(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value / y)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value / y)))
            : x.IsUndef ? UndefValue : NullValue;
 
     /// <summary>operator % (Modulus)</summary>
     public static <#= Name #> operator %(in <#= Name #> x, in <#= TypeName #> y)
         => x.HasValue
-           ? new <#= Name #>(checked ((<#= TypeName #>)(x.m_value % y)))
+           ? new <#= Name #>(checked ((<#= TypeName #>)(x._value % y)))
            : x.IsUndef ? UndefValue : NullValue;
 <# } else { #>
         // <#= TypeName #> is types that do not support operater * (Multiply)
@@ -789,13 +788,13 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <summary>Min</summary>
     public static <#= Name #> Min(<#= Name #> x, <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>((<#= TypeName #>)Math.Max(x.m_value, y.m_value))
+           ? new <#= Name #>((<#= TypeName #>)Math.Max(x._value, y._value))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 
     /// <summary>Max</summary>
     public static <#= Name #> Max(<#= Name #> x, <#= Name #> y)
         => x.HasValue && y.HasValue
-           ? new <#= Name #>((<#= TypeName #>)Math.Max(x.m_value, y.m_value))
+           ? new <#= Name #>((<#= TypeName #>)Math.Max(x._value, y._value))
            : (x.IsUndef || y.IsUndef) ? UndefValue : NullValue;
 <# } else { #>
         // <#= Name #> is types that do not support method Min
@@ -922,20 +921,20 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         {
 <#if (IsSupportUtf8Formatter()) {  #>
             Span<byte> buffer = stackalloc byte[36];
-            if (System.Buffers.Text.Utf8Formatter.TryFormat(value.m_value, buffer, out var written))
+            if (System.Buffers.Text.Utf8Formatter.TryFormat(value._value, buffer, out var written))
                 writer.WritePropertyName(buffer.Slice(0, written));
             else
-                writer.WritePropertyName(value.m_value.ToString());
+                writer.WritePropertyName(value._value.ToString());
 <# } else if (IsDateTime) { #>
-            writer.WritePropertyName(value.m_value.ToString("yyyy-MM-dd"));
+            writer.WritePropertyName(value._value.ToString("yyyy-MM-dd"));
 <# } else if (IsDateOnly) { #>
-            writer.WritePropertyName(value.m_value.ToString("yyyy-MM-dd"));
+            writer.WritePropertyName(value._value.ToString("yyyy-MM-dd"));
 <# } else if (IsTimeOnly) { #>
-            writer.WritePropertyName(value.m_value.ToString("HH:mm:ss.FFFFFFF"));
+            writer.WritePropertyName(value._value.ToString("HH:mm:ss.FFFFFFF"));
 <# } else if (IsUlid) { #>
-            writer.WritePropertyName(value.m_value.ToString());
+            writer.WritePropertyName(value._value.ToString());
 <# } else { #>
-            writer.WritePropertyName(value.m_value.ToString());
+            writer.WritePropertyName(value._value.ToString());
 <# } #>
         }
 
@@ -1040,7 +1039,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     {
         /// <summary>Serialize</summary>
         public void Serialize(ref MessagePackWriter writer, <#= Name #> value, MessagePackSerializerOptions options)
-            => options.Resolver.GetFormatterWithVerify<<#= TypeName #>>().Serialize(ref writer, value.m_value, options);
+            => options.Resolver.GetFormatterWithVerify<<#= TypeName #>>().Serialize(ref writer, value._value, options);
 
         /// <summary>Deserialize</summary>
         public <#= Name #> Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
