@@ -1,10 +1,11 @@
-﻿using NullableUnitGenerator;
+﻿using System;
+using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 
-namespace Sandbox.ValueObject.ConsoleApp;
+namespace NullableUnitGeneratorSample.Sandbox.ConsoleApp;
 
 
-[UnitOf(typeof(Guid), UGO.IComparable)]
+[UnitOf(typeof(System.Guid), UGO.IComparable)]
 public readonly partial struct FooId { }
 
 

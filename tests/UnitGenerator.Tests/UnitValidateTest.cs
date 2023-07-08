@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Xunit;
 
-using UnitGenerator.Tests;
+using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 using System;
 

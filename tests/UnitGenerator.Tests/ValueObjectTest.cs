@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
-using UnitGenerator.Tests;
 using Xunit;
+
+using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
 
 namespace NullableUnitGenerator.Tests;
@@ -264,6 +265,15 @@ public class ValueObjectTest
 [UnitOf(typeof(int), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
 public readonly partial struct VoInt
 {
+    partial void ValidateInConstructor()
+    {
+    }
+}
+
+
+[UnitOf(typeof(bool), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
+public readonly partial struct VoBool
+{ 
     partial void ValidateInConstructor()
     {
     }

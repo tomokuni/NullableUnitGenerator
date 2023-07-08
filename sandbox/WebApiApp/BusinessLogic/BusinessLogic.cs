@@ -1,11 +1,9 @@
-﻿using WebApiApp.ValueObject.Builtins;
-using WebApiApp.ValueObject.Others;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using WebApiApp.Models;
-using NullableUnitGenerator;
+
+using NullableUnitGeneratorSample;
 
 namespace WebApiApp.BusinessLogic;
 
@@ -19,11 +17,11 @@ public class DummyVoSample
     /// 
     /// </summary>
     /// <returns></returns>
-    public static UnitOfSample GetAllValue()
+    public static UnitOfSampleModel GetAllValue()
     {
-        return new UnitOfSample
+        return new UnitOfSampleModel
         {
-            Title = "全部値あり",
+            VoTitle = "全部値あり",
             VoBool = true,
             VoByte = 1,
             VoSbyte = 2,
@@ -38,7 +36,7 @@ public class DummyVoSample
             VoDouble = 13.3,
             VoDecimal = 14.4m,
             VoString = "15",
-            VoGuid = VoGuid.NewVoGuid(),
+            VoGuid = VoGuidSample.NewVoGuidSample(),
             VoDatetime = DateTime.Now,
             VoDateonly = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
             VoTimeonly = new TimeOnly(DateTime.Now.TimeOfDay.Ticks),
@@ -52,31 +50,31 @@ public class DummyVoSample
     /// 
     /// </summary>
     /// <returns></returns>
-    public static UnitOfSample GetAllNullValue()
+    public static UnitOfSampleModel GetAllNullValue()
     {
-        return new UnitOfSample
+        return new UnitOfSampleModel
         {
-            Title = "全部NullValue",
-            VoBool = VoBool.NullValue,
-            VoByte = VoByte.NullValue,
-            VoSbyte = VoSbyte.NullValue,
-            VoChar = VoChar.NullValue,
-            VoShort = VoShort.NullValue,
-            VoUshort = VoUshort.NullValue,
-            VoInt = VoInt.NullValue,
-            VoUint = VoUint.NullValue,
-            VoLong = VoLong.NullValue,
-            VoUlong = VoUlong.NullValue,
-            VoFloat = VoFloat.NullValue,
-            VoDouble = VoDouble.NullValue,
-            VoDecimal = VoDecimal.NullValue,
-            VoString = VoString.NullValue,
-            VoGuid = VoGuid.NullValue,
-            VoDatetime = VoDatetime.NullValue,
-            VoDateonly = VoDateonly.NullValue,
-            VoTimeonly = VoTimeonly.NullValue,
-            VoTimespan = VoTimespan.NullValue,
-            VoByteArray = VoByteArray.NullValue,
+            VoTitle = "全部NullValue",
+            VoBool = VoBoolSample.NullValue,
+            VoByte = VoByteSample.NullValue,
+            VoSbyte = VoSbyteSample.NullValue,
+            VoChar = VoCharSample.NullValue,
+            VoShort = VoShortSample.NullValue,
+            VoUshort = VoUshortSample.NullValue,
+            VoInt = VoIntSample.NullValue,
+            VoUint = VoUintSample.NullValue,
+            VoLong = VoLongSample.NullValue,
+            VoUlong = VoUlongSample.NullValue,
+            VoFloat = VoFloatSample.NullValue,
+            VoDouble = VoDoubleSample.NullValue,
+            VoDecimal = VoDecimalSample.NullValue,
+            VoString = VoStringSample.NullValue,
+            VoGuid = VoGuidSample.NullValue,
+            VoDatetime = VoDatetimeSample.NullValue,
+            VoDateonly = VoDateonlySample.NullValue,
+            VoTimeonly = VoTimeonlySample.NullValue,
+            VoTimespan = VoTimespanSample.NullValue,
+            VoByteArray = VoByteArraySample.NullValue,
         };
     }
 
@@ -85,31 +83,31 @@ public class DummyVoSample
     /// 
     /// </summary>
     /// <returns></returns>
-    public static UnitOfSample GetAllUndefValue()
+    public static UnitOfSampleModel GetAllUndefValue()
     {
-        return new UnitOfSample
+        return new UnitOfSampleModel
         {
-            Title = "全部UndefValue",
-            VoBool = VoBool.UndefValue,
-            VoByte = VoByte.UndefValue,
-            VoSbyte = VoSbyte.UndefValue,
-            VoChar = VoChar.UndefValue,
-            VoShort = VoShort.UndefValue,
-            VoUshort = VoUshort.UndefValue,
-            VoInt = VoInt.UndefValue,
-            VoUint = VoUint.UndefValue,
-            VoLong = VoLong.UndefValue,
-            VoUlong = VoUlong.UndefValue,
-            VoFloat = VoFloat.UndefValue,
-            VoDouble = VoDouble.UndefValue,
-            VoDecimal = VoDecimal.UndefValue,
-            VoString = VoString.UndefValue,
-            VoGuid = VoGuid.UndefValue,
-            VoDatetime = VoDatetime.UndefValue,
-            VoDateonly = VoDateonly.UndefValue,
-            VoTimeonly = VoTimeonly.UndefValue,
-            VoTimespan = VoTimespan.UndefValue,
-            VoByteArray = VoByteArray.UndefValue,
+            VoTitle = "全部UndefValue",
+            VoBool = VoBoolSample.UndefValue,
+            VoByte = VoByteSample.UndefValue,
+            VoSbyte = VoSbyteSample.UndefValue,
+            VoChar = VoCharSample.UndefValue,
+            VoShort = VoShortSample.UndefValue,
+            VoUshort = VoUshortSample.UndefValue,
+            VoInt = VoIntSample.UndefValue,
+            VoUint = VoUintSample.UndefValue,
+            VoLong = VoLongSample.UndefValue,
+            VoUlong = VoUlongSample.UndefValue,
+            VoFloat = VoFloatSample.UndefValue,
+            VoDouble = VoDoubleSample.UndefValue,
+            VoDecimal = VoDecimalSample.UndefValue,
+            VoString = VoStringSample.UndefValue,
+            VoGuid = VoGuidSample.UndefValue,
+            VoDatetime = VoDatetimeSample.UndefValue,
+            VoDateonly = VoDateonlySample.UndefValue,
+            VoTimeonly = VoTimeonlySample.UndefValue,
+            VoTimespan = VoTimespanSample.UndefValue,
+            VoByteArray = VoByteArraySample.UndefValue,
         };
     }
 
@@ -118,31 +116,31 @@ public class DummyVoSample
     /// 
     /// </summary>
     /// <returns></returns>
-    public static UnitOfSample GetAllDefaultValueOfValueState  ()
+    public static UnitOfSampleModel GetAllDefaultValueOfValueState  ()
     {
-        return new UnitOfSample
+        return new UnitOfSampleModel
         {
-            Title = "全部DefaultValueOfValueState  ",
-            VoBool = VoBool.DefaultValueOfValueState  ,
-            VoByte = VoByte.DefaultValueOfValueState  ,
-            VoSbyte = VoSbyte.DefaultValueOfValueState  ,
-            VoChar = VoChar.DefaultValueOfValueState  ,
-            VoShort = VoShort.DefaultValueOfValueState  ,
-            VoUshort = VoUshort.DefaultValueOfValueState  ,
-            VoInt = VoInt.DefaultValueOfValueState  ,
-            VoUint = VoUint.DefaultValueOfValueState  ,
-            VoLong = VoLong.DefaultValueOfValueState  ,
-            VoUlong = VoUlong.DefaultValueOfValueState  ,
-            VoFloat = VoFloat.DefaultValueOfValueState  ,
-            VoDouble = VoDouble.DefaultValueOfValueState  ,
-            VoDecimal = VoDecimal.DefaultValueOfValueState  ,
-            VoString = VoString.DefaultValueOfValueState  ,
-            VoGuid = VoGuid.DefaultValueOfValueState  ,
-            VoDatetime = VoDatetime.DefaultValueOfValueState  ,
-            VoDateonly = VoDateonly.DefaultValueOfValueState  ,
-            VoTimeonly = VoTimeonly.DefaultValueOfValueState  ,
-            VoTimespan = VoTimespan.DefaultValueOfValueState  ,
-            VoByteArray = VoByteArray.DefaultValueOfValueState  ,
+            VoTitle = "全部DefaultValueOfValueState  ",
+            VoBool = VoBoolSample.DefaultValueOfValueState  ,
+            VoByte = VoByteSample.DefaultValueOfValueState  ,
+            VoSbyte = VoSbyteSample.DefaultValueOfValueState  ,
+            VoChar = VoCharSample.DefaultValueOfValueState  ,
+            VoShort = VoShortSample.DefaultValueOfValueState  ,
+            VoUshort = VoUshortSample.DefaultValueOfValueState  ,
+            VoInt = VoIntSample.DefaultValueOfValueState  ,
+            VoUint = VoUintSample.DefaultValueOfValueState  ,
+            VoLong = VoLongSample.DefaultValueOfValueState  ,
+            VoUlong = VoUlongSample.DefaultValueOfValueState  ,
+            VoFloat = VoFloatSample.DefaultValueOfValueState  ,
+            VoDouble = VoDoubleSample.DefaultValueOfValueState  ,
+            VoDecimal = VoDecimalSample.DefaultValueOfValueState  ,
+            VoString = VoStringSample.DefaultValueOfValueState  ,
+            VoGuid = VoGuidSample.DefaultValueOfValueState  ,
+            VoDatetime = VoDatetimeSample.DefaultValueOfValueState  ,
+            VoDateonly = VoDateonlySample.DefaultValueOfValueState  ,
+            VoTimeonly = VoTimeonlySample.DefaultValueOfValueState  ,
+            VoTimespan = VoTimespanSample.DefaultValueOfValueState  ,
+            VoByteArray = VoByteArraySample.DefaultValueOfValueState  ,
         };
     }
 
@@ -151,11 +149,11 @@ public class DummyVoSample
     /// 
     /// </summary>
     /// <returns></returns>
-    public static UnitOfSample GetAllDefalut()
+    public static UnitOfSampleModel GetAllDefalut()
     {
-        return new UnitOfSample
+        return new UnitOfSampleModel
         {
-            Title = "全部値省略(Defalut値)",
+            VoTitle = "全部値省略(Defalut値)",
         };
     }
 

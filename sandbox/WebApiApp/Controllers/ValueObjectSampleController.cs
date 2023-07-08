@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApiApp.Models;
-using WebApiApp.ValueObject.Builtins;
-using WebApiApp.ValueObject.Others;
 using NullableUnitGenerator;
 using WebApiApp.BusinessLogic;
 using System.Dynamic;
+
+using NullableUnitGeneratorSample;
 
 namespace WebApiApp.Controllers;
 
@@ -72,7 +71,7 @@ public class ValueObjectSampleController : ControllerBase
 
     /// <summary></summary>
     [HttpPost("SameReturnUnitOf")]
-    public dynamic SameReturnUnitOf(UnitOfSample uos)
+    public dynamic SameReturnUnitOf(UnitOfSampleModel uos)
     {
         return UnitHelper.ExcludeUndef(uos);
     }

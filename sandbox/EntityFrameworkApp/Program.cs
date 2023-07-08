@@ -3,6 +3,8 @@ using System.Linq;
 using EntityFrameworkApp;
 using Microsoft.EntityFrameworkCore;
 
+using NullableUnitGeneratorSample.Sandbox.EntityFrameworkApp;
+
 var options = new DbContextOptionsBuilder<SampleDbContext>()
     .UseInMemoryDatabase("SampleDb")
     .Options;

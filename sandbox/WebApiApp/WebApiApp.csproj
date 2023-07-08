@@ -15,12 +15,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ValueObject\**" />
+    <Content Remove="ValueObject\**" />
+    <EmbeddedResource Remove="ValueObject\**" />
+    <None Remove="ValueObject\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UnitGenerator\NullableUnitGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Lib\ModelsNet7\ModelsNet7.csproj" />
   </ItemGroup>
 
 </Project>
