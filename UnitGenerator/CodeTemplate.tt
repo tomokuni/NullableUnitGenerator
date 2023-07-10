@@ -352,11 +352,12 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     /// <inheritdoc/>
     public override int GetHashCode()
-        => (_state, _value).GetHashCode();
+        => EqualityComparer<UnitState>.Default.GetHashCode(_state) * -1521134295
+         + EqualityComparer<<#= TypeName #>>.Default.GetHashCode(_value);
 
     /// <inheritdoc/>
     public int GetHashCode(<#= Name #> obj)
-        => (obj._state, obj._value).GetHashCode();
+        => obj.GetHashCode();
 
 
     //
@@ -511,15 +512,12 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     /// <inheritdoc/>
     public bool Equals(<#= Name #> other)
-<# if (IsValueType) { #>
-        => _state.Equals(other._state) && _value.Equals(other._value);
-<# } else { #>
-        => _state.Equals(other._state) && (_value?.Equals(other._value) ?? other._value is null);
-<# } #>
+        => EqualityComparer<UnitState>.Default.Equals(_state, other._state)
+        && EqualityComparer<<#= TypeName #>>.Default.Equals(_value, other._value);
 
     /// <inheritdoc/>
-    public bool Equals(<#= Name #> x, <#= Name #> y)
-        => x.Equals(y);
+    public bool Equals(<#= Name #> left, <#= Name #> right)
+        => left.Equals(right);
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)
@@ -532,13 +530,13 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
 
     /// <summary>Returns a value indicating whether two instances are same value.</summary>
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator ==(in <#= Name #> x, in <#= Name #> y)
-        => x.Equals(y);
+    public static bool operator ==(in <#= Name #> left, in <#= Name #> right)
+        => left.Equals(right);
 
     /// <summary>Returns a value indicates whether two instances are different values.</summary>
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
-    public static bool operator !=(in <#= Name #> x, in <#= Name #> y)
-        => !(x == y);
+    public static bool operator !=(in <#= Name #> left, in <#= Name #> right)
+        => !(left == right);
 
 
     //

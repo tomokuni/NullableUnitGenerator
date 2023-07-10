@@ -376,13 +376,14 @@ if (IsBuiltinNumericType) {
 
     /// <inheritdoc/>
     public override int GetHashCode()
-        => (_state, _value).GetHashCode();
-
-    /// <inheritdoc/>
-    public int GetHashCode(");
+        => EqualityComparer<UnitState>.Default.GetHashCode(_state) * -1521134295
+         + EqualityComparer<");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(">.Default.GetHashCode(_value);\r\n\r\n    /// <inheritdoc/>\r\n    public int GetHashCo" +
+                    "de(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" obj)
-        => (obj._state, obj._value).GetHashCode();
+        => obj.GetHashCode();
 
 
     //
@@ -554,19 +555,16 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" other)\r\n");
- if (IsValueType) { 
-            this.Write("        => _state.Equals(other._state) && _value.Equals(other._value);\r\n");
- } else { 
-            this.Write("        => _state.Equals(other._state) && (_value?.Equals(other._value) ?? other." +
-                    "_value is null);\r\n");
- } 
-            this.Write("\r\n    /// <inheritdoc/>\r\n    public bool Equals(");
+            this.Write(" other)\r\n        => EqualityComparer<UnitState>.Default.Equals(_state, other._sta" +
+                    "te)\r\n        && EqualityComparer<");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(">.Default.Equals(_value, other._value);\r\n\r\n    /// <inheritdoc/>\r\n    public bool" +
+                    " Equals(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" x, ");
+            this.Write(" left, ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" y)\r\n        => x.Equals(y);\r\n\r\n    /// <inheritdoc/>\r\n    public override bool E" +
-                    "quals(object? obj)\r\n        => obj is ");
+            this.Write(" right)\r\n        => left.Equals(right);\r\n\r\n    /// <inheritdoc/>\r\n    public over" +
+                    "ride bool Equals(object? obj)\r\n        => obj is ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(@" uo && Equals(uo);
 
@@ -579,18 +577,19 @@ if (IsBuiltinNumericType) {
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
     public static bool operator ==(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" x, in ");
+            this.Write(" left, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@" y)
-        => x.Equals(y);
+            this.Write(@" right)
+        => left.Equals(right);
 
     /// <summary>Returns a value indicates whether two instances are different values.</summary>
     /// <returns>true if other has the same value as this instance; otherwise, false.</returns>
     public static bool operator !=(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" x, in ");
+            this.Write(" left, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" y)\r\n        => !(x == y);\r\n\r\n\r\n    //\r\n    // CompareTo, IComparable<");
+            this.Write(" right)\r\n        => !(left == right);\r\n\r\n\r\n    //\r\n    // CompareTo, IComparable<" +
+                    "");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(">    // UnitGenerateOption.IComparable\r\n    //\r\n");
  if (HasFlag(UnitGenerateOption.IComparable)) { 
