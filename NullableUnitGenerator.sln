@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sandbox", "Sandbox", "{34EB4113-923D-4855-979C-A0467461B75C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Sandbox", "{34EB4113-923D-4855-979C-A0467461B75C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Sandbox\Lib", "{371F54FD-4D4C-4D9C-AAE9-2102125E3173}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lib", "Sandbox\Lib", "{371F54FD-4D4C-4D9C-AAE9-2102125E3173}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelsNet6", "Sandbox\Lib\ModelsNet6\ModelsNet6.csproj", "{7740BBBD-4FFA-4291-833A-D25A604E44C5}"
 EndProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkApp", "Sandb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiApp", "Sandbox\WebApiApp\WebApiApp.csproj", "{25224A24-5FD5-410D-B4BC-31DAA5098673}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{187FBF64-D2AA-444D-AFB1-CE999BC6AD34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests", "{187FBF64-D2AA-444D-AFB1-CE999BC6AD34}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitGenerator.Tests", "Tests\UnitGenerator.Tests\UnitGenerator.Tests.csproj", "{5DA06D43-A023-4464-B856-8BB42E8E4A05}"
 EndProject
