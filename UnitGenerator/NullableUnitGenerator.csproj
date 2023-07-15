@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.2.89</Version>
-
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>library</OutputType>
-    <LangVersion>10</LangVersion>
+    <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
     <Deterministic>true</Deterministic>
     <PathMap>$(MSBuildProjectDirectory)=.</PathMap>
@@ -22,23 +20,20 @@
 
     <!-- NuGet -->
     <PackageId>NullableUnitGenerator</PackageId>
-    <Description>Source Generator to create ValueObject that support Null and Empty (Undefind) values.  Forked from UnitGenerator.</Description>
-    <PackageReleaseNotes>beta</PackageReleaseNotes>
-    <PackageVersion>$(Version)</PackageVersion>
-    <Company></Company>
+    <Description>Source Generator to create ValueObject that support Empty (Undefind) and Null values.  Forked from UnitGenerator.</Description>
     <Authors>SEKIYA.T</Authors>
+    <PackageReleaseNotes>beta</PackageReleaseNotes>
+    <Company></Company>
     <Copyright>SEKIYA.T</Copyright>
-    <PackageTags>sourcegenerator;valueobject;nullable;undefined;empty</PackageTags>
+    <PackageTags>sourcegenerator;valueobject;emptible;empty;undefined;nullable;</PackageTags>
     <PackageProjectUrl>https://github.com/tomokuni/NullableUnitGenerator</PackageProjectUrl>
     <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IsPackable>true</IsPackable>
     <Title>NullableUnitGenerator</Title>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackAsTool>False</PackAsTool>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <FileVersion>$(Version)</FileVersion>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -47,6 +42,9 @@
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
+    <Version />
+    <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
+    <FileVersion>$(VersionPrefix)</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -108,6 +106,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="RelaxVersioner" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   
   <ItemGroup>
