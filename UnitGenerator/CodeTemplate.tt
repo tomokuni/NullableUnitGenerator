@@ -808,7 +808,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     //
 
     /// <summary>System.ComponentModel.TypeConverter</summary>
-    private class <#= Name #>TypeConverter : System.ComponentModel.TypeConverter
+    public class <#= Name #>TypeConverter : System.ComponentModel.TypeConverter
     {
         private static readonly Type WrapperType = typeof(<#= Name #>);
         private static readonly Type ValueType = typeof(<#= TypeName #>);
@@ -873,7 +873,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     //
 
     /// <summary>JsonConverter</summary>
-    private class <#= Name #>JsonConverter : JsonConverter<<#= Name #>>
+    public class <#= Name #>JsonConverter : JsonConverter<<#= Name #>>
     {
         /// <summary>HandleNull</summary>
         public override bool HandleNull
