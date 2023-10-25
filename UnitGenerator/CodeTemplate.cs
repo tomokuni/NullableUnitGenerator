@@ -945,7 +945,7 @@ if (IsBuiltinNumericType) {
             this.Write("        // No option specified\r\n");
  } 
             this.Write("\r\n\r\n    //\r\n    // TypeConverter\r\n    //\r\n\r\n    /// <summary>System.ComponentMode" +
-                    "l.TypeConverter</summary>\r\n    private class ");
+                    "l.TypeConverter</summary>\r\n    public class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("TypeConverter : System.ComponentModel.TypeConverter\r\n    {\r\n        private stati" +
                     "c readonly Type WrapperType = typeof(");
@@ -1016,7 +1016,7 @@ if (IsBuiltinNumericType) {
 ");
  if (HasFlag(UnitGenerateOption.JsonConverter)) { 
             this.Write("\r\n    //\r\n    // UnitGenerateOption.JsonConverter\r\n    //\r\n\r\n    /// <summary>Jso" +
-                    "nConverter</summary>\r\n    private class ");
+                    "nConverter</summary>\r\n    public class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("JsonConverter : JsonConverter<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
