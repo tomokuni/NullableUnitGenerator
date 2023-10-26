@@ -312,8 +312,11 @@ if (IsBuiltinNumericType) {
                     "sNull is true<br/>\r\n    /// <b>throw InvalidOperationException(\"Value is Undef.\"" +
                     ")</b> : if IsUndef is true\r\n    /// </returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    publ" +
-                    "ic ");
+            this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"RawValue\" />\r\n    p" +
+                    "ublic ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" RawValue\r\n        => GetRawValue();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    " +
+                    "public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" AsPrimitive()\r\n        => GetOrThrow();\r\n\r\n    /// <summary>return raw value</su" +
                     "mmary>\r\n    /// <returns>inner raw value</returns>\r\n    public ");
@@ -326,7 +329,7 @@ if (IsBuiltinNumericType) {
     public object GetRawValueAsObject()
         => _value;
 
-    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <summary>return value if HasValue is Value; otherwise, defaultValue</summary>
     /// <returns>
     /// <b>value</b> : if assigned and not null<br/>
     /// <b>defaultValue</b> : otherwise
@@ -337,9 +340,7 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" defaultValue)\r\n        => HasValue ? _value : defaultValue;\r\n\r\n");
  if (IsValueType) { 
-            this.Write("    /// <summary>return value if HasValue is true; otherwise, defaultValue</summa" +
-                    "ry>\r\n    /// <returns>\r\n    /// <b>value</b> : if assigned and not null<br/>\r\n  " +
-                    "  /// <b>defaultValue</b> : otherwise\r\n    /// </returns>\r\n    public ");
+            this.Write("    /// <inheritdoc cref=\"GetOr\" />\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(" GetOr(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
@@ -354,6 +355,26 @@ if (IsBuiltinNumericType) {
             (UnitState.Null, _) => throw new InvalidOperationException($""Value is {UnitState.Null}.""),
             _ => throw new InvalidOperationException($""Value is {UnitState.Undef}.""),
         };
+        
+    /// <summary>return value if HasValue is Value; otherwise, null</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>null</b> : otherwise
+    /// </returns>
+    public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(@" GetOrNull()
+        => HasValue ? _value : null;
+        
+    /// <summary>return value if HasValue is Value; otherwise, null</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>null</b> : otherwise
+    /// </returns>
+    public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(@" GetOrDefault()
+        => HasValue ? _value : default;
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name=""value"">value</param>

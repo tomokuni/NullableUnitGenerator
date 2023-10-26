@@ -294,6 +294,10 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     public <#= TypeName #> Value
         => GetOrThrow();
 
+    /// <inheritdoc cref="RawValue" />
+    public <#= TypeName #> RawValue
+        => GetRawValue();
+
     /// <inheritdoc cref="Value" />
     public <#= TypeName #> AsPrimitive()
         => GetOrThrow();
@@ -308,7 +312,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     public object GetRawValueAsObject()
         => _value;
 
-    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
+    /// <summary>return value if HasValue is Value; otherwise, defaultValue</summary>
     /// <returns>
     /// <b>value</b> : if assigned and not null<br/>
     /// <b>defaultValue</b> : otherwise
@@ -317,11 +321,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         => HasValue ? _value : defaultValue;
 
 <# if (IsValueType) { #>
-    /// <summary>return value if HasValue is true; otherwise, defaultValue</summary>
-    /// <returns>
-    /// <b>value</b> : if assigned and not null<br/>
-    /// <b>defaultValue</b> : otherwise
-    /// </returns>
+    /// <inheritdoc cref="GetOr" />
     public <#= TypeNameNullable #> GetOr(in <#= TypeNameNullable #> defaultValue)
         => HasValue ? _value : defaultValue;
 <# } #>
@@ -334,6 +334,22 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             (UnitState.Null, _) => throw new InvalidOperationException($"Value is {UnitState.Null}."),
             _ => throw new InvalidOperationException($"Value is {UnitState.Undef}."),
         };
+        
+    /// <summary>return value if HasValue is Value; otherwise, null</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>null</b> : otherwise
+    /// </returns>
+    public <#= TypeNameNullable #> GetOrNull()
+        => HasValue ? _value : null;
+        
+    /// <summary>return value if HasValue is Value; otherwise, null</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>null</b> : otherwise
+    /// </returns>
+    public <#= TypeNameNullable #> GetOrDefault()
+        => HasValue ? _value : default;
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name="value">value</param>
