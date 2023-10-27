@@ -292,25 +292,42 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     /// <b>throw InvalidOperationException("Value is Undef.")</b> : if IsUndef is true
     /// </returns>
     public <#= TypeName #> Value
-        => GetOrThrow();
-
-    /// <inheritdoc cref="RawValue" />
-    public <#= TypeName #> RawValue
-        => GetRawValue();
-
+        => (_state, _value) switch
+        {
+            (UnitState.Value, _) => _value,
+            (UnitState.Null, _) => throw new InvalidOperationException($"Value is {UnitState.Null}."),
+            _ => throw new InvalidOperationException($"Value is {UnitState.Undef}."),
+        };
+        
+        
     /// <inheritdoc cref="Value" />
-    public <#= TypeName #> AsPrimitive()
-        => GetOrThrow();
+    public <#= TypeName #> GetOrThrow()
+        => Value;
 
-    /// <summary>return raw value</summary>
-    /// <returns>inner raw value</returns>
-    public <#= TypeName #> GetRawValue()
-        => _value;
-
-    /// <summary>return raw value</summary>
-    /// <returns>inner raw value</returns>
-    public object GetRawValueAsObject()
-        => _value;
+    /// <summary>return value if HasValue is Value; otherwise, null</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>null</b> : otherwise
+    /// </returns>
+    public <#= TypeNameNullable #> GetOrNull()
+        => HasValue ? _value : null;
+        
+    /// <summary>return value if HasValue is Value; otherwise, default</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>default</b> : otherwise
+    /// </returns>
+    public <#= TypeName #> GetOrDefault()
+        => HasValue ? _value : default;
+                
+    /// <summary>return value if HasValue is Value; otherwise, default</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>default</b> : otherwise
+    /// </returns>
+    public object GetOrDefaultAsObject()
+        => HasValue ? _value : default;
+        
 
     /// <summary>return value if HasValue is Value; otherwise, defaultValue</summary>
     /// <returns>
@@ -326,30 +343,6 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         => HasValue ? _value : defaultValue;
 <# } #>
 
-    /// <inheritdoc cref="Value" />
-    public <#= TypeName #> GetOrThrow()
-        => (_state, _value) switch
-        {
-            (UnitState.Value, _) => _value,
-            (UnitState.Null, _) => throw new InvalidOperationException($"Value is {UnitState.Null}."),
-            _ => throw new InvalidOperationException($"Value is {UnitState.Undef}."),
-        };
-        
-    /// <summary>return value if HasValue is Value; otherwise, null</summary>
-    /// <returns>
-    /// <b>value</b> : if assigned and not null<br/>
-    /// <b>null</b> : otherwise
-    /// </returns>
-    public <#= TypeNameNullable #> GetOrNull()
-        => HasValue ? _value : null;
-        
-    /// <summary>return value if HasValue is Value; otherwise, null</summary>
-    /// <returns>
-    /// <b>value</b> : if assigned and not null<br/>
-    /// <b>null</b> : otherwise
-    /// </returns>
-    public <#= TypeNameNullable #> GetOrDefault()
-        => HasValue ? _value : default;
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name="value">value</param>
@@ -360,6 +353,15 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         value = HasValue ? _value : defaultValue;
         return HasValue;
     }
+    
+<# if (IsValueType) { #>
+    /// <inheritdoc cref="TryGet" />
+    public bool TryGet(out <#= TypeNameNullable #> value, in <#= TypeNameNullable #> defaultValue = null)
+    {
+        value = (<#= TypeNameNullable #>)(HasValue ? _value : defaultValue);
+        return HasValue;
+    }
+<# } #>
 
 
     //
@@ -412,7 +414,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
-        return UnitValidate.ValidateObject(GetRawValue(), attr, validationContext);
+        return UnitValidate.ValidateObject(GetOrDefault(), attr, validationContext);
     }
 
 <# if (TypeName == "Guid" || TypeName == "System.Guid") { #>

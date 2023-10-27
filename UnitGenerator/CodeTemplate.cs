@@ -312,22 +312,44 @@ if (IsBuiltinNumericType) {
                     "sNull is true<br/>\r\n    /// <b>throw InvalidOperationException(\"Value is Undef.\"" +
                     ")</b> : if IsUndef is true\r\n    /// </returns>\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" Value\r\n        => GetOrThrow();\r\n\r\n    /// <inheritdoc cref=\"RawValue\" />\r\n    p" +
-                    "ublic ");
+            this.Write(@" Value
+        => (_state, _value) switch
+        {
+            (UnitState.Value, _) => _value,
+            (UnitState.Null, _) => throw new InvalidOperationException($""Value is {UnitState.Null}.""),
+            _ => throw new InvalidOperationException($""Value is {UnitState.Undef}.""),
+        };
+        
+        
+    /// <inheritdoc cref=""Value"" />
+    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" RawValue\r\n        => GetRawValue();\r\n\r\n    /// <inheritdoc cref=\"Value\" />\r\n    " +
-                    "public ");
+            this.Write(" GetOrThrow()\r\n        => Value;\r\n\r\n    /// <summary>return value if HasValue is " +
+                    "Value; otherwise, null</summary>\r\n    /// <returns>\r\n    /// <b>value</b> : if a" +
+                    "ssigned and not null<br/>\r\n    /// <b>null</b> : otherwise\r\n    /// </returns>\r\n" +
+                    "    public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(@" GetOrNull()
+        => HasValue ? _value : null;
+        
+    /// <summary>return value if HasValue is Value; otherwise, default</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>default</b> : otherwise
+    /// </returns>
+    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" AsPrimitive()\r\n        => GetOrThrow();\r\n\r\n    /// <summary>return raw value</su" +
-                    "mmary>\r\n    /// <returns>inner raw value</returns>\r\n    public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(@" GetRawValue()
-        => _value;
-
-    /// <summary>return raw value</summary>
-    /// <returns>inner raw value</returns>
-    public object GetRawValueAsObject()
-        => _value;
+            this.Write(@" GetOrDefault()
+        => HasValue ? _value : default;
+                
+    /// <summary>return value if HasValue is Value; otherwise, default</summary>
+    /// <returns>
+    /// <b>value</b> : if assigned and not null<br/>
+    /// <b>default</b> : otherwise
+    /// </returns>
+    public object GetOrDefaultAsObject()
+        => HasValue ? _value : default;
+        
 
     /// <summary>return value if HasValue is Value; otherwise, defaultValue</summary>
     /// <returns>
@@ -346,35 +368,7 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(" defaultValue)\r\n        => HasValue ? _value : defaultValue;\r\n");
  } 
-            this.Write("\r\n    /// <inheritdoc cref=\"Value\" />\r\n    public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(@" GetOrThrow()
-        => (_state, _value) switch
-        {
-            (UnitState.Value, _) => _value,
-            (UnitState.Null, _) => throw new InvalidOperationException($""Value is {UnitState.Null}.""),
-            _ => throw new InvalidOperationException($""Value is {UnitState.Undef}.""),
-        };
-        
-    /// <summary>return value if HasValue is Value; otherwise, null</summary>
-    /// <returns>
-    /// <b>value</b> : if assigned and not null<br/>
-    /// <b>null</b> : otherwise
-    /// </returns>
-    public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
-            this.Write(@" GetOrNull()
-        => HasValue ? _value : null;
-        
-    /// <summary>return value if HasValue is Value; otherwise, null</summary>
-    /// <returns>
-    /// <b>value</b> : if assigned and not null<br/>
-    /// <b>null</b> : otherwise
-    /// </returns>
-    public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
-            this.Write(@" GetOrDefault()
-        => HasValue ? _value : default;
+            this.Write(@"
 
     /// <summary>return true and out parameter value if HasValue is true; otherwise, false.</summary>
     /// <param name=""value"">value</param>
@@ -384,21 +378,20 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" value, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(@" defaultValue = default)
-    {
-        value = HasValue ? _value : defaultValue;
-        return HasValue;
-    }
-
-
-    //
-    // GetHashCode
-    //
-
-    /// <inheritdoc/>
-    public override int GetHashCode()
-        => EqualityComparer<UnitState>.Default.GetHashCode(_state) * -1521134295
-         + EqualityComparer<");
+            this.Write(" defaultValue = default)\r\n    {\r\n        value = HasValue ? _value : defaultValue" +
+                    ";\r\n        return HasValue;\r\n    }\r\n    \r\n");
+ if (IsValueType) { 
+            this.Write("    /// <inheritdoc cref=\"TryGet\" />\r\n    public bool TryGet(out ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(" value, in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(" defaultValue = null)\r\n    {\r\n        value = (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
+            this.Write(")(HasValue ? _value : defaultValue);\r\n        return HasValue;\r\n    }\r\n");
+ } 
+            this.Write("\r\n\r\n    //\r\n    // GetHashCode\r\n    //\r\n\r\n    /// <inheritdoc/>\r\n    public overr" +
+                    "ide int GetHashCode()\r\n        => EqualityComparer<UnitState>.Default.GetHashCod" +
+                    "e(_state) * -1521134295\r\n         + EqualityComparer<");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(">.Default.GetHashCode(_value);\r\n\r\n    /// <inheritdoc/>\r\n    public int GetHashCo" +
                     "de(");
@@ -448,7 +441,7 @@ if (IsBuiltinNumericType) {
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
-        return UnitValidate.ValidateObject(GetRawValue(), attr, validationContext);
+        return UnitValidate.ValidateObject(GetOrDefault(), attr, validationContext);
     }
 
 ");

@@ -18,7 +18,7 @@ public readonly partial struct Hp
 {
     void Foo()
     {
-        _ = this.AsPrimitive();
+        _ = this.Value;
         _ = this.ToString();
 
         _ = FooId.NewFooId();
@@ -45,7 +45,7 @@ public readonly partial struct UserId2
 {
     public void Foo()
     {
-        _ = AsPrimitive();
+        _ = Value;
     }
 }
 

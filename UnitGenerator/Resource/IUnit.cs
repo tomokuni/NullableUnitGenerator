@@ -26,9 +26,8 @@ public interface IUnitOf
     /// <summary>return value state.</summary>
     public UnitState State { get; }
 
-    /// <summary>return raw value</summary>
-    /// <returns>inner raw value</returns>
-    public object GetRawValueAsObject();
+    /// <summary>return value if HasValue is Value; otherwise, default</summary>
+    public object GetOrDefaultAsObject();
 
 
 #if NET7_0_OR_GREATER
@@ -50,10 +49,8 @@ public interface IUnitOf<T, U> : IUnitOf
     /// <summary>return value if HasValue is true; otherwise, throw InvalidOperationException()</summary>
     public U Value { get; }
 
-    /// <summary>return raw value</summary>
-    /// <returns>inner raw value</returns>
-    public U GetRawValue();
-
+    /// <summary>return value if HasValue is Value; otherwise, default</summary>
+    public U GetOrDefault();
 
 #if NET7_0_OR_GREATER
     //

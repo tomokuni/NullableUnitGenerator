@@ -288,7 +288,7 @@ public class UnitOfRangeAttribute : RangeAttribute, IUnitValidationAttribute
     /// <returns><c>true</c> means the <paramref name="value"/> is valid</returns>
     /// <exception cref="InvalidOperationException"> is thrown if the current attribute is malformed.</exception>
     public override bool IsValid(object? value)
-        => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
+        => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetOrDefaultAsObject()));
 }
 
 
@@ -314,7 +314,7 @@ public class UnitOfStringLengthAttribute : StringLengthAttribute, IUnitValidatio
     /// <returns><c>true</c> means the <paramref name="value"/> is valid.</returns>
     /// <exception cref="InvalidOperationException"> is thrown if the current attribute is malformed.</exception>
     public override bool IsValid(object? value)
-        => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetRawValueAsObject()));
+        => (value is IUnitOf v) && (!v.HasValue || v.HasValue && base.IsValid(v.GetOrDefaultAsObject()));
 }
 
 
