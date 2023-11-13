@@ -338,7 +338,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
         => HasValue ? _value : defaultValue;
 
 <# if (IsValueType) { #>
-    /// <inheritdoc cref="GetOr" />
+    /// <inheritdoc cref="GetOr(in <#= TypeName #>)" />
     public <#= TypeNameNullable #> GetOr(in <#= TypeNameNullable #> defaultValue)
         => HasValue ? _value : defaultValue;
 <# } #>
@@ -355,7 +355,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     }
     
 <# if (IsValueType) { #>
-    /// <inheritdoc cref="TryGet" />
+    /// <inheritdoc cref="TryGet(out <#= TypeName #> value, in <#= TypeName #>)" />
     public bool TryGet(out <#= TypeNameNullable #> value, in <#= TypeNameNullable #> defaultValue = null)
     {
         value = (<#= TypeNameNullable #>)(HasValue ? _value : defaultValue);

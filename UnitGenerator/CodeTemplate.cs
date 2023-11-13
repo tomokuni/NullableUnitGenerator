@@ -362,7 +362,9 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(" defaultValue)\r\n        => HasValue ? _value : defaultValue;\r\n\r\n");
  if (IsValueType) { 
-            this.Write("    /// <inheritdoc cref=\"GetOr\" />\r\n    public ");
+            this.Write("    /// <inheritdoc cref=\"GetOr(in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(")\" />\r\n    public ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(" GetOr(in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
@@ -381,7 +383,11 @@ if (IsBuiltinNumericType) {
             this.Write(" defaultValue = default)\r\n    {\r\n        value = HasValue ? _value : defaultValue" +
                     ";\r\n        return HasValue;\r\n    }\r\n    \r\n");
  if (IsValueType) { 
-            this.Write("    /// <inheritdoc cref=\"TryGet\" />\r\n    public bool TryGet(out ");
+            this.Write("    /// <inheritdoc cref=\"TryGet(out ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(" value, in ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
+            this.Write(")\" />\r\n    public bool TryGet(out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
             this.Write(" value, in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
