@@ -355,7 +355,7 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     }
     
 <# if (IsValueType) { #>
-    /// <inheritdoc cref="TryGet(out <#= TypeName #> value, in <#= TypeName #>)" />
+    /// <inheritdoc cref="TryGet(out <#= TypeName #>, in <#= TypeName #>)" />
     public bool TryGet(out <#= TypeNameNullable #> value, in <#= TypeNameNullable #> defaultValue = null)
     {
         value = (<#= TypeNameNullable #>)(HasValue ? _value : defaultValue);

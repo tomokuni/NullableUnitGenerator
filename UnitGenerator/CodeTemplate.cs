@@ -385,7 +385,7 @@ if (IsBuiltinNumericType) {
  if (IsValueType) { 
             this.Write("    /// <inheritdoc cref=\"TryGet(out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
-            this.Write(" value, in ");
+            this.Write(", in ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(")\" />\r\n    public bool TryGet(out ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeNameNullable));
