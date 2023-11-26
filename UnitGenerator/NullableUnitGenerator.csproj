@@ -20,7 +20,7 @@
 
     <!-- NuGet -->
     <PackageId>NullableUnitGenerator</PackageId>
-    <Description>Source Generator to create ValueObject that support Empty (Undefind) and Null values.  Forked from UnitGenerator.</Description>
+    <Description>Source Generator to create ValueObject that support Undefind (Empty) and Null values.  Forked from UnitGenerator.</Description>
     <Authors>SEKIYA.T</Authors>
     <PackageReleaseNotes>beta</PackageReleaseNotes>
     <Company></Company>
