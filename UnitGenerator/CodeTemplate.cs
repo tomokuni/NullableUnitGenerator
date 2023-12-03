@@ -77,7 +77,7 @@ using System.Reflection;
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write("TypeConverter))]\r\npublic readonly partial struct ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(" : IUnitOf<");
+            this.Write(" : IUnitOf, IUnitOf<");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(", ");
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
@@ -214,8 +214,16 @@ if (IsBuiltinNumericType) {
             this.Write(this.ToStringHelper.ToStringWithCulture(TypeName));
             this.Write(".MinValue;\r\n\r\n");
  } 
-            this.Write("\r\n    //\r\n    // static property\r\n    //\r\n\r\n    /// <summary>Undefined value inst" +
-                    "ance.</summary>\r\n    public static ");
+            this.Write("\r\n    //\r\n    // static property\r\n    //\r\n\r\n    /// <summary>UnitOfAttribute inst" +
+                    "ance.</summary>\r\n    public static UnitOfAttribute UnitOfAttribute { get; }\r\n   " +
+                    "     = typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(").GetCustomAttributes<UnitOfAttribute>().SingleOrDefault();\r\n\r\n    /// <summary>U" +
+                    "nitOfOasAttribute instance.</summary>\r\n    public static UnitOfOasAttribute Unit" +
+                    "OfOasAttribute { get; }\r\n        = typeof(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
+            this.Write(").GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();\r\n        \r\n    ///" +
+                    " <summary>Undefined value instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" UndefValue { get; } = new(UnitState.Undef, default);\r\n\r\n    /// <summary>Null va" +
                     "lue instance.</summary>\r\n    public static ");

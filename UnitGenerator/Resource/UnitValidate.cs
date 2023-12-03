@@ -37,7 +37,7 @@ public static class UnitValidate
             {
                 "phone" => ValidatePhoneNumber(value, validationContext),
                 "email" => ValidateEmailAddress(value, validationContext),
-                "uri" => ValidateUrl(value, validationContext),
+                "url" => ValidateUrl(value, validationContext),
                 _ => ValidationResult.Success
             },
             attribute.Maximum   is not null ? ValidateRange(value, value.GetType(), attribute.Minimum, attribute.Maximum, validationContext) : ValidationResult.Success,

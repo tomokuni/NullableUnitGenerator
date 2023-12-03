@@ -237,9 +237,7 @@ public static class NullableUnitGeneratorExtensions
     /// <param name="timespan">source TimeSpan<br/>変換元の TimeSpan</param>
     /// <returns>Converted duration string<br/>変換後の duration 文字列</returns>
     public static string ToIsoString(this TimeSpan timespan)
-    {
-        return XmlConvert.ToString(timespan);
-    }
+        => XmlConvert.ToString(timespan);
 
 }
 

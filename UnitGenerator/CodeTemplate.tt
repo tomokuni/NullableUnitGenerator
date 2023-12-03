@@ -51,7 +51,7 @@ namespace <#= Namespace #>;
 [JsonConverter(typeof(<#= Name #>JsonConverter))]
 <# } #>
 [System.ComponentModel.TypeConverter(typeof(<#= Name #>TypeConverter))]
-public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOption.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>, IValidatableObject
+public readonly partial struct <#= Name #> : IUnitOf, IUnitOf<<#= Name #>, <#= TypeName #>>, IEquatable<<#= Name #>>, IEqualityComparer<<#= Name #>> <#= HasFlag(UnitGenerateOption.IComparable) && HasCompareToMethod ? $", IComparable<{Name}>" : "" #>, IValidatableObject
 {
     // Namespace : <#= Namespace ?? "(null)" #>
     // Name      : <#= Name #>
@@ -178,6 +178,14 @@ public readonly partial struct <#= Name #> : IUnitOf<<#= Name #>, <#= TypeName #
     // static property
     //
 
+    /// <summary>UnitOfAttribute instance.</summary>
+    public static UnitOfAttribute UnitOfAttribute { get; }
+        = typeof(<#= Name #>).GetCustomAttributes<UnitOfAttribute>().SingleOrDefault();
+
+    /// <summary>UnitOfOasAttribute instance.</summary>
+    public static UnitOfOasAttribute UnitOfOasAttribute { get; }
+        = typeof(<#= Name #>).GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
+        
     /// <summary>Undefined value instance.</summary>
     public static <#= Name #> UndefValue { get; } = new(UnitState.Undef, default);
 

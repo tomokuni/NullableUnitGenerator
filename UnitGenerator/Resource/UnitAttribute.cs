@@ -78,61 +78,121 @@ public partial class UnitOfAttribute<T> : UnitOfAttribute
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
 public class UnitOfOasAttribute : Attribute
 {
-    /// <summary>For OpenApiSchema.Type</summary>
-    public string Type { get; }
+    /// <summary>for OpenApiSchema.Type</summary>
+    public string Type { get; protected set; }
 
-    /// <summary>For OpenApiSchema.Format</summary>
-    public string? Format { get; }
+    /// <summary>for OpenApiSchema.Format</summary>
+    public string? Format { get; protected set; }
 
-    /// <summary>For OpenApiSchema.Title</summary>
-    public string? Title { get; }
+    /// <summary>for OpenApiSchema.Title</summary>
+    public string? Title { get; protected set; }
 
-    /// <summary>For OpenApiSchema.Minimum</summary>
-    public string? Minimum { get; }
-
-    /// <summary>For OpenApiSchema.Maximum</summary>
-    public string? Maximum { get; }
-
-    /// <summary>For OpenApiSchema.MinLength</summary>
-    public int? MinLength { get; }
-
-    /// <summary>For OpenApiSchema.MaxLength</summary>
-    public int? MaxLength { get; }
-
-    /// <summary>For OpenApiSchema.Pattern</summary>
-    public string? Pattern { get; }
-    
-    /// <summary>For OpenApiSchema.Example</summary>
-    public object? Example { get; }
+    /// <summary>for OpenApiSchema.Summary</summary>
+    public string? Summary { get; protected set; }
 
     /// <summary>For OpenApiSchema.Description</summary>
-    public string? Description { get; }
+    public string? Description { get; protected set; }
 
-    /// <summary>For OpenApiSchema.Nullable</summary>
-    public bool Nullable { get; }
+    /// <summary>for OpenApiSchema.Example</summary>
+    public object? Example { get; protected set; }
 
-    /// <summary>Constructor arguments</summary>
-    public string? ConstructorArguments { get; }
+    /// <summary>for OpenApiSchema.Maximum</summary>
+    public decimal? Maximum { get; protected set; }
 
-    /// <summary>Argument type of the constructor</summary>
-    public string ArgType { get; }
+    /// <summary>for OpenApiSchema.ExclusiveMaximum</summary>
+    public bool? ExclusiveMaximum { get; protected set; }
 
+    /// <summary>for OpenApiSchema.Minimum</summary>
+    public decimal? Minimum { get; protected set; }
+
+    /// <summary>for OpenApiSchema.ExclusiveMinimum</summary>
+    public bool? ExclusiveMinimum { get; protected set; }
+
+    /// <summary>for OpenApiSchema.MaxLength</summary>
+    public int? MaxLength { get; protected set; }
+
+    /// <summary>for OpenApiSchema.MinLength</summary>
+    public int? MinLength { get; protected set; }
+
+    /// <summary>for OpenApiSchema.Pattern</summary>
+    public string? Pattern { get; protected set; }
+
+    /// <summary>for OpenApiSchema.Nullable</summary>
+    public bool Nullable { get; protected set; }
+
+
+    /// <summary>Pattern for basic format of date. (yyyyMMdd)</summary>
+    public const string PatternDateBasic = @"\d{8}";
+    /// <summary>Pattern for extended format of date. (YYYY-MM-DD)</summary>
+    public const string PatternDateExtended = @"\d{4}-[01]\d-[03]\d";
+    /// <summary>Pattern for lax format of date.</summary>
+    public const string PatternDateLax = @"\d{4}[\-\./][01]?\d[\-\./][03]?\d";
+    /// <summary>Pattern of date. (basic or extended or lax format.)</summary>
+    public const string PatternDate = @$"{PatternDateBasic}|{PatternDateExtended}|{PatternDateLax}";
+
+    /// <summary>Pattern for basic format of time without T. (hhmmss[.sss][Z|+hhmm])</summary>
+    public const string PatternTimeBasicWithoutT = @"\d{6}(\.\d+)?(Z|[\+-]\d{4})?";
+    /// <summary>Pattern for extended format of time without T. (hh:mm:ss[.sss][Z|+hh:mm])</summary>
+    public const string PatternTimeExtendedWithoutT = @"\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[\+-]\d{2}:d{2})?";
+    /// <summary>Pattern for lax format of time without T.</summary>
+    public const string PatternTimeLaxWithoutT = @"\d?\d:\d?\d:\d?\d(\.\d+)?(Z|[\+-]\d?\d:\d?\d)?";
+    /// <summary>Pattern for time without T. (basic or extended or lax format.)</summary>
+    public const string PatternTimeWithoutT = @$"{PatternTimeBasicWithoutT}|{PatternTimeExtendedWithoutT}|{PatternTimeLaxWithoutT}";
+    /// <summary>Pattern of time. (basic or extended or lax format.)</summary>
+    public const string PatternTime = @$"[T]?{PatternTimeWithoutT}";
+
+    /// <summary>Pattern for basic format of datetime. (yyyyMMddThhmmss[.sss][Z|+hhmm])</summary>
+    public const string PatternDateTimeBasic = @$"{PatternDateBasic}T{PatternTimeBasicWithoutT}";
+    /// <summary>Pattern for extended format of datetime. ((YYYY-MM-DDThh:mm:ss[.sss][Z|+hh:mm])</summary>
+    public const string PatternDateTimeExtended = @$"{PatternDateExtended}T{PatternTimeExtendedWithoutT}";
+    /// <summary>Pattern for lax format of datetime.</summary>
+    public const string PatternDateTimeLax = @$"{PatternDateLax}[T ]{PatternTimeLaxWithoutT}";  // lax format.
+    /// <summary>Pattern of datetime. (basic or extended or lax format.)</summary>
+    public const string PatternDateTime = @$"{PatternDateTimeBasic}{PatternDateTimeExtended}{PatternDateTimeLax}";
+
+    /// <summary>Pattern for japanese mobile phone format.<br/> 11-digit number starting from 0. <br/> (09099999999|090-9999-9999)</summary>
+    public const string PatternPhoneMobile = @"0\d0[(-]? (\d{1}[)-]\d{7}|\d{2}[)-]\d{6}|\d{3}[)-]\d{5}|\d{4}[)-]\d{4}|\d{5}[)-]\d{3}|\d{6}[)-]\d{2}|\d{7}[)-]\d{1})";
+    /// <summary>Pattern for japanese fix phone format.<br/> 10-digit number starting from 0. The area code is 1 to 5 digits, and the area code and local area code make up the 5-digit number.<br/> (0999999999|09(9999)9999|099-999-9999|0999(99)9999|09999-9-9999|099999()9999|099999--9999|099999-9999)</summary>
+    public const string PatternPhoneFix = @"0\d{1}([(-]?\d{4}|\d{1}[(-]?\d{3}|\d{2}[(-]?\d{2}|\d{3}[(-]?\d{1}|\d{4}[(-]?)[)-]?\d{4}";
+    /// <summary>Pattern for international phone number format.<br/> (+99999999999)</summary>
+    public const string PatternPhoneInternational = @"+\d{1,15}";
+    /// <summary>Pattern of phone number.<br/> (japanese mobile or japanese fix or international)</summary>
+    public const string PatternPhone = @$"{PatternPhoneMobile}|{PatternPhoneFix}|{PatternPhoneInternational}";  // japanese mobile phone or japanese fix phone or international phone 
+
+    /// <summary>Pattern of email.</summary>
+    public const string PatternEmail = @"[\w._%+-]+@[\w.-]+\.[A-Za-z]{2,4}";
+    /// <summary>Pattern of url.</summary>
+    public const string PatternUrl = @"https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+";
+    /// <summary>Pattern of base64.</summary>
+    public const string PatternBase64 = @"[0-9a-zA-Z+/]*={0,2}";
+
+    /// <summary>is signed integer</summary>
+    public static bool IsIntegerSigned(object value) => value is byte || value is short || value is int || value is long;
+    /// <summary>is unsigned integer</summary>
+    public static bool IsIntegerUnsigned(object value) => value is sbyte || value is ushort || value is uint || value is ulong;
+    /// <summary>is integer</summary>
+    public static bool IsInteger(object value) => IsIntegerSigned(value) || IsIntegerUnsigned(value);
+    /// <summary>is float</summary>
+    public static bool IsFloat(object value) => value is float | value is double | value is decimal;
+    /// <summary>is numeric</summary>
+    public static bool IsNumeric(object value) => IsInteger(value) || IsFloat(value);
 
     /// <summary>
     /// Attributes for OpenApiDataType definitions or constraints<br/>
     /// OpenApiDataType 定義 または 制約用の属性
     /// </summary>
-    /// <param name="type">Type Format set by OpenApiDataType. <br/>date, time, datetime, phone, email, uri as string and have format constraint. <br/><br/>string, integer, number, boolean, date, time, datetime, phone, email, uri</param>
-    /// <param name="title">Title set by OpenApiDataType.</param>
-    /// <param name="range">Minimam and Maximam set by OpenApiDataType. <br/><br/>Parse to minimum and maximum values as decimal type.<br/>For number and integer.<br/><b>format : </b>min-max<br/><b>example : </b>11-222</param>
-    /// <param name="length">MinLength and MaxLength set by OpenApiDataType .<br/><br/>Parse to minimum and maximum length as int type.<br/>For string.<br/><b>format : </b>min-max or fix<br/><b>example : </b>1-2 or 3</param>
+    /// <param name="type">Type Format set by OpenApiDataType. <br/>date, time, datetime, phone, email, url as string and have format constraint. <br/><br/>string, integer, number, boolean, date, time, datetime, phone, email, uri</param>
+    /// <param name="title">Title</param>
+    /// <param name="Summary">summary</param>
+    /// <param name="description">Description</param>
+    /// <param name="example">Example</param>
+    /// <param name="range">Minimam and Maximam set by OpenApiDataType. <br/><br/>Parse to minimum and maximum values as decimal type.<br/>For number and integer.<br/><b>format : </b>min~max<br/><b>example : </b>11~222</param>
+    /// <param name="length">MinLength and MaxLength set by OpenApiDataType .<br/><br/>Parse to minimum and maximum length as int type.<br/>For string.<br/><b>format : </b>min~max or fix<br/><b>example : </b>1~2 or 3</param>
     /// <param name="regex">Pattern set by OpenApiDataType. <br/><br/>For string.</param>
-    /// <param name="example">example set by OpenApiDataType.</param>
-    /// <param name="description">description set by OpenApiDataType.</param>
     /// <remarks>
     /// https://swagger.io/docs/specification/data-models/data-types/<br/>
     /// Types:<br/>
-    /// ・string:  format : (-, date(2017-07-21), time(17:32:28), datetime(2017-07-21T17:32:28Z), password, byte(base64-encoded characters), binary, email, uuid, uri, hostname, ipv4, ipv6)<br/>
+    /// ・string:  format : (-, date(2017-07-21), time(17:32:28), datetime(2017-07-21T17:32:28Z), password, byte(base64-encoded characters), binary, email, uuid, url, hostname, ipv4, ipv6)<br/>
     /// ・number:  format : (-, float, double)<br/>
     /// ・integer: format : (-, int32, int64)<br/>
     /// ・boolean<br/>
@@ -140,76 +200,211 @@ public class UnitOfOasAttribute : Attribute
     /// ・object<br/>
     /// </remarks>
     public UnitOfOasAttribute(
-        string type,
+        string? typeformat = null,
         string? title = null,
-        string? range = null,
-        string? length = null,
-        string? regex = null,
+        string? summary = null,
+        string? description = null,
         object? example = null,
-        string? description = null)
+        bool nullable = true,
+        object? maximum = null,         // decimal value
+        bool exclusiveMaximum = false,
+        object? minimum = null,         // decimal value
+        bool exclusiveMinimum = false,
+        object? maxLength = null,       // int value
+        object? minLength = null,       // int value
+        string? pattern = null,
+        string? errorMessage = "{DisplayName} value is invalid.")
     {
-        ConstructorArguments = $"type={type}, title={title}, range={range}, length={length}, regex={regex}, example={example}, description={description}";
-        ArgType = type;
-
-        Title = title;
-        Pattern = regex;
-        Example = example;
-        Description = description;
-        Nullable = true;
-
         // type, format
-        (Type, Format) = type switch
+        (Type, Format) = typeformat switch
         {
-            "string" => ("string", null),
-            "integer" => ("integer", null),
-            "number" => ("number", null),
-            "boolean" => ("boolean", null),
-            "date" => ("string", "date"),
-            "time" => ("string", "time"),
-            "datetime" => ("string", "date-time"),
-            "phone" => ("string", "phone"),
-            "email" => ("string", "email"),
-            "uri" => ("string", "uri"),
-            _ => ("string", null)
+            "integer" => ("integer", null),         // integer.
+            "int32" => ("integer", "int32"),        // signed 32 bits integer.
+            "int64" => ("integer", "int64"),        // signed 64 bits integer.
+            "number" => ("number", null),           // number.
+            "float" => ("number", "float"),         // float number.
+            "double" => ("number", "double"),       // double number.
+            "boolean" => ("boolean", null),         // true or false.
+            "date" => ("string", "date"),           // date string.  9999-19-39
+            "time" => ("string", "time"),           // time string.  29:59:59
+            "datetime" => ("string", "date-time"),  // datetime string.  9999-19-39T29:59:59Z
+            "phone" => ("string", "phone"),         // phone number string.
+            "email" => ("string", "email"),         // email address string.
+            "url" => ("string", "url"),             // url string.
+            "byte" => ("string", "byte"),           // base64 encoded characters.
+            "pattern" => ("string", null),          // regex pattern.
+            _ => ("string", null)                   // string.
         };
 
-        // range
-        if (range is null)
-        {
-            Minimum = null;
-            Maximum = null;
-        }
-        else if (Regex.IsMatch(range, @"^.+~.+$"))
-        {
-            var splitRange = range.Split('~');
-            Minimum = splitRange[0];
-            Maximum = splitRange[1];
-        }
-        else
-            throw new ArgumentException(@$"renge {range} is invalid value. format is [^.+~.+$]");
+        var isNumericMaximum = decimal.TryParse($"{maximum}", out var decimalMaximum);
+        var isNumericMinimum = decimal.TryParse($"{minimum}", out var decimalMinimum);
+        var isIntMaxLength = int.TryParse($"{maxLength}", out var intMaxLength);
+        var isIntMinLength = int.TryParse($"{minLength}", out var intMinLength);
 
-        // length
-        if (length is null)
-        {
-            MinLength = null;
-            MaxLength = null;
-        }
-        else if (Regex.IsMatch(length, @"^\d+$"))
-        {
-            MinLength = null;
-            MaxLength = int.Parse(length);
-        }
-        else if (Regex.IsMatch(length, @"^\d+~\d+$"))
-        {
-            var splitLength = length.Split('~')!;
-            MinLength = int.Parse(splitLength[0]);
-            MaxLength = int.Parse(splitLength[1]);
-        }
-        else
-            throw new ArgumentException(@$"length {length} is invalid value. format is [^\d+$|^\d+~\d+$]");
+        if (!isNumericMaximum)
+            throw new ArgumentException($"maximum {maximum} is not decimal value.");
+        if (!isNumericMinimum)
+            throw new ArgumentException($"minimum {minimum} is not decimal value.");
+        if (!isIntMaxLength)
+            throw new ArgumentException($"maxLength {maxLength} is not int value.");
+        if (!isIntMinLength)
+            throw new ArgumentException($"minLength {minLength} is not int value.");
+
+        Title = string.IsNullOrEmpty(title) ? null : title;
+        Summary = string.IsNullOrEmpty(summary) ? null : summary;
+        Description = string.IsNullOrEmpty(description) ? null : description;
+        Example = example;
+        Nullable = nullable;
+        Maximum = decimalMaximum;
+        ExclusiveMaximum = exclusiveMaximum ? true : null;
+        Minimum = decimalMinimum;
+        ExclusiveMinimum = exclusiveMinimum ? true : null;
+        MaxLength = intMaxLength;
+        MinLength = intMinLength;
+        Pattern = string.IsNullOrEmpty(pattern) ? null : pattern;
+    }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasRangeAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasRangeAttribute(
+        object? maximum = null, bool exclusiveMaximum = false,
+        object? minimum = null, bool exclusiveMinimum = false,
+        string? errorMessage = "{DisplayName} is invalid range.")
+            : base(errorMessage: errorMessage,
+                   maximum: maximum, exclusiveMaximum: exclusiveMaximum,
+                   minimum: minimum, exclusiveMinimum: exclusiveMinimum)
+    {
     }
 
+    public UnitOfOasRangeAttribute(
+        string range,
+        string? errorMessage = "{DisplayName} is invalid range.")
+            : base(errorMessage: errorMessage)
+    {
+        const string patternDecimalPointNumber = @"[\-\+]?\d{1,3}(,?\d{3})*(\.\d+)";
+        const string patternRange = @$"^(?<min>{patternDecimalPointNumber})(?<minInequality><=|<)?~(?<maxInequality><=|<)?(?<max>{patternDecimalPointNumber})$";
+
+        Match match = Regex.Match(range, patternRange);
+        if (!match.Success)
+            throw new ArgumentException(@$"renge {range} is invalid value.");
+
+        string min = match.Groups["min"].Value.Replace(",", "");
+        string minInequality = match.Groups["minInequality"].Value;
+        string maxInequality = match.Groups["maxInequality"].Value;
+        string max = match.Groups["max"].Value.Replace(",", "");
+        if (!IsNumeric(min))
+            throw new ArgumentException($"minimum {min} is invalid value.");
+        if (!IsNumeric(max))
+            throw new ArgumentException($"maximum {max} is invalid value.");
+
+        Maximum = string.IsNullOrEmpty(max) ? null : decimal.Parse(max);
+        Minimum = string.IsNullOrEmpty(min) ? null : decimal.Parse(min);
+        ExclusiveMaximum = minInequality == "<" ? true : null;
+        ExclusiveMinimum = maxInequality == "<" ? true : null;
+    }
 }
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasLengthAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasLengthAttribute(
+        int? maxLength = null, int? minLength = null,
+        string? errorMessage = "{DisplayName} is invalid length.")
+            : base(errorMessage: errorMessage,
+                   maxLength: maxLength, minLength: minLength)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = true)]
+public class UnitOfOasPatternAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasPatternAttribute(
+        string pattern,
+        string? errorMessage = "{DisplayName} is invalid pattern.")
+            : base(errorMessage: errorMessage, 
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasDateAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasDateAttribute(
+        string pattern = PatternDate,
+        string? errorMessage = "{DisplayName} is invalid date.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasTimeAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasTimeAttribute(
+        string pattern = PatternTime,
+        string? errorMessage = "{DisplayName} is invalid time.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasDateTimeAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasDateTimeAttribute(
+        string pattern = PatternDateTime,
+        string? errorMessage = "{DisplayName} is invalid datetime.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasPhoneAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasPhoneAttribute(
+        string pattern = PatternPhone,
+        string? errorMessage = "{DisplayName} is invalid phone.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasEmailAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasEmailAttribute(
+        string pattern = PatternEmail,
+        string? errorMessage = "{DisplayName} is invalid email.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasUrlAttribute : UnitOfOasAttribute
+{
+    public UnitOfOasUrlAttribute(
+        string pattern = PatternUrl,
+        string? errorMessage = "{DisplayName} is invalid url.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
+[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
+public class UnitOfOasBase64Attribute : UnitOfOasAttribute
+{
+    public UnitOfOasBase64Attribute(
+        string pattern = PatternBase64,
+        string? errorMessage = "{DisplayName} is invalid base64 string.")
+            : base(errorMessage: errorMessage,
+                   pattern: pattern)
+    { }
+}
+
 
 
 /// <summary>

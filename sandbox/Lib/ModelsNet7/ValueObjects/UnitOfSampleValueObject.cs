@@ -8,7 +8,7 @@ namespace NullableUnitGeneratorSample;
 // Builtins
 
 [UnitOf(typeof(bool), UGO.GeneralOptions | UGO.JsonConverter | UGO.MessagePackFormatter | UGO.DapperTypeHandler | UGO.EntityFrameworkValueConverter)]
-[UnitOfOas("boolean", example:"true")]
+[UnitOfOas("boolean", example: "true")]
 public readonly partial struct VoBoolSample { }
 
 
