@@ -58,12 +58,16 @@ public static class NullableUnitGeneratorExtensions
         {
             Type = attr.Type,
             Format = attr.Format,
-            Minimum = attr.Minimum is null ? null : decimal.Parse(attr.Minimum),
-            Maximum = attr.Maximum is null ? null : decimal.Parse(attr.Maximum),
-            MinLength = attr.MinLength,
-            MaxLength = attr.MaxLength,
-            Pattern = attr.Pattern,
+            Title = attr.Title,
+            Description = attr.Description,
             Example = exampleAny,
+            Maximum = attr.Maximum,
+            ExclusiveMaximum = attr.ExclusiveMaximum,
+            Minimum = attr.Minimum,
+            ExclusiveMinimum = attr.ExclusiveMinimum,
+            MaxLength = attr.MaxLength,
+            MinLength = attr.MinLength,
+            Pattern = attr.Pattern,
             Nullable = attr.Nullable,
         };
 

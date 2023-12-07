@@ -219,11 +219,11 @@ if (IsBuiltinNumericType) {
                     "     = typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(").GetCustomAttributes<UnitOfAttribute>().SingleOrDefault();\r\n\r\n    /// <summary>U" +
-                    "nitOfOasAttribute instance.</summary>\r\n    public static UnitOfOasAttribute Unit" +
-                    "OfOasAttribute { get; }\r\n        = typeof(");
+                    "nitOfOasAttribute instance.</summary>\r\n    public static IEnumerable<UnitOfOasAt" +
+                    "tribute> UnitOfOasAttributes { get; }\r\n        = typeof(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(").GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();\r\n        \r\n    ///" +
-                    " <summary>Undefined value instance.</summary>\r\n    public static ");
+            this.Write(").GetCustomAttributes<UnitOfOasAttribute>();\r\n        \r\n    /// <summary>Undefine" +
+                    "d value instance.</summary>\r\n    public static ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Name));
             this.Write(" UndefValue { get; } = new(UnitState.Undef, default);\r\n\r\n    /// <summary>Null va" +
                     "lue instance.</summary>\r\n    public static ");
@@ -448,14 +448,11 @@ if (IsBuiltinNumericType) {
     {
         if (!HasValue)
             return Enumerable.Empty<ValidationResult>();
-        var attr = typeof(");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Name));
-            this.Write(@").GetCustomAttributes<UnitOfOasAttribute>().SingleOrDefault();
-        if (attr is null)
+        if (UnitOfOasAttributes is null)
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
-        return UnitValidate.ValidateObject(GetOrDefault(), attr, validationContext);
+        return UnitValidate.ValidateObject(GetOrDefault(), UnitOfOasAttributes, validationContext);
     }
 
 ");

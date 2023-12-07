@@ -120,34 +120,43 @@ public class UnitOfOasAttribute : Attribute
     /// <summary>for OpenApiSchema.Nullable</summary>
     public bool Nullable { get; protected set; }
 
+    /// <summary>ErrorMessage</summary>
+    public string? ErrorMessage { get; protected set; }
 
-    /// <summary>Pattern for basic format of date. (yyyyMMdd)</summary>
+
+    /// <summary>Pattern for basic format of date.<br/> (yyyyMMdd)</summary>
     public const string PatternDateBasic = @"\d{8}";
-    /// <summary>Pattern for extended format of date. (YYYY-MM-DD)</summary>
+    /// <summary>Pattern for extended format of date.<br/> (YYYY-MM-DD)</summary>
     public const string PatternDateExtended = @"\d{4}-[01]\d-[03]\d";
     /// <summary>Pattern for lax format of date.</summary>
     public const string PatternDateLax = @"\d{4}[\-\./][01]?\d[\-\./][03]?\d";
-    /// <summary>Pattern of date. (basic or extended or lax format.)</summary>
+    /// <summary>Pattern of date.<br/> (basic or extended or lax format.)</summary>
     public const string PatternDate = @$"{PatternDateBasic}|{PatternDateExtended}|{PatternDateLax}";
 
-    /// <summary>Pattern for basic format of time without T. (hhmmss[.sss][Z|+hhmm])</summary>
-    public const string PatternTimeBasicWithoutT = @"\d{6}(\.\d+)?(Z|[\+-]\d{4})?";
-    /// <summary>Pattern for extended format of time without T. (hh:mm:ss[.sss][Z|+hh:mm])</summary>
-    public const string PatternTimeExtendedWithoutT = @"\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[\+-]\d{2}:d{2})?";
+    /// <summary>Pattern for basic format of time without T.<br/> (hhmmss[.sss][Z|+hhmm])</summary>
+    public const string PatternTimeBasicWithoutT = @"\d{6}(\.\d+)?(Z|z|[\+-]\d{4})?";
+    /// <summary>Pattern for basic format of time.<br/> (Thhmmss[.sss][Z|+hhmm])</summary>
+    public const string PatternTimeBasic = @$"[Tt]?{PatternTimeBasicWithoutT}";
+    /// <summary>Pattern for extended format of time without T.<br/> (hh:mm:ss[.sss][Z|+hh:mm])</summary>
+    public const string PatternTimeExtendedWithoutT = @"\d{2}:\d{2}:\d{2}(\.\d+)?(Z|z|[\+-]\d{2}:d{2})?";
+    /// <summary>Pattern for extended format of time.<br/> (Thh:mm:ss[.sss][Z|+hh:mm])</summary>
+    public const string PatternTimeExtended = @$"[Tt]?{PatternTimeExtendedWithoutT}";
     /// <summary>Pattern for lax format of time without T.</summary>
-    public const string PatternTimeLaxWithoutT = @"\d?\d:\d?\d:\d?\d(\.\d+)?(Z|[\+-]\d?\d:\d?\d)?";
-    /// <summary>Pattern for time without T. (basic or extended or lax format.)</summary>
+    public const string PatternTimeLaxWithoutT = @"\d?\d:\d?\d:\d?\d(\.\d+)?(Z|z|[\+-]\d?\d:\d?\d)?";
+    /// <summary>Pattern for lax format of time.</summary>
+    public const string PatternTimeLax = @$"[Tt]?{PatternTimeLaxWithoutT}";
+    /// <summary>Pattern for time without T.<br/> (basic or extended or lax format.)</summary>
     public const string PatternTimeWithoutT = @$"{PatternTimeBasicWithoutT}|{PatternTimeExtendedWithoutT}|{PatternTimeLaxWithoutT}";
-    /// <summary>Pattern of time. (basic or extended or lax format.)</summary>
-    public const string PatternTime = @$"[T]?{PatternTimeWithoutT}";
+    /// <summary>Pattern of time.<br/> (basic or extended or lax format.)</summary>
+    public const string PatternTime = @$"[Tt]?{PatternTimeWithoutT}";
 
-    /// <summary>Pattern for basic format of datetime. (yyyyMMddThhmmss[.sss][Z|+hhmm])</summary>
-    public const string PatternDateTimeBasic = @$"{PatternDateBasic}T{PatternTimeBasicWithoutT}";
-    /// <summary>Pattern for extended format of datetime. ((YYYY-MM-DDThh:mm:ss[.sss][Z|+hh:mm])</summary>
-    public const string PatternDateTimeExtended = @$"{PatternDateExtended}T{PatternTimeExtendedWithoutT}";
+    /// <summary>Pattern for basic format of datetime.<br/> (yyyyMMddThhmmss[.sss][Z|+hhmm])</summary>
+    public const string PatternDateTimeBasic = @$"{PatternDateBasic}{PatternTimeBasic}";
+    /// <summary>Pattern for extended format of datetime.<br/> ((YYYY-MM-DDThh:mm:ss[.sss][Z|+hh:mm])</summary>
+    public const string PatternDateTimeExtended = @$"{PatternDateExtended}{PatternTimeExtended}";
     /// <summary>Pattern for lax format of datetime.</summary>
-    public const string PatternDateTimeLax = @$"{PatternDateLax}[T ]{PatternTimeLaxWithoutT}";  // lax format.
-    /// <summary>Pattern of datetime. (basic or extended or lax format.)</summary>
+    public const string PatternDateTimeLax = @$"{PatternDateLax}[Tt ]{PatternTimeLaxWithoutT}";  // lax format.
+    /// <summary>Pattern of datetime.<br/> (basic or extended or lax format.)</summary>
     public const string PatternDateTime = @$"{PatternDateTimeBasic}{PatternDateTimeExtended}{PatternDateTimeLax}";
 
     /// <summary>Pattern for japanese mobile phone format.<br/> 11-digit number starting from 0. <br/> (09099999999|090-9999-9999)</summary>
@@ -176,6 +185,11 @@ public class UnitOfOasAttribute : Attribute
     public static bool IsFloat(object value) => value is float | value is double | value is decimal;
     /// <summary>is numeric</summary>
     public static bool IsNumeric(object value) => IsInteger(value) || IsFloat(value);
+
+    /// <summary>converts to unix time seconds of decimal type</summary>
+    public static decimal ToUnixTimeSeconds(DateTime datetime)
+        => (decimal)datetime.Subtract(DateTime.UnixEpoch).Ticks / TimeSpan.TicksPerSecond;
+
 
     /// <summary>
     /// Attributes for OpenApiDataType definitions or constraints<br/>
@@ -206,9 +220,9 @@ public class UnitOfOasAttribute : Attribute
         string? description = null,
         object? example = null,
         bool nullable = true,
-        object? maximum = null,         // decimal value
+        object? maximum = null,         // decimal or datetime value
         bool exclusiveMaximum = false,
-        object? minimum = null,         // decimal value
+        object? minimum = null,         // decimal or datetime value
         bool exclusiveMinimum = false,
         object? maxLength = null,       // int value
         object? minLength = null,       // int value
@@ -236,33 +250,63 @@ public class UnitOfOasAttribute : Attribute
             _ => ("string", null)                   // string.
         };
 
-        var isNumericMaximum = decimal.TryParse($"{maximum}", out var decimalMaximum);
-        var isNumericMinimum = decimal.TryParse($"{minimum}", out var decimalMinimum);
-        var isIntMaxLength = int.TryParse($"{maxLength}", out var intMaxLength);
-        var isIntMinLength = int.TryParse($"{minLength}", out var intMinLength);
-
-        if (!isNumericMaximum)
-            throw new ArgumentException($"maximum {maximum} is not decimal value.");
-        if (!isNumericMinimum)
-            throw new ArgumentException($"minimum {minimum} is not decimal value.");
-        if (!isIntMaxLength)
-            throw new ArgumentException($"maxLength {maxLength} is not int value.");
-        if (!isIntMinLength)
-            throw new ArgumentException($"minLength {minLength} is not int value.");
-
         Title = string.IsNullOrEmpty(title) ? null : title;
         Summary = string.IsNullOrEmpty(summary) ? null : summary;
         Description = string.IsNullOrEmpty(description) ? null : description;
         Example = example;
         Nullable = nullable;
-        Maximum = decimalMaximum;
+        (bool isOkMaximum, Maximum) = TryParseToNullableDecimalFromNumericOrDatatime($"{maximum}");
         ExclusiveMaximum = exclusiveMaximum ? true : null;
-        Minimum = decimalMinimum;
+        (bool isOkMinimum, Minimum) = TryParseToNullableDecimalFromNumericOrDatatime($"{minimum}");
         ExclusiveMinimum = exclusiveMinimum ? true : null;
-        MaxLength = intMaxLength;
-        MinLength = intMinLength;
+        (bool isOkMaxLength, MaxLength) = TryParseToNullableIntFromNumeric($"{maxLength}");
+        (bool isOkMinLength, MinLength) = TryParseToNullableIntFromNumeric($"{minLength}");
         Pattern = string.IsNullOrEmpty(pattern) ? null : pattern;
+        ErrorMessage = errorMessage;
+
+        var exMessageList = new List<string>();
+        if (!isOkMaximum)
+            exMessageList.Add($"maximum {maximum}");
+        if (!isOkMinimum)
+            exMessageList.Add($"minimum {minimum}");
+        if (!isOkMaxLength)
+            exMessageList.Add($"maxLength {maxLength}");
+        if (!isOkMinLength)
+            exMessageList.Add($"minLength {minLength}");
+        if (exMessageList.Any())
+        {
+            var exMessage = string.Join(", ", exMessageList);
+            throw new ArgumentException($"{exMessage} is invalid value.");
+        }
     }
+
+    protected static (bool isOk, decimal? resut) TryParseToNullableDecimalFromNumericOrDatatime(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+            return (true, null);
+
+        if (decimal.TryParse(s, out var decimalValue))
+            return (true, decimalValue);
+
+        if (DateTime.TryParse(s, out var datetimeValue))
+            return (true, ToUnixTimeSeconds(datetimeValue));
+
+        return (false, null);
+    }
+
+    protected static (bool isOk, int? resut) TryParseToNullableIntFromNumeric(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+            return (true, null);
+
+        if (int.TryParse(s, out var intValue))
+            return (true, intValue);
+
+        return (false, null);
+    }
+
+
+
 }
 
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
@@ -283,8 +327,8 @@ public class UnitOfOasRangeAttribute : UnitOfOasAttribute
         string? errorMessage = "{DisplayName} is invalid range.")
             : base(errorMessage: errorMessage)
     {
-        const string patternDecimalPointNumber = @"[\-\+]?\d{1,3}(,?\d{3})*(\.\d+)";
-        const string patternRange = @$"^(?<min>{patternDecimalPointNumber})(?<minInequality><=|<)?~(?<maxInequality><=|<)?(?<max>{patternDecimalPointNumber})$";
+        //const string patternDecimalPointNumber = @"[\-\+]?\d{1,3}(,?\d{3})*(\.\d+)?";
+        const string patternRange = @$"^(?<min>.+)(?<minInequality><=|<)?~(?<maxInequality><=|<)?(?<max>.+)$";
 
         Match match = Regex.Match(range, patternRange);
         if (!match.Success)
@@ -294,15 +338,23 @@ public class UnitOfOasRangeAttribute : UnitOfOasAttribute
         string minInequality = match.Groups["minInequality"].Value;
         string maxInequality = match.Groups["maxInequality"].Value;
         string max = match.Groups["max"].Value.Replace(",", "");
-        if (!IsNumeric(min))
-            throw new ArgumentException($"minimum {min} is invalid value.");
-        if (!IsNumeric(max))
-            throw new ArgumentException($"maximum {max} is invalid value.");
 
-        Maximum = string.IsNullOrEmpty(max) ? null : decimal.Parse(max);
-        Minimum = string.IsNullOrEmpty(min) ? null : decimal.Parse(min);
+        (bool isOkMaximum, Maximum) = TryParseToNullableDecimalFromNumericOrDatatime(max);
+        (bool isOkMinimum, Minimum) = TryParseToNullableDecimalFromNumericOrDatatime(min);
+
         ExclusiveMaximum = minInequality == "<" ? true : null;
         ExclusiveMinimum = maxInequality == "<" ? true : null;
+
+        var exMessageList = new List<string>();
+        if (!isOkMaximum)
+            exMessageList.Add($"maximum {max}");
+        if (!isOkMinimum)
+            exMessageList.Add($"minimum {min}");
+        if (exMessageList.Any())
+        {
+            var exMessage = string.Join(", ", exMessageList);
+            throw new ArgumentException($"{exMessage} is invalid value.");
+        }
     }
 }
 

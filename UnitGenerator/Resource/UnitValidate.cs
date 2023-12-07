@@ -33,7 +33,7 @@ public static class UnitValidate
         // Validationを実施
         var validationResult = new List<ValidationResult?>
         {
-            attribute.ArgType switch
+            attribute.Format switch
             {
                 "phone" => ValidatePhoneNumber(value, validationContext),
                 "email" => ValidateEmailAddress(value, validationContext),
@@ -44,6 +44,50 @@ public static class UnitValidate
             attribute.MaxLength is not null ? ValidateLength(value.ToString(), attribute.MinLength, attribute.MaxLength, validationContext) : ValidationResult.Success,
             attribute.Pattern   is not null ? ValidateRegularExpression(value, attribute.Pattern, validationContext) : ValidationResult.Success,
         }.Where(s => s != ValidationResult.Success).Cast<ValidationResult>();
+
+        if (!validationResult.Any())
+            return Enumerable.Empty<ValidationResult>();
+
+        return validationResult;
+    }
+
+    /// <summary>
+    /// Validate objects based on UnitOfOasAttribute.<br/>
+    /// UnitOfOasAttribute に基づいてオブジェクトの検証を行う。
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="attribute">Object of UnitOfOasAttribute.</param>
+    /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
+    /// <returns>When validation is valid, Enumerable.Empty.<para>When validation is invalid, an IEnumerater of<see ref="ValidationResult"/>.</para></returns>
+    public static IEnumerable<ValidationResult> ValidateObject(object? value, IEnumerable<UnitOfOasAttribute> attributes, ValidationContext validationContext)
+    {
+        if (value is null || attributes is null || attributes.Any())
+            return Enumerable.Empty<ValidationResult>();
+
+        // Validationを実施
+        var validationResult = new List<ValidationResult>();
+        foreach (var attr in attributes)
+        {
+            validationResult.Add(
+                attr.Format switch
+                {
+                    "phone" => ValidatePhoneNumber(value, validationContext),
+                    "email" => ValidateEmailAddress(value, validationContext),
+                    "url" => ValidateUrl(value, validationContext),
+                    _ => ValidationResult.Success
+                }
+            );
+            validationResult.Add(
+                attr.Maximum is not null ? ValidateRange(value, value.GetType(), attr.Minimum, attr.Maximum, validationContext) : ValidationResult.Success
+            );
+            validationResult.Add(
+                attr.MaxLength is not null ? ValidateLength(value.ToString(), attr.MinLength, attr.MaxLength, validationContext) : ValidationResult.Success
+            );
+            validationResult.Add(
+                attr.Pattern is not null ? ValidateRegularExpression(value, attr.Pattern, validationContext) : ValidationResult.Success
+            );;
+        }
+        validationResult.Where(s => s != ValidationResult.Success).Cast<ValidationResult>();
 
         if (!validationResult.Any())
             return Enumerable.Empty<ValidationResult>();
@@ -86,7 +130,7 @@ public static class UnitValidate
     /// <param name="max">Maximum value</param>
     /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
     /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
-    public static ValidationResult ValidateRange(object? value, string? min, string? max, ValidationContext validationContext)
+    public static ValidationResult ValidateRange(object? value, decimal? min, decimal? max, ValidationContext validationContext)
     {
         if (value is null)
             return ValidationResult.Success!;
@@ -106,13 +150,13 @@ public static class UnitValidate
     /// <param name="max">Maximum value</param>
     /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
     /// <returns>When validation is valid, <see cref="ValidationResult.Success"/>.</returns>
-    public static ValidationResult ValidateRange(object? value, Type type, string? min, string? max, ValidationContext validationContext)
+    public static ValidationResult ValidateRange(object? value, Type type, decimal? min, decimal? max, ValidationContext validationContext)
     {
-        if (value is null || string.IsNullOrWhiteSpace(min) || string.IsNullOrWhiteSpace(max))
+        if (value is null)
             return ValidationResult.Success!;
 
         var val = Convert.ChangeType(value, type);
-        return new RangeAttribute(type, min, max).GetValidationResult(val, validationContext)!;
+        return new RangeAttribute(type, $"{min}", $"{max}").GetValidationResult(val, validationContext)!;
     }
 
 

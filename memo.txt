@@ -33,6 +33,8 @@ DateOnly in Swagger and API Controllers
 Qowaiv
   https://github.com/Qowaiv/Qowaiv
 
+OpenAPIにおけるundefinedとnullの設計
+  https://future-architect.github.io/articles/20211028b/
 
 ■Text.Json ソースコード
 dotnet/runtime/src/libraries/System.Text.Json/src/System/Text/Json/

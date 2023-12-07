@@ -26,8 +26,8 @@ public static class UnitHelper
     {
         var asms = AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic);
         var types = asms.SelectMany(asm => asm.GetExportedTypes());
-        var typesHasAttr = types.Where(w => w.GetCustomAttributes(typeof(T), false).Any());
-        var attrs = typesHasAttr.Select(s => (s.UnderlyingSystemType, (T)s.GetCustomAttributes(typeof(T), false).First()));
+        var typesHasAttr = types.Where(w => w.GetCustomAttributes(typeof(T), true).Any());
+        var attrs = typesHasAttr.Select(s => (s.UnderlyingSystemType, (T)s.GetCustomAttributes(typeof(T), true).First()));
         return attrs.ToList();
     }
 
