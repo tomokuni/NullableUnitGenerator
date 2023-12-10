@@ -80,9 +80,11 @@ public sealed class Generate : IIncrementalGenerator
     {
         AddCsResource("UnitOf.IUnit.cs");
         AddCsResource("UnitOf.UnitAttribute.cs");
+        AddCsResource("UnitOf.UnitSchemaAttribute.cs");
+        AddCsResource("UnitOf.UnitSchemaType.cs");
+        AddCsResource("UnitOf.UnitGenerateOption.cs");
         AddCsResource("UnitOf.UnitExtension.cs");
         AddCsResource("UnitOf.UnitExtension.OpenApi.cs");
-        AddCsResource("UnitOf.UnitGenerateOption.cs");
         AddCsResource("UnitOf.UnitHelper.cs");
         AddCsResource("UnitOf.UnitState.cs");
         AddCsResource("UnitOf.UnitValidate.cs");

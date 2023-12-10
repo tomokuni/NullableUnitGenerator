@@ -3,14 +3,25 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace NullableUnitGenerator.Extensions;
+namespace NullableUnitGenerator.ExtensionMethods;
 
 
 /// <summary>
 /// NullableUnitGeneratorExtensions
 /// </summary>
-public static class NullableUnitGeneratorExtensions
+public static class NullableUnitGeneratorExtensionMethods
 {
+    /// <summary>is signed integer</summary>
+    public static bool IsIntegerSigned(object value) => value is byte || value is short || value is int || value is long;
+    /// <summary>is unsigned integer</summary>
+    public static bool IsIntegerUnsigned(object value) => value is sbyte || value is ushort || value is uint || value is ulong;
+    /// <summary>is integer</summary>
+    public static bool IsInteger(object value) => IsIntegerSigned(value) || IsIntegerUnsigned(value);
+    /// <summary>is float</summary>
+    public static bool IsFloat(object value) => value is float | value is double | value is decimal;
+    /// <summary>is numeric</summary>
+    public static bool IsNumeric(object value) => IsInteger(value) || IsFloat(value);
+
 
     /// <summary>
     /// Convert word to Pascal case.<br/>
@@ -238,6 +249,34 @@ public static class NullableUnitGeneratorExtensions
     /// <returns>Converted duration string<br/>変換後の duration 文字列</returns>
     public static string ToIsoString(this TimeSpan timespan)
         => XmlConvert.ToString(timespan);
+
+
+    /// <summary>
+    /// Converts to null if null or empty string.<br/>
+    /// null または空文字列の場合は null に変換する。<br/>
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static string? EmptyToNull(this string? str)
+        => string.IsNullOrWhiteSpace(str) ? null : str;
+
+
+    /// <summary>
+    /// converts to unix time seconds of decimal type
+    /// </summary>
+    /// <param name="datetime"></param>
+    /// <returns></returns>
+    public static decimal ToUnixTimeSeconds(this DateTime datetime)
+        => (decimal)datetime.Subtract(DateTime.UnixEpoch).Ticks / TimeSpan.TicksPerSecond;
+
+
+    /// <summary>
+    /// converts from unix time seconds of decimal type
+    /// </summary>
+    /// <param name="unixtime"></param>
+    /// <returns></returns>
+    public static DateTime ToDateTime(this decimal unixTimeSeconds)
+    => DateTime.UnixEpoch.AddTicks((long)(unixTimeSeconds * TimeSpan.TicksPerSecond));
 
 }
 

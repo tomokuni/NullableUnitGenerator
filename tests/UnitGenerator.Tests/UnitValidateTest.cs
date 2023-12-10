@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+
 using Xunit;
 
 using NullableUnitGenerator;
 using UGO = NullableUnitGenerator.UnitGenerateOption;
-using System;
+using UST = NullableUnitGenerator.UnitSchemaType;
 
 namespace NullableUnitGenerator.Tests;
 
@@ -75,7 +77,7 @@ public class UnitValidateTest
     public class Entity
     {
         [DisplayName("ID")]
-        [UnitOfRange(1, 2), UnitOfOasValidate(ErrorMessage = "入力に誤りがあります")]
+        [UnitOfSchemaValidateRange()]
         public VoIntRange Id { get; set; }
 
         [DisplayName("ID2")]
@@ -119,50 +121,50 @@ public class UnitValidateTest
 
 
 [UnitOf(typeof(int), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("integer"), UnitOfOasRange(range: "2~3")]
+[UnitOfSchema(UST.Int, Minimum = 2, Maximum = 3)]
 public readonly partial struct VoIntRange { }
 
 
 [UnitOf(typeof(long), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("integer"), UnitOfOasRange(range: "2~3")]
+[UnitOfSchema(UST.Int), UnitOfOasRange(range: "2~3")]
 public readonly partial struct VoLongRange { }
 
 
 [UnitOf(typeof(double), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("number"), UnitOfOasRange(range: "2~3")]
+[UnitOfSchema(UST.Number), UnitOfOasRange(range: "2~3")]
 public readonly partial struct VoDoubleRange { }
 
 
 [UnitOf(typeof(float), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("number"), UnitOfOasRange(range: "2~3")]
+[UnitOfSchema(UST.Number), UnitOfOasRange(range: "2~3")]
 public readonly partial struct VoFloatRange { }
 
 
 [UnitOf(typeof(decimal), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("number"), UnitOfOasRange(range: "2~3")]
+[UnitOfSchema(UST.Number), UnitOfOasRange(range: "2~3")]
 public readonly partial struct VoDecimalRange { }
 
 
 [UnitOf(typeof(string), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("string"), UnitOfOasRange(range: "2~3")]
+[UnitOfSchema(UST.String), UnitOfOasRange(range: "2~3")]
 public readonly partial struct VoStringRange { }
 
 
 [UnitOf(typeof(DateTime), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("datetime"), UnitOfOasRange(range: "2022-12-01T00:00:00.000+09:00~2022-12-31T12:00:00.999+09:00")]
+[UnitOfSchema(UST.Datetime), UnitOfOasRange(range: "2022-12-01T00:00:00.000+09:00~2022-12-31T12:00:00.999+09:00")]
 public readonly partial struct VoDatetimeRange { }
 
 
 [UnitOf(typeof(DateOnly), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("date"), UnitOfOasRange(range: "2022-12-01~2022-12-31")]
+[UnitOfSchema(UST.Date), UnitOfOasRange(range: "2022-12-01~2022-12-31")]
 public readonly partial struct VoDateonlyRange { }
 
 
 [UnitOf(typeof(TimeOnly), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("time"), UnitOfOasRange(range: "00:00:00.000~12:00:00.999")]
+[UnitOfSchema(UST.Time), UnitOfOasRange(range: "00:00:00.000~12:00:00.999")]
 public readonly partial struct VoTimeonlyRange { }
 
 
 [UnitOf(typeof(TimeSpan), UGO.GeneralOptions | UGO.JsonConverter | UGO.DapperTypeHandler)]
-[UnitOfOas("time"), UnitOfOasRange(range: "00:00:00.000~12:00:00.999")]
+[UnitOfSchema(UST.Time), UnitOfOasRange(range: "00:00:00.000~12:00:00.999")]
 public readonly partial struct VoTimespanRange { }

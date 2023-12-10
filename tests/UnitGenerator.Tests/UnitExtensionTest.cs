@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using NullableUnitGenerator.Extensions;
+using NullableUnitGenerator.ExtensionMethods;
 
 using Xunit;
 

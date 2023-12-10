@@ -25,7 +25,7 @@ public static class UnitValidate
     /// <param name="attribute">Object of UnitOfOasAttribute.</param>
     /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
     /// <returns>When validation is valid, Enumerable.Empty.<para>When validation is invalid, an IEnumerater of<see ref="ValidationResult"/>.</para></returns>
-    public static IEnumerable<ValidationResult> ValidateObject(object? value, UnitOfOasAttribute attribute, ValidationContext validationContext)
+    public static IEnumerable<ValidationResult> ValidateObject(object? value, UnitOfSchemaAttribute attribute, ValidationContext validationContext)
     {
         if (value is null)
             return Enumerable.Empty<ValidationResult>();
@@ -59,7 +59,7 @@ public static class UnitValidate
     /// <param name="attribute">Object of UnitOfOasAttribute.</param>
     /// <param name="validationContext">A <see cref="ValidationContext"/> instance that provides context about the validation operation, such as the object and member being validated.</param>
     /// <returns>When validation is valid, Enumerable.Empty.<para>When validation is invalid, an IEnumerater of<see ref="ValidationResult"/>.</para></returns>
-    public static IEnumerable<ValidationResult> ValidateObject(object? value, IEnumerable<UnitOfOasAttribute> attributes, ValidationContext validationContext)
+    public static IEnumerable<ValidationResult> ValidateObject(object? value, IEnumerable<UnitOfSchemaAttribute> attributes, ValidationContext validationContext)
     {
         if (value is null || attributes is null || attributes.Any())
             return Enumerable.Empty<ValidationResult>();

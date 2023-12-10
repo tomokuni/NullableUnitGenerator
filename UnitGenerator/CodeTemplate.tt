@@ -182,9 +182,9 @@ public readonly partial struct <#= Name #> : IUnitOf, IUnitOf<<#= Name #>, <#= T
     public static UnitOfAttribute UnitOfAttribute { get; }
         = typeof(<#= Name #>).GetCustomAttributes<UnitOfAttribute>().SingleOrDefault();
 
-    /// <summary>UnitOfOasAttribute instance.</summary>
-    public static IEnumerable<UnitOfOasAttribute> UnitOfOasAttributes { get; }
-        = typeof(<#= Name #>).GetCustomAttributes<UnitOfOasAttribute>();
+    /// <summary>UnitOfSchemaAttribute instance.</summary>
+    public static UnitOfSchemaAttribute UnitOfSchemaAttribute { get; }
+        = typeof(<#= Name #>).GetCustomAttributes<UnitOfSchemaAttribute>().SingleOrDefault();
         
     /// <summary>Undefined value instance.</summary>
     public static <#= Name #> UndefValue { get; } = new(UnitState.Undef, default);
@@ -417,11 +417,11 @@ public readonly partial struct <#= Name #> : IUnitOf, IUnitOf<<#= Name #>, <#= T
     {
         if (!HasValue)
             return Enumerable.Empty<ValidationResult>();
-        if (UnitOfOasAttributes is null)
+        if (UnitOfSchemaAttribute is null)
             return Enumerable.Empty<ValidationResult>();
 
         // Validationを実施
-        return UnitValidate.ValidateObject(GetOrDefault(), UnitOfOasAttributes, validationContext);
+        return UnitValidate.ValidateObject(GetOrDefault(), UnitOfSchemaAttribute, validationContext);
     }
 
 <# if (TypeName == "Guid" || TypeName == "System.Guid") { #>

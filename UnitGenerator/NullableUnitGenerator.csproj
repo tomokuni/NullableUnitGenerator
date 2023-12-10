@@ -75,6 +75,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resource\IUnit.cs" LogicalName="UnitOf.IUnit.cs" />
     <EmbeddedResource Include="Resource\UnitAttribute.cs" LogicalName="UnitOf.UnitAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitSchemaAttribute.cs" LogicalName="UnitOf.UnitSchemaAttribute.cs" />
+    <EmbeddedResource Include="Resource\UnitSchemaType.cs" LogicalName="UnitOf.UnitSchemaType.cs"/>
     <EmbeddedResource Include="Resource\UnitExtension.cs" LogicalName="UnitOf.UnitExtension.cs" />
     <EmbeddedResource Include="Resource\UnitExtension.OpenApi.cs" LogicalName="UnitOf.UnitExtension.OpenApi.cs" />
     <EmbeddedResource Include="Resource\UnitGenerateOption.cs" LogicalName="UnitOf.UnitGenerateOption.cs" />
@@ -96,6 +98,7 @@
     </Compile>
     <Compile Include="Generate.cs" />
     <Compile Include="Resource\UnitGenerateOption.cs" Link="UnitGenerateOption.cs" />
+    <Compile Include="Resource\UnitSchemaType.cs" Link="UnitSchemaType.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@ using UGO = NullableUnitGenerator.UnitGenerateOption;
 namespace NullableUnitGeneratorSample.Sandbox.ConsoleApp;
 
 
-[UnitOf(typeof(System.Guid), UGO.IComparable)]
+[UnitOf(typeof(Guid), UGO.IComparable)]
 public readonly partial struct FooId { }
 
 
