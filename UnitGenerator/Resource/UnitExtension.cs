@@ -11,27 +11,15 @@ namespace NullableUnitGenerator.ExtensionMethods;
 /// </summary>
 public static class NullableUnitGeneratorExtensionMethods
 {
-    /// <summary>is signed integer</summary>
-    public static bool IsIntegerSigned(object value) => value is byte || value is short || value is int || value is long;
-    /// <summary>is unsigned integer</summary>
-    public static bool IsIntegerUnsigned(object value) => value is sbyte || value is ushort || value is uint || value is ulong;
-    /// <summary>is integer</summary>
-    public static bool IsInteger(object value) => IsIntegerSigned(value) || IsIntegerUnsigned(value);
-    /// <summary>is float</summary>
-    public static bool IsFloat(object value) => value is float | value is double | value is decimal;
-    /// <summary>is numeric</summary>
-    public static bool IsNumeric(object value) => IsInteger(value) || IsFloat(value);
-
-
     /// <summary>
     /// Convert word to Pascal case.<br/>
     /// 単語をパスカルケースに変換する。<br/>
     /// </summary>
-    /// <param name="str">source word<br/>変換元の単語</param>
+    /// <param name="s">source word<br/>変換元の単語</param>
     /// <returns>Converted word<br/>変換後の単語</returns>
-    public static string Pascalize(string str)
+    public static string Pascalize(string s)
     {
-        var w = regexPascalize.Replace(str,
+        var w = regexPascalize.Replace(s,
             m => char.ToUpper(m.Groups[1].Value[0]) + m.Groups[1].Value[1..].ToLower() + m.Groups[2].Value);
         return char.ToUpper(w[0]) + w[1..];
     }
@@ -42,11 +30,11 @@ public static class NullableUnitGeneratorExtensionMethods
     /// Convert string to Pascal case.<br/>
     /// 文字列をパスカルケースに変換する。<br/>
     /// </summary>
-    /// <param name="str">source word<br/>変換元の単語</param>
+    /// <param name="s">source word<br/>変換元の単語</param>
     /// <returns>Converted word<br/>変換後の単語</returns>
-    public static string ToPascalCase(this string str)
+    public static string ToPascalCase(this string s)
     {
-        var words = str
+        var words = s
             .Split(new[] { "_", "-", " " }, StringSplitOptions.RemoveEmptyEntries)
             .Select(Pascalize)
             .ToArray();
@@ -58,11 +46,11 @@ public static class NullableUnitGeneratorExtensionMethods
     /// Convert string to CamelCase.<br/>
     /// 文字列をキャメルケースに変換する。<br/>
     /// </summary>
-    /// <param name="str">source word<br/>変換元の単語</param>
+    /// <param name="s">source word<br/>変換元の単語</param>
     /// <returns>Converted word<br/>変換後の単語</returns>
-    public static string ToCamelCase(this string str)
+    public static string ToCamelCase(this string s)
     {
-        var pascal = ToPascalCase(str);
+        var pascal = ToPascalCase(s);
         return char.ToLower(pascal[0]) + pascal[1..];
     }
 
@@ -71,12 +59,12 @@ public static class NullableUnitGeneratorExtensionMethods
     /// Convert string to snake case<br/>
     /// 文字列をスネークケースに変換する。<br/>
     /// </summary>
-    /// <param name="str">source word<br/>変換元の単語</param>
+    /// <param name="s">source word<br/>変換元の単語</param>
     /// <param name="delimiter">delimiter<br/>区切り文字</param>
     /// <returns>Converted word<br/>変換後の単語</returns>
-    public static string ToSnakeCase(this string str, string delimiter = "_")
+    public static string ToSnakeCase(this string s, string delimiter = "_")
     {
-        var s0 = ToCamelCase(str);
+        var s0 = ToCamelCase(s);
         var s1 = regexSnakeSplit.Replace(s0, ("$1" + delimiter + "$2"));
         return s1.ToLower();
     }
@@ -255,28 +243,79 @@ public static class NullableUnitGeneratorExtensionMethods
     /// Converts to null if null or empty string.<br/>
     /// null または空文字列の場合は null に変換する。<br/>
     /// </summary>
-    /// <param name="str"></param>
+    /// <param name="s"></param>
     /// <returns></returns>
-    public static string? EmptyToNull(this string? str)
-        => string.IsNullOrWhiteSpace(str) ? null : str;
+    public static string? EmptyToNull(this string? s)
+        => string.IsNullOrWhiteSpace(s) ? null : s;
 
 
     /// <summary>
-    /// converts to unix time seconds of decimal type
+    /// Converts to unix time seconds of decimal type.<br/>
+    /// decimal 型の unixtime (seconds) に DateTime 値を変換する。<br/>
     /// </summary>
     /// <param name="datetime"></param>
     /// <returns></returns>
     public static decimal ToUnixTimeSeconds(this DateTime datetime)
         => (decimal)datetime.Subtract(DateTime.UnixEpoch).Ticks / TimeSpan.TicksPerSecond;
 
+    /// <summary>
+    /// Converts to unix time seconds of decimal type.<br/>
+    /// decimal 型の unixtime (seconds) に DateOnly 値を変換する。<br/>
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static decimal ToUnixTimeSeconds(this DateOnly date)
+        => date.ToDateTime(new TimeOnly(0)).ToUnixTimeSeconds();
 
     /// <summary>
-    /// converts from unix time seconds of decimal type
+    /// Converts to unix time seconds of decimal type.<br/>
+    /// decimal 型の unixtime (seconds) に TimeOnly 値を変換する。<br/>
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    public static decimal ToUnixTimeSeconds(this TimeOnly time)
+        => (decimal)time.Ticks / TimeSpan.TicksPerSecond;
+
+
+    /// <summary>
+    /// Converts from unix time seconds of decimal type.<br/>
+    /// decimal 型の unixtime (seconds) を DateTime 値に変換する。<br/>
     /// </summary>
     /// <param name="unixtime"></param>
     /// <returns></returns>
     public static DateTime ToDateTime(this decimal unixTimeSeconds)
-    => DateTime.UnixEpoch.AddTicks((long)(unixTimeSeconds * TimeSpan.TicksPerSecond));
+        => DateTime.UnixEpoch.AddTicks((long)(unixTimeSeconds * TimeSpan.TicksPerSecond));
+
+
+    /// <summary>
+    /// Convert to decimal from DateTime or decimal string.<br/>
+    /// DateTime または decimal 文字列を decimal 値に変換する。<br/>
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
+    public static decimal? ParseDateTimeOrDecimalToDecimal(this string? s)
+    {
+        if (s is null)
+            return null;
+        if (DateTime.TryParse(s, out DateTime resultDateTime))
+            return resultDateTime.ToUnixTimeSeconds();
+        if (DateOnly.TryParse(s, out DateOnly resultDate))
+            return resultDate.ToUnixTimeSeconds();
+        if (TimeOnly.TryParse(s, out TimeOnly resultTime))
+            return resultTime.ToUnixTimeSeconds();
+        return decimal.Parse(s);
+    }
+
+    /// <summary>is signed integer</summary>
+    public static bool IsIntegerSigned(this object value) => value is byte || value is short || value is int || value is long;
+    /// <summary>is unsigned integer</summary>
+    public static bool IsIntegerUnsigned(this object value) => value is sbyte || value is ushort || value is uint || value is ulong;
+    /// <summary>is integer</summary>
+    public static bool IsInteger(this object value) => IsIntegerSigned(value) || IsIntegerUnsigned(value);
+    /// <summary>is float</summary>
+    public static bool IsFloat(this object value) => value is float | value is double | value is decimal;
+    /// <summary>is numeric</summary>
+    public static bool IsNumeric(this object value) => IsInteger(value) || IsFloat(value);
 
 }
 

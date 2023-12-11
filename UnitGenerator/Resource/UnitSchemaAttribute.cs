@@ -46,30 +46,16 @@ public class UnitOfSchemaAttribute : Attribute
     /// <summary>for OpenApiSchema.Example</summary>
     public object? Example { get; init; }
 
-    /// <summary>for OpenApiSchema.Maximum</summary>
-    public object? Maximum
-    {
-        get => _maximum;
-        set => _maximum = value ?? throw Exception();
-    }
-    public decimal? _maximum = null;
-
-    /// <summary>for OpenApiSchema.Maximum (as datetime)</summary>
-    public DateTime? MaximumDateTime { get => Maximum?.ToDateTime(); init => Maximum = value?.ToUnixTimeSeconds(); }
+    /// <summary>for OpenApiSchema.Maximum (as decimal or datetime)</summary>
+    public object? Maximum { get => _maximum; init => _maximum = value?.ToString().ParseDateTimeOrDecimalToDecimal(); }
+    private decimal? _maximum = null;
 
     /// <summary>for OpenApiSchema.ExclusiveMaximum</summary>
     public bool? ExclusiveMaximum { get; init; }
 
-    /// <summary>for OpenApiSchema.Minimum</summary>
-    public object? Minimum
-    {
-        get => _minimum;
-        set => _minimum = value;
-    }
-    public decimal? _minimum = null;
-
-    /// <summary>for OpenApiSchema.Minimum (as datetime)</summary>
-    public DateTime? MinimumDateTime { get => Minimum?.ToDateTime(); init => Minimum = value?.ToUnixTimeSeconds(); }
+    /// <summary>for OpenApiSchema.Minimum (as decimal or datetime)</summary>
+    public object? Minimum { get => _minimum; init => value?.ToString().ParseDateTimeOrDecimalToDecimal(); }
+    private decimal? _minimum = null;
 
     /// <summary>for OpenApiSchema.ExclusiveMinimum</summary>
     public bool? ExclusiveMinimum { get; init; }
